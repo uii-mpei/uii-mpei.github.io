@@ -1,0 +1,146 @@
+/* Дизайн должен быть простым, но не примитивным (Артемий Лебедев). */
+* { 
+	line-height: 125%;
+}
+body {
+	font-family: serif, Times;
+}
+ul {
+	list-style-type: none;
+}
+li {
+	font-size: 100%;
+	margin-bottom: 0.75em;
+}
+
+/* Basic text formatting utilities. */
+.left   { text-align: left;   }
+.center { text-align: center; }
+.right  { text-align: right;  }
+
+.alert {
+	font-weight: bold;
+	color: red;
+}
+
+/* Список по смыслу, не требующий отступа. */
+ul.semantic, ul.standalone {
+	padding-left: 0;
+}
+
+/* Короткие элементы плотно сбитых списков. */
+.dense * {
+	margin-bottom: 0.25em;
+	margin-top: 0.25em;
+}
+
+/* Various types of links to files: */
+
+/* Used to place an icon to the left of a text link. */
+.file {
+	background-repeat: no-repeat;
+	padding-left: 20px;
+}
+/* Used for standalone icons linked to files. */
+.icon {
+	background-repeat: no-repeat;
+	background-size: contain;
+	margin: 0 4px;
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	text-decoration: none;
+}
+/* General-purpose file types. */
+.pdf     { background-image: url('../images/icons/pdf-icon.png');  }
+.archive { background-image: url('../images/icons/zip-icon.png');  }
+.source  { background-image: url('../images/icons/c++-icon.png');  }
+.text    { background-image: url('../images/icons/text-icon.gif'); }
+.html    { background-image: url('../images/icons/html-icon.png'); }
+.exe	 { background-image: url('../images/icons/exe-icon.png');  }
+/*Microsoft Office items. */
+.msword  { background-image: url('../images/icons/msword-icon.png'); }
+/* Google Stuff resources. */
+.gslides { background-image: url('../images/icons/gslides-icon.png'); }
+.gdocs   { background-image: url('../images/icons/gdocs-icon.png');   }
+.gdrive  { background-image: url('../images/icons/gdrive-icon.png');  }
+/* RSS feeds. */
+.feed {
+	background-image: url('../images/icons/feed-icon.png');
+	background-position: 2px 2px;
+}
+
+/* Счетчик и кнопка системы "Орфус". */
+#orphus, #counter {
+	float: right;
+	vertical-align: middle;
+}
+
+/* Ссылки на якоря в документе. */
+a.local:link, a.local:active, a.local:visited {
+	color: blue;
+	text-decoration: none;
+	border-bottom: 1px dashed blue;
+}
+
+/* Новости вверху страницы. */
+ul#news {
+	color: rgb(16, 128, 16);
+	padding-left: 0;
+}
+ul#news > li {
+	margin-bottom: 1em;
+}
+
+/* Таблица сроков сдачи. */
+#deadlines {
+	color: rgb(128, 16, 16);
+}
+#deadlines table {
+	border-collapse: collapse;
+}
+#deadlines table td, #deadlines table th {
+	border-width: 1px;
+	border-style: solid;
+	padding: 0.25em;
+}
+
+#underconstruction {
+	color: white;
+	background-color: red;
+	font-size: 150%;
+	padding: 0.5em;
+}
+
+/* Reference table styles. */
+table {
+	border-collapse: collapse;
+}
+td, th {
+    border: 1px solid #888;
+    margin: 0;
+    padding: 0.25em;
+}
+td:empty, th:empty {
+	/* Work around `border-collapse: collapse' and `empty-cells: empty'. */
+	border: 0;
+	border-top: 1px dotted #ccc;
+}
+td {
+	vertical-align: top;
+}
+th {
+    background-color: #eee;
+}
+td.left {
+	padding-left: 0.25em;
+	padding-right: 0.75em;
+}
+td.center {
+	padding-left: 0.75em;
+	padding-right: 0.75em;
+}
+td.right {
+	padding-left: 0.25em;
+	padding-right: 0.75em;
+}
