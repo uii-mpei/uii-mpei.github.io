@@ -1,10 +1,8 @@
 /* Дизайн должен быть простым, но не примитивным (Артемий Лебедев). */
-* { 
-	line-height: 125%;
-}
 body {
 	font-family: serif, Times;
 }
+
 ul {
 	list-style-type: none;
 }
