@@ -8,7 +8,8 @@ ul {
 }
 li {
 	font-size: 100%;
-	margin-bottom: 0.75em;
+	margin-bottom: 0.25em;
+	margin-top: 0.25em;
 }
 
 /* Basic text formatting utilities. */
@@ -24,12 +25,6 @@ li {
 /* Список по смыслу, не требующий отступа. */
 ul.semantic, ul.standalone {
 	padding-left: 0;
-}
-
-/* Короткие элементы плотно сбитых списков. */
-.dense * {
-	margin-bottom: 0.25em;
-	margin-top: 0.25em;
 }
 
 /* Various types of links to files: */
