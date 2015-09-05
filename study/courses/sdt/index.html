@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="ru">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<!-- Версия этой страницы всегда должна быть самой актуальной. -->
+	<meta http-equiv="cache-control" content="max-age=0" />
+	<meta http-equiv="cache-control" content="no-cache" />
+	<meta http-equiv="expires" content="0" />
+	<meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta name="description" content="Материалы курса «Технология программирования» кафедры Управления и информатики НИУ «МЭИ»">
+	<title>Технология программирования | Кафедра Управления и информатики</title>
+	<link rel="stylesheet" type="text/css" href="../assets/styles/style.css">
+</head>
+<body>
+	<h1>Технология программирования (ТП)</h1>
+	<hr/>
+
+	<h2>Организация</h2>
+	<ul>
+		<li>
+			Оценка за&nbsp;зачет выставляется после выполнения и&nbsp;защиты <em>всех</em> ЛР.
+		</li>
+		<li>
+			Студент защищает ЛР одному и&nbsp;тому&nbsp;же лаборанту весь семестр,
+			какому&nbsp;&mdash; решается на&nbsp;первой защите.
+			Бригады (при&nbsp;нехватке машин) формируются на&nbsp;весь семестр,
+			защищают ЛР одному лаборанту, но&nbsp;индивидуально.
+		</li>
+		<li class="alert">
+			На&nbsp;2-й неделе (11.09) занятий не&nbsp;будет.
+		</li>
+		<li>
+			Есть <a href="http://uii.bitbucket.org/study/courses/sdt">резервная версия</a> этой страницы
+			на случай проблем с сайтом. Сохраните в&nbsp;закладки.
+		</li>
+	</ul>
+
+
+	<!-- <h2><a href="#">Журнал</a></h2> -->
+
+
+	<h2>Лекции</h2>
+	<p class="alert">Лекция&nbsp;№&nbsp;2 переносится на&nbsp;IV&nbsp;пару 17.09 (место будет уточнено).</p>
+    <table>
+        <thead>
+            <th class="center">Неделя</th>
+            <th class="center">Дата</th>
+            <th class="left">Тема</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="center">1</td>
+                <td class="center">04.09</td>
+                <td class="left">
+                	1. Основы языка программирования C++
+                	<a href="lecture01_intro.slides.pdf" class="pdf icon"></a>
+                	<a href="https://drive.google.com/open?id=0BwYRNsCqc-i4dEQtUk9xYXVMc2M" class="gdrive icon"></a>
+                	<ul>
+                		<li>
+                			Раздаточные материалы:
+                			<a href="lecture01_intro.handouts.pdf" class="pdf icon"></a>
+                			<a href="https://drive.google.com/open?id=0BwYRNsCqc-i4M19tMk5TWG1xSzA" class="gdrive icon"></a>
+                		</li>
+                	</ul>
+                </td>
+            </tr>
+            <tr>
+                <td class="center">3</td>
+                <td class="center alert">17.09</td>
+                <td class="left">
+                	2. Системы контроля версий
+                </td>
+            </tr>
+            <tr>
+                <td class="center">3</td>
+                <td class="center">18.09</td>
+                <td class="left">
+                	3. Структурирование программы и данных
+                </td>
+            </tr>
+            <tr>
+                <td class="center">4</td>
+                <td class="center">25.09</td>
+                <td class="left">
+                	4. Взаимодействие программы с окружением
+                </td>
+            </tr>
+            <tr>
+                <td class="center">5</td>
+                <td class="center">02.10</td>
+                <td class="left">
+                	5. Программирование низкоуровневых задач
+                </td>
+            </tr>
+            <tr>
+                <td class="center">6</td>
+                <td class="center">09.10</td>
+                <td class="left">
+                	6. Алгоритмы и структуры данных
+                </td>
+            </tr>
+            <tr>
+                <td class="center">7</td>
+                <td class="center">16.10</td>
+                <td class="left">
+                	7. Объектно-ориентированное программирование в C++
+                </td>
+            </tr>
+            <tr>
+                <td class="center">8</td>
+                <td class="center">23.10</td>
+                <td class="left">
+                	8. Средства автоматизации разработки программ
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <h2>Лабораторные работы</h2>
+	<p class="alert">
+		ЛР у&nbsp;А-02-13 начинаются с&nbsp;4-й недели (25.09).
+		Вместо 11.09 будет дополнительная ЛР, вероятно 30.10 на&nbsp;4&mdash;5&nbsp;парах (обсуждаемо).
+	</p>
+	<p>
+		Файл <a href="sdt.h" class="source file"><code>sdt.h</code></a>
+		для&nbsp;простого подключения стандартных библиотек.
+	</p>
+	<table>
+		<thead>
+			<tr>
+				<th class="center" colspan="2">Дата</th>
+				<th class="left" rowspan="2">Тема</th>
+			</tr>
+			<tr>
+				<th>А-01-13</th>
+				<th>А-02-13</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="center">04.09</td>
+				<td class="center">25.09</td>
+				<td>
+					1. Знакомство с языком C++ и средствами разработки
+                	<a href="lab01_intro.task.pdf" class="pdf icon"></a>
+                	<a href="https://drive.google.com/open?id=0BwYRNsCqc-i4SDA5MDhzcmo2eXc" class="gdrive icon"></a>
+                	<ul>
+                		<li>
+                			<a href="lab01_intro.exe" class="exe file">Образец решения</a>
+                			(пункты 2.1&mdash;2.5, 3&mdash;6 в&nbsp;одной программе).
+                		</li>
+                	</ul>
+                </td>
+			</tr>
+			<tr>
+				<td class="center">18.09</td>
+				<td class="center">09.10</td>
+				<td class="left">
+                	2. Системы контроля версий
+                	<ul>
+						<li>
+							<a href="https://github.com/PlushBeaver/lab-test">Хранилище</a>,
+							каким оно должно получаться в&nbsp;конце&nbsp;ЛР.
+						</li>
+					</ul>
+                </td>
+			</tr>
+			<tr>
+				<td class="center">02.10</td>
+				<td class="center">23.10</td>
+				<td>
+					3. Функции и пользовательские типы данных
+				</td>
+			</tr>
+			<tr>
+				<td class="center">16.10<br/>30.10</td>
+				<td class="center"><span class="alert">30.10</span><br/>06.11</td>
+				<td>
+					4. Программирование низкоуровневых задач
+				</td>
+			</tr>
+			<tr>
+				<td class="center">13.11<br/>27.11</td>
+				<td class="center">20.11<br/>04.12</td>
+				<td>
+					5. Объектно-ориентированное программирование
+				</td>
+			</tr>
+			<tr>
+				<td class="center">11.12</td>
+				<td class="center">18.12</td>
+				<td>
+					6. Средства автоматизации разработки программ
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2>Литература</h2>
+
+	<h3>Язык С++</h3>
+	<ol start="1">
+		<li>
+			Bjarne Stroustrup.<i> Programming: Principles and Practices Using C++</i> =
+		 	Страуструп Б. <i>Программирование: принципы и практика использования C++</i>.<br/>
+		 	Рекомендованный учебник. Перевод на русский имеется только для первого издания.
+		 	<a href="http://www.stroustrup.com/Programming/">Страница книги</a> (комментарии, советы, примеры кода).<br/>
+		</li>
+		<li>
+			Stanley Lippmann, Josee Lajoie, Barbara Moo. <i>C++ Primer, 5th&nbsp;Edition.</i> =
+		 	Липманн&nbsp;С., Лажойе&nbsp;Ж., Му&nbsp;Б. <i>Язык программирования С++: вводный курс, изд.&nbsp;5</i>.<br/>
+		 	Популярный учебник, предполагающий уверенное владение каким-либо еще языком программирования, помимо С++.
+		</li>
+		<p>Печатные экземпляры доступны в&nbsp;М-304а.</p>
+		<li>
+			Подбельский В.&nbsp;В. <i>Язык Си++: Учебное пособие.</i>&nbsp;&mdash; 5-е&nbsp;изд.&nbsp;&mdash; М.: Финансы и&nbsp;статистика, 1999.&nbsp;&mdash; 560&nbsp;с.:&nbsp;ил. <i>УДК:&nbsp;П44</i>.<br/>
+		 	Существенно устаревшая книга, но&nbsp;только она массово есть в&nbsp;НТБ МЭИ.<br/>
+		</li>
+	</ol>
+
+	<h3>Алгоритмы и структуры данных</h3>
+	<ol start="4">
+		<li>Роберт Седжвик. <i>Фундаментальные алгоритмы на С++,</i> 2-е издание / пер. с англ. <i>(Algorithms in C++).</i>&nbsp;&mdash; М.: DiaSoft&nbsp;&mdash; 2001 г.&nbsp;&mdash; 688 с.</li>
+		<li><a href="http://www.sorting-algorithms.com/">Sorting Algorithm Animations</a>&nbsp;&mdash; демонстрация работы различных алгоритмов сортировки.</li>
+	</ol>
+	<ol start="6">
+		<li>Томас Х. Кормен. <i>Алгоритмы. Вводный курс</i> / пер. с англ. <i>(Algorithms Unlocked).</i>&nbsp;&mdash; М.: Вильямс.&nbsp;&mdash; 2014 г.&nbsp;&mdash; 208 с. <br/>
+		</li>
+		<li>Томас Х. Кормен и др. <i>Алгоритмы. Построение и анализ</i> / пер. с англ. <i>(Introduction to Algorithms)</i>&nbsp;&mdash; М.: Вильямс.&nbsp;&mdash; 2012 г.&nbsp;&mdash; 1296 с.</li>
+		<li>Стивен Скиена. <i>Алгоритмы. Руководство по разработке,</i> 2-е издание / пер. с англ. <i>(The Algorithm Design Manual,</i> Second Edition)&nbsp;&mdash; СПб.: БХВ-Петербург.&nbsp;&mdash; 2011 г.&nbsp;&mdash; 720 с.</li>
+	</ol>
+
+	<h3>Системы контроля версий</h3>
+	<ul>
+		<li>
+			<a href="http://tom.preston-werner.com/2009/05/19/the-git-parable.html">The Git Parable</a>&nbsp;&mdash;
+			статья, объясняющая логику построения Git.
+		</li>
+		<li>
+			<a href="http://git-scm.com/book">Pro Git</a>&nbsp;&mdash;
+			бесплатная элекронная книга-руководство по Git.
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<a href="http://hginit.com/">Hg Init: a&nbsp;Mercurial Tutorial</a>&nbsp;&mdash;
+			набор пошаговых обучающих статей по Mercurial.
+		</li>
+		<li>
+			<a href="http://edu.cbias.ru/Subversion.pdf">Subversion и&nbsp;разработка web-приложений</a>&nbsp;&mdash;
+			презентация об&nbsp;основах VCS и&nbsp;применении Subversion для&nbsp;командной разработки
+			(Фетисовы&nbsp;Н.&nbsp;А. и&nbsp;Ф.&nbsp;А., 2012).
+		</li>
+		<li>
+			<a href="http://svnbook.red-bean.com/">Управление версиями в Subversion</a>&nbsp;&mdash;
+			обстоятельная книга об SVN (доступно несколько переводов).
+		</li>
+	</ul>
+
+
+	<h2>Программное обеспечение</h2>
+
+	<h3><a href="../common/ide.html">Средства разработки, как&nbsp;в&nbsp;лаборатории</a></h3>
+
+<!-- 
+	<h3>Системы контроля версий</h3>
+	<ul>
+	<li>Сайт <a href="/away.php?to=http%3A%2F%2Fgit-scm.com%2F" target="_blank" data-external-url="http://git-scm.com/">Git</a> содержит не только саму систему контроля версий (с управлением через командную строку), но и ссылки на графические утилиты для различных ОС. Рекомендуется: SourceTree или TortoiseGit для Windows, SourceTree для OS X, RabbitVCS для Linux. </span></li>
+	<li><a href="/away.php?to=https%3A%2F%2Fsubversion.apache.org%2F" target="_blank" data-external-url="https://subversion.apache.org/">Subversion (SVN)</a> устанавливается или с сайта, или часто под Windows в составе <a href="/away.php?to=http%3A%2F%2Ftortoisesvn.net%2F" target="_blank" data-external-url="http://tortoisesvn.net/">TortoiseSVN</a>&nbsp;&mdash;самой популярной из графических утилит для SVN. В Linux рекомендуется RabbitVCS (и для SVN, и для Git). <br/>
+	 </span></li>
+	</ul>
+
+	<h3>Средства автоматизации разработки программ</h3>
+
+	<h4>Хостинги хранилищ систем контроля версий</h4> 
+	<ul>
+	<li><a href="/away.php?to=https%3A%2F%2Fgithub.com%2F" target="_blank" data-external-url="https://github.com/">GitHub</a>&nbsp;&mdash;самый крупный и популярный хостинг Git. Бесплатно предоставляются только открытые хранилища (то есть, видимые для всех). Обладает обширной инфраструктурой и развитым web-интерфейсом. <br/>
+	 </span></li>
+	<li><a href="/away.php?to=https%3A%2F%2Fbitbucket.org%2F" target="_blank" data-external-url="https://bitbucket.org/">BitBucket</a>&nbsp;&mdash;хостинг Git и Mercurial (Hg), бесплатно предоставляет открытые и частные хранилища. Дополнительных возможностей меньше, чем на GitHub.  <br/>
+	 </span></li>
+	</ul>
+-->
+
+
+	<h2>Преподаватели</h2>
+	<table>
+		<thead>
+			<tr>
+				<th>Участник</th>
+				<th>Роль</th>
+				<th>Связь</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="left">Козлюк Дмитрий Александрович</td>
+				<td class="left">лектор, лаборант</td>
+				<td class="left">
+					<a href="http://www.google.com/recaptcha/mailhide/d?k=01_uWea10RK7AzO-a9C2nBjg==&c=nG5zSR4276ZYxX7ItHJb_A_Lzdt787hUjxLUG5R7rwY=">электронная почта</a> (лучше всего),
+					&laquo;<a href = "https://vk.com/plushbeaver">ВКонтакте</a>&raquo;, 
+					<a href="skype:Dmitry.Kozliuk?chat">
+						<img src="https://az545221.vo.msecnd.net/skype-faq-media/faq_content/skype/screenshots/fa12330/emoticons/skype_20.png" alt="Skype" border="0" class="icon" />Dmitry.Kozliuk
+					</a>
+				</td>
+			</tr>
+			<tr>
+				<td class="left">Никитин Вадим Владимирович</td>
+				<td class="left">лаборант</td>
+				<td class="left">&laquo;<a href = "https://vk.com/nikvad">ВКонтакте</a>&raquo;</td>
+			</tr>
+			<tr>
+				<td class="left">Дербенёв Николай Викторович</td>
+				<td class="left">ответственный за&nbsp;курс</td>
+				<td class="left">лично на&nbsp;кафедре</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<hr/>
+	<p>
+		Авторы курса: Дербенев&nbsp;Н.&nbsp;В., Козлюк&nbsp;Д.&nbsp;А., Никитин&nbsp;В.&nbsp;В.,
+		кафедра Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2013&mdash;2015&nbsp;г.&nbsp;г.
+	</p>
+	<p>
+		Ответственный за&nbsp;страницу: Козлюк&nbsp;Д.&nbsp;А.
+
+		<!--LiveInternet counter--><script type="text/javascript"><!--
+		document.write('<a href="http://www.liveinternet.ru/click" '+
+		'target=_blank><img src="http://counter.yadro.ru/hit?t52.1;r'+
+		escape(document.referrer)+((typeof(screen)=='undefined')?'':
+		';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
+		screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
+		';i'+escape('Жж'+document.title.substring(0,80))+';'+Math.random()+
+		'" alt="" title="LiveInternet: показано число просмотров и посетителей за 24 часа" '+
+		'border=0 width=88 height=31 id="counter"><\/a>')//--></script><!--/LiveInternet-->
+
+		<script type="text/javascript" src="../assets/scripts/orphus.js"></script>
+		<a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="../assets/images/orphus.gif" border="0" width="88" height="31" /></a>
+	</p>
+</body>
+</html>
