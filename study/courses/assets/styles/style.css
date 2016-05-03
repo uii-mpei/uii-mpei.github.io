@@ -3,13 +3,14 @@ body {
 	font-family: serif, Times;
 }
 
-ul {
-	list-style-type: none;
-}
 li {
 	font-size: 100%;
 	margin-bottom: 0.25em;
 	margin-top: 0.25em;
+}
+
+img {
+    max-width: 100%;
 }
 
 /* Basic text formatting utilities. */
@@ -24,6 +25,7 @@ li {
 
 /* Список по смыслу, не требующий отступа. */
 ul.semantic, ul.standalone {
+	list-style-type: none;
 	padding-left: 0;
 }
 
