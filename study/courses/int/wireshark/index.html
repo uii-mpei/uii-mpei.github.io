@@ -37,7 +37,7 @@ capture interfaces</em> <img src="button-interfaces.png" alt="" />.</p>
 Wireshark работает медленно. Нужно либо во&nbsp;время захвата свести к&nbsp;минимуму
 сетевую активность, кроме интересующей, либо выставить перед захватом фильтр
 захватываемых пакетов (см.&nbsp;ниже). Поэтому&nbsp;же не&nbsp;рекомендуется продолжать
-захват после того, как нужные пакеты получены или просто долгое время.</p>
+захват после того, как нужные пакеты получены, или просто долгое время.</p>
 <h3>Работа с&nbsp;записями трафика</h3>
 <p>По&nbsp;окончании захвата трафика пакеты можно сохранить в&nbsp;файл. Стандартным
 форматом является <code>pcap</code> (packet capture); в&nbsp;профессиональном арго такие файлы
@@ -114,8 +114,8 @@ Packet Dissections&hellip; &gt; As&nbsp;&laquo;Plain Text&raquo; file&hellip;</e
 <p><strong>Предупреждение.</strong> Есть ряд неочевидных особенностей фильтрации. Выражение
 <code>tcp.port == 80</code> означает &laquo;протокол TCP и&nbsp;порт отправителя <em>или</em> получателя
 равен 80&raquo;, то&nbsp;есть эквивалентно <code>(tcp.dstport == 80) || (tcp.srcport == 80)</code>.
-Выражение <code>tcp.port!= 80</code> не&nbsp;означает &laquo;сегменты TCP через любые порты,
-кроме 80&raquo;, а&nbsp;эквивалентен <code>(tcp.dstport!= 80) || (tcp.srcport!= 80)</code>, то&nbsp;есть
+Выражение <code>tcp.port != 80</code> не&nbsp;означает &laquo;сегменты TCP через любые порты,
+кроме 80&raquo;, а&nbsp;эквивалентен <code>(tcp.dstport != 80) || (tcp.srcport != 80)</code>, то&nbsp;есть
 отбирает пакеты, у&nbsp;которых хотя&nbsp;бы один порт не&nbsp;80. Правильным отрицанием
 исходного фильтра является <code>!(tcp.port == 80)</code>.</p>
 <p>Полное и&nbsp;подробное <a href="https://www.wireshark.org/docs/wsug_html_chunked/ChWorkBuildDisplayFilterSection.html">руководство по&nbsp;составлению фильтров</a>
