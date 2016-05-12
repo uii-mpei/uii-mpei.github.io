@@ -70,8 +70,10 @@ ul.semantic, ul.standalone {
 	background-size: 1em 1em;
 }
 
-/* Счетчик и кнопка системы "Орфус". */
-#orphus, #counter {
+/* Счетчик и кнопка системы "Орфус" (legacy), */
+#orphus, #counter,
+/* любые кнопки внизу страницы. */
+#buttons {
 	float: right;
 	vertical-align: middle;
 }
