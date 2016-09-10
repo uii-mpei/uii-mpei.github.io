@@ -16,9 +16,17 @@
 	<h1>Установка и&nbsp;настройка ПО для&nbsp;ТП, СПО, ИСиТ</h1>
 	<hr/>
 
+    <p>
+        <strong>Внимание:</strong>
+        в&nbsp;путях установки и&nbsp;в&nbsp;именах файлов проектов недопустимы пробелы,
+        а&nbsp;в&nbsp;Windows&nbsp;&mdash; и&nbsp;кириллические символы.
+    </p>
+
 	<h2>Установка и&nbsp;настройка GCC и&nbsp;Code::Blocks в&nbsp;Windows</h2>
 	<p>
 		Инструкция по&nbsp;развертыванию такой&nbsp;же среды разработки, как&nbsp;в&nbsp;лаборатории.<br/>
+	</p>
+	<p>
 		<strong>Внимание:</strong> установка предполагается на&nbsp;&laquo;чистую&raquo; систему,
 		то&nbsp;есть, если ранее GCC или&nbsp;Code::Blocks был установлен, их нужно сначала удалить.
 	</p>
@@ -33,7 +41,7 @@
 		<li>
 			Скачать и установить среду
 			<a href="http://www.codeblocks.org/downloads/26">Code::Blocks</a>,
-			вариант <b>codeblocks-13.12-setup.exe</b>. Устанавливать в&nbsp;варианте <i>Full</i>,
+			вариант <b>codeblocks-XX.YY-setup.exe</b>. Устанавливать в&nbsp;варианте <i>Full</i>,
 			в&nbsp;конце на&nbsp;вопрос <i>Do you want to run Code::Blocks now?</i> ответить <i>No.</i>
 		</li>
 		<li>
@@ -41,14 +49,68 @@
 			(<a href="CodeBlocks.zip" class="archive icon"></a>
 			<a href="https://drive.google.com/open?id=0BwYRNsCqc-i4c1d0akQ5ZFhYbUU" class="gdrive icon"></a>)
 			и&nbsp;поместить каталог <code>CodeBlocks</code> из&nbsp;архива в&nbsp;<code>%APPDATA%</code>
-			(нажимите <i>Win+R,</i> введите <code>%APPDATA%</code> и&nbsp;нажмите <i>Enter</i>&nbsp;&mdash;
+			(нажмите <i>Win+R,</i> введите <code>%APPDATA%</code> и&nbsp;нажмите <i>Enter</i>&nbsp;&mdash;
 			откроется нужный каталог).
+            Если при&nbsp;первом запуске откроется окно с&nbsp;выбором компиляторов, нажмите&nbsp;<i>OK</i>.
 		</li>
+        <li>
+            Установить <a href="https://cmake.org/download/" target="_blank">CMake</a>.
+            <ul>
+                <li>Нужна ссылка в&nbsp;таблице <i>Binary distributions!</i></li>
+                <li>
+                    Файл <code>lab.bat</code> к&nbsp;ЛР&nbsp;№&nbsp;1 открывает командную строку, из&nbsp;которой
+                    можно запускать <code>make</code> (поставляется с&nbsp;MingGW-w64) и&nbsp;CMake.
+                </li>
+            </ul>
+        </li>
 	</ol>
+
+    <h2>Установка и&nbsp;настройка среды разработки в&nbsp;OS&nbsp;X</h2>
+    <ol>
+        <li>
+            Штатным компилятором в&nbsp;OS&nbsp;X является LLVM Clang, хорошо поддерживающий современный&nbsp;C++.
+            Рекомендуемый способ получить Clang на&nbsp;OS&nbsp;X&nbsp;&mdash; установить
+            <a href="https://itunes.apple.com/en/app/xcode/id497799835" target="_blank">XCode</a>.
+        </li>
+        <li>
+            XCode&nbsp;&mdash; бесплатная, функциональная и&nbsp;официально поддерживаемая
+            для&nbsp;OS&nbsp;X среда разработки.
+            Разработка
+            <a href="http://sourceforge.net/projects/codeblocks/files/Binaries/13.12/MacOS/CodeBlocks-13.12-mac.zip" target="_blank">Code::Blocks для&nbsp;OS&nbsp;X</a>
+            на&nbsp;момент сентября 2016&nbsp;г. заморожена на&nbsp;версии&nbsp;13.12.
+            Устанавливать Code::Blocks следует в&nbsp;<code>/Users/Applications</code> (&laquo;Приложения&raquo;).
+        </li>
+        <li>
+            При&nbsp;первом запуске будет предложено выбрать компилятор, это должен быть <i>LLVM Clang</i>.
+            <ul>
+                <li>
+                    Эту настройку в&nbsp;любое время можно задать из&nbsp;списка <i>Settings&nbsp;/
+                    Compiler&hellip;&nbsp;/ Selected compiler</i> и&nbsp;сохранить кнопкой <i>Set as default</i>.
+                </li>
+                <li>
+                    Там&nbsp;же стоит установить флажок <i>Have clang++ follow the C++14 ISO C++ language standard</i>,
+                    чтобы компилировались программы, использующие современный C++ (<code>auto</code> и прочее).
+                </li>
+            </ul>
+        </li>
+        <li>
+            При&nbsp;настройках по&nbsp;умолчанию в&nbsp;терминале выводится команда запуска программы,
+            длинная и&nbsp;ненужная.
+            Чтобы отключить её, в&nbsp;текстовое поле
+            <i>Settings&nbsp;/ Environment&nbsp;/ General settings&nbsp;/ Terminal to launch console programs</i>
+            нужно ввести
+            (<a href="http://comptrib.blogspot.ru/2012/05/how-to-use-codeblocks-on-osx-for-c.html" target="_blank">инструкция с&nbsp;иллюстрациями</a>):
+            <pre>osascript -e 'tell app "Terminal"' -e 'activate' -e 'do script "exe=\'$SCRIPT\'; cd \\"${exe%/*/*/*}\\"; clear; \\"${exe% }\\""' -e 'end tell'</pre>
+        </li>
+        <li>
+            Установить <a href="https://cmake.org/download/" target="_blank">CMake</a>.
+            Нужна ссылка в&nbsp;таблице <i>Binary distributions!</i>
+        </li>
+    </ol>
 
 	<hr/>
 	<p>
-		&copy; кафедра Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2014&mdash;2015&nbsp;г.&nbsp;г.
+		&copy; кафедра Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2014&mdash;2016&nbsp;г.&nbsp;г.
 	</p>
 	<p>
 		Ответственный за&nbsp;страницу: Козлюк&nbsp;Д.&nbsp;А.
