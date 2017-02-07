@@ -47,18 +47,21 @@ ul.semantic, ul.standalone {
 	text-decoration: none;
 }
 /* General-purpose file types. */
-.pdf     { background-image: url('../images/icons/pdf-icon.png');  }
-.archive { background-image: url('../images/icons/zip-icon.png');  }
-.source  { background-image: url('../images/icons/c++-icon.png');  }
-.text    { background-image: url('../images/icons/text-icon.gif'); }
-.html    { background-image: url('../images/icons/html-icon.png'); }
-.exe	 { background-image: url('../images/icons/exe-icon.png');  }
+.pdf      { background-image: url('../images/icons/pdf-icon.png');      }
+.archive  { background-image: url('../images/icons/zip-icon.png');      }
+.source   { background-image: url('../images/icons/c++-icon.png');      }
+.text     { background-image: url('../images/icons/text-icon.gif');     }
+.html     { background-image: url('../images/icons/html-icon.png');     }
+.exe      { background-image: url('../images/icons/exe-icon.png');      }
+.markdown { background-image: url('../images/icons/markdown-icon.png'); }
 /*Microsoft Office items. */
 .msword  { background-image: url('../images/icons/msword-icon.png'); }
 /* Google Stuff resources. */
 .gslides { background-image: url('../images/icons/gslides-icon.png'); }
 .gdocs   { background-image: url('../images/icons/gdocs-icon.png');   }
 .gdrive  { background-image: url('../images/icons/gdrive-icon.png');  }
+/* OwnCloud */
+.owncloud { background-image: url('../images/icons/owncloud-icon.png'); }
 /* RSS feeds. */
 .feed {
 	background-image: url('../images/icons/feed-icon.png');
