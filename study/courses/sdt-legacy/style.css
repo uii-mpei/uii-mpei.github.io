@@ -1,0 +1,90 @@
+/* Дизайн должен быть простым, но не примитивным (Артемий Лебедев). */
+
+p, li {
+	line-height: 125%;
+}
+ul {
+	list-style-type: none;
+}
+li {
+	font-size: 100%;
+	margin-bottom: 0.75em;
+}
+
+/* Список по смыслу, не требующий отступа. */
+ul.semantic, ul.standalone {
+	padding-left: 0;
+}
+
+/* Короткие элементы плотно сбитых списков. */
+.dense * {
+	margin-bottom: 0.25em;
+	margin-top: 0.25em;
+}
+
+/* Ссылки на файлы разных типов. */
+.file {
+	background-repeat: no-repeat;
+	padding-left: 20px;
+}
+.pdf {
+	background-image: url('images/icons/pdf-icon.png');
+}
+.archive {
+	background-image: url('images/icons/zip-icon.png');
+}
+.source {
+	background-image: url('images/icons/c++-icon.png');
+}
+.text {
+	background-image: url('images/icons/text-icon.gif');
+}
+.msword {
+	background-image: url('images/icons/msword-icon.png');
+}
+.feed {
+	background-image: url('images/icons/feed-icon.png');
+	background-position: 2px 2px;
+}
+
+/* Счетчик и кнопка системы "Орфус". */
+#orphus, #counter {
+	float: right;
+	vertical-align: middle;
+}
+
+/* Ссылки на якоря в документе. */
+a.local:link, a.local:active, a.local:visited {
+	color: blue;
+	text-decoration: none;
+	border-bottom: 1px dashed blue;
+}
+
+/* Новости вверху страницы. */
+ul#news {
+	color: rgb(16, 128, 16);
+	padding-left: 0;
+}
+ul#news > li {
+	margin-bottom: 1em;
+}
+
+/* Таблица сроков сдачи. */
+#deadlines {
+	color: rgb(128, 16, 16);
+}
+#deadlines table {
+	border-collapse: collapse;
+}
+#deadlines table td, #deadlines table th {
+	border-width: 1px;
+	border-style: solid;
+	padding: 0.25em;
+}
+
+#underconstruction {
+	color: white;
+	background-color: red;
+	font-size: 150%;
+	padding: 0.5em;
+}

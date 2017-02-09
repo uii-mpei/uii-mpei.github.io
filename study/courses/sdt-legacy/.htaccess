@@ -1,0 +1,5 @@
+#Redirect permanent https://vk.com/mpei_uii_sdt
+
+# Подсказка MIME-типов лент новостей для браузеров.
+AddType  application/xml;charset=utf-8      .atom
+AddType  application/rss+xml;charset=utf-8  .rss
