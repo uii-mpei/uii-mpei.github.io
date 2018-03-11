@@ -6,12 +6,12 @@
   <meta name="generator" content="pandoc" />
   <title>Информационные сети и телекоммуникации (ИСиТ)</title>
   <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="file:///home/dmitry/src/uii.bitbucket.org/study/courses/assets/styles/style.css" type="text/css" />
 </head>
 <body>
 <div id="header">
 <h1 class="title">Информационные сети и телекоммуникации (ИСиТ)</h1>
 </div>
-<p><link rel="stylesheet" type="text/css" href="/study/courses/assets/styles/style.css"></p>
 <p>В курс входит:</p>
 <ul>
 <li>стек протоколов TCP/IP и сопутствующих;</li>
@@ -34,22 +34,32 @@
 </ol>
 <h2 id="лабораторные-работы">Лабораторные работы</h2>
 <p><a href="rules.html">Регламент</a>, в том числе правила оформления отчетов.</p>
-<h3 id="средства-диагностики-сетей">1. <a href="lab01-tools.html">Средства диагностики сетей</a></h3>
+<h3 id="средства-диагностики-сетей">1. (08.02) <a href="lab01-tools.html">Средства диагностики сетей</a></h3>
 <ul>
 <li><a href="https://www.wireshark.org/#download">Wireshark</a> — анализатор сетевого трафика.</li>
 </ul>
-<h3 id="приемы-программирования-сетевых-приложений">2. <a href="lab02-api.html">Приемы программирования сетевых приложений</a></h3>
-<p>Повторение C++ (работа с памятью). Сборка приложений, использующий API сокетов.</p>
+<h3 id="приемы-программирования-сетевых-приложений">2. (16.02) <a href="lab02-api.html">Приемы программирования сетевых приложений</a></h3>
+<p>Повторение C++ (работа с памятью). Сборка приложений, использующих API сокетов.</p>
 <ul>
 <li>MinGW (<a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/7.2.0/threads-posix/sjlj/i686-7.2.0-release-posix-sjlj-rt_v5-rev1.7z">32 бита</a>, <a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/7.2.0/threads-posix/sjlj/x86_64-7.2.0-release-posix-sjlj-rt_v5-rev1.7z">64 бита</a>) — компилятор GCC 7.2 для Windows.</li>
 <li><a href="http://www.codeblocks.org/downloads/26">CodeBlocks</a> — легковесная IDE.</li>
 </ul>
-<h3 id="блокирующие-udp-сокеты">3. Блокирующие UDP-сокеты</h3>
+<h3 id="занятие-для-защит">  (02.03) Занятие для защит</h3>
+<h3 id="блокирующие-udp-сокеты">3. (16.03) Блокирующие UDP-сокеты</h3>
 <p>Простейший обмен короткими сообщениями по сети.</p>
 <ul>
-<li><a href="https://nmap.org/">Nmap</a> — набор программ для исследования и диагностики сети. Для Linux можно использовать <code>netcat</code> (BSD) и <code>nmap</code>.</li>
+<li><a href="https://nmap.org/">Nmap</a> — набор программ для исследования и диагностики сети. Для ЛР нужна <code>netcat</code> (<code>ncat</code>) — универсальный клиент и сервер TCP и UDP.</li>
 </ul>
-<p>Далее: TCP, двоичные протоколы, HTTP, криптография.</p>
+<h3 id="блокирующие-tcp-сокеты.-клиент-для-передачи-файлов">4. (23.03) Блокирующие TCP-сокеты. Клиент для передачи файлов</h3>
+<h3 id="блокирующие-tcp-сокеты.-сервер-для-передачи-файлов">5. (30.03) Блокирующие TCP-сокеты. Сервер для передачи файлов</h3>
+<h3 id="занятие-для-защит-1">  (06.04) Занятие для защит</h3>
+<h3 id="асинхронное-взаимодействие-на-базе-потоков">6. (13.04) Асинхронное взаимодействие на базе потоков</h3>
+<h3 id="неблокирующий-режим-работы-сокетов">7. (20.04) Неблокирующий режим работы сокетов</h3>
+<h3 id="занятие-для-защит-2">  (27.04) Занятие для защит</h3>
+<h3 id="текстовые-протоколы-http">8. (04.05) Текстовые протоколы (HTTP)</h3>
+<h3 id="серверы-web-приложений">9. (11.05) Серверы web-приложений</h3>
+<h3 id="криптография-и-tls">10. (18.05) Криптография и TLS</h3>
+<h3 id="занятие-для-защит-3">   (25.05) Занятие для защит</h3>
 <h1 id="литература">Литература</h1>
 <ul>
 <li><strong>В. Г. Олифер, Н. А. Олифер. Компьютерные сети. Принципы, технологии, протоколы. — 5-е изд.— СПб.: Питер, 2016. — 992 с. (<a href="https://opac.mpei.ru/index.php?url=/notices/index/211074/default">УДК 621.398 О-546</a>)</strong></li>
@@ -60,10 +70,9 @@
 </ul>
 <h1 id="связь">Связь</h1>
 <ul>
-<li>Дмитрий Козлюк, лектор и лаборант А-01-14: «<a href="https://vk.com/plushbeaver">ВКонтакте</a>», <a href="http://www.google.com/recaptcha/mailhide/d?k=01_uWea10RK7AzO-a9C2nBjg==&amp;c=nG5zSR4276ZYxX7ItHJb_A_Lzdt787hUjxLUG5R7rwY=">почта</a></li>
+<li><p>Дмитрий Козлюк, лектор и лаборант А-01-14: «<a href="https://vk.com/plushbeaver">ВКонтакте</a>», <a href="http://www.google.com/recaptcha/mailhide/d?k=01_uWea10RK7AzO-a9C2nBjg==&amp;c=nG5zSR4276ZYxX7ItHJb_A_Lzdt787hUjxLUG5R7rwY=">почта</a>.</p></li>
+<li><p>Борис Вишняков, лаборант А-02-14: «<a href="https://vk.com/zvinnyz">ВКонтакте</a>», <a href="http://www.google.com/recaptcha/mailhide/d?k=01KLcfsSrFyXTv3zRsddFxew==&amp;c=vtxI02xSbsmb6by9yirdMgL0fHIyAtLrG6-zn9Xmwv0=">почта</a>.</p></li>
 </ul>
-</body>
-</html>
     <hr/>
     <p>
 		Козлюк&nbsp;Д.&nbsp;А. для&nbsp;кафедры Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2018&nbsp;г.
@@ -83,3 +92,5 @@
             <a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="/study/courses/assets/images/orphus.gif" border="0" width="88" height="31" /></a>
 	    </span>
     </p>
+</body>
+</html>
