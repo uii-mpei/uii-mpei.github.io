@@ -1,0 +1,318 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Лабораторная работа № 4.  Клиент TCP для передачи файлов</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/study/courses/assets/styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Лабораторная работа № 4.  Клиент TCP для передачи файлов</h1>
+</div>
+<h4 id="версия-дляподготовки.-возможны-ошибки.-кзанятию-слегка-изменится." class="alert">Версия для подготовки. Возможны ошибки. К занятию слегка изменится.</h4>
+<h1 id="цель-работы">Цель работы</h1>
+<ul>
+<li>Научиться работать с потоковыми сокетами в блокирующем режиме.</li>
+<li>Изучить особенности потоковой передачи и двоичных протоколов.</li>
+</ul>
+<h1 id="задание">Задание</h1>
+<p>Написать программу-клиент, позволяющую скачивать файлы с сервера по простому двоичному протоколу. Тестовый сервер предоставляется готовым.</p>
+<h2 id="протокол">Протокол</h2>
+<p>Протокол является клиент-серверным, то есть взаимодействуют две программы: сервер одижает подключений и выдает список файлов и их содержимое, клиент подключается к серверу и запрашивает данные.</p>
+<p>В качестве транспорта (нижележащего уровня) протокол использует TCP, поскольку необходима надежная передача больших блоков данных, для которых дейтаграммы слишком малы и не предоставляют гарантий доставки (см. ниже).</p>
+<p>Протокол является двоичным, то есть данные передаются не в текстовом виде. Порядок байт для числовых полей — big endian (от старшего к младшему). Формат пакета представляет собой разновидность TLV (type, length, value — тип, длина, значение/данные):</p>
+<pre><code>длина (4 байта)     тип (1 байт)    данные (nnnnnnnn байтов)
+nn nn nn nn         tt              xx ...</code></pre>
+<p>Далее описаны сообщения протокола: формат запросов и ответов. Ответы следуют в том же порядке, что и запросы, и имеют тот же тип.</p>
+<h3 id="сообщение-об-ошибке">Сообщение об ошибке</h3>
+<p>Направляется сервером клиенту, если запрос не может быть выполнен. Содержит текст ошибки, который вместе с типом <code>ff</code> определяет длину. Пример (не найден файл):</p>
+<pre><code>00 00 00 11                 длина сообщения 17 = 1 + 16
+ff                          тип сообщения
+ F  i  l  e     n  o  t     текст ошибки (16 символов)
+    f  o  u  n  d  !</code></pre>
+<h3 id="получение-файла">Получение файла</h3>
+<h4 id="запрос">Запрос</h4>
+<p>Содержит имя файла, которое вместе с типом сообщения <code>00</code> определяет длину. Пример:</p>
+<pre><code>00 00 00 09                 длина сообшения 9 = 1 + 8
+00                          тип сообщения
+ f  i  l  e  .  t  x  t     имя файла (8 символов)</code></pre>
+<h4 id="ответ">Ответ</h4>
+<p>Содержит данные файла, которые вместе с типом сообщения <code>00</code> определяют длину. Пример:</p>
+<pre><code>00 00 00 14                         длина сообщения 20 = 1 + 19
+00                                  тип сообщения
+ C  o  n  t  e  n  t     o  f       данные файла (19 байт)
+ f  i  l  e  .  t  x  t</code></pre>
+<h3 id="получение-списка-файлов">Получение списка файлов</h3>
+<h4 id="запрос-1">Запрос</h4>
+<p>Длина всегда 1, тип <code>01</code>, дополнительных данных нет. То есть:</p>
+<pre><code>00 00 00 01     длина сообшения 1
+01              тип сообщения</code></pre>
+<h4 id="ответ-1">Ответ</h4>
+<p>Длина определяется содержимым, тип <code>01</code>. Содержимое состоит их последовательности имен файлов, каждое из которых состоит из длины имени (1 байт) и самого имени этой длины. Пример:</p>
+<pre><code>00 00 00 16                         длина сообщения 22 = 1 + (1 + 8) + (1 + 11)
+01                                  тип сообщения
+08                                  длина имени первого файла
+ f  i  l  e  .  t  x  t             имя первого файла
+0b                                  длина имени второго файла
+ a  n  o  t  h  e  r  .  j  p  g    имя второго файла</code></pre>
+<h1 id="задание-1">Задание</h1>
+<p>Потоковые сокеты (stream sockets) отличаются тем, что с точки зрения программиста передают не дейтаграммы (порции данных ограниченного размера), а байтовый поток, то есть отправитель записывает в сокет данные любыми порциями, а получатель вычитывает все байты в том же порядке, в котором их записывал отправитель. Этим определяются черты потоковых сокетов:</p>
+<ul>
+<li><p>Наличие соединения (connection-oriented): до начала передачи наобходимо выбрать адрес и порт партнера и установить соединение с ним. Традиционно участника, который инициирует установку соединения, называют <em>клиентом,</em> а участника, ожидающего входщих подключений — <em>сервером.</em> Далее все данные передаются между двумя участниками соединения.</p></li>
+<li><p>Надежная доставка данных (reliable communication): гарантируется, что либо будут доставлены все данные и по порядку, либо будет диагностирован разрыв соединения.</p></li>
+<li><p>Сохранение порядка сообщений (order preservation): получатель считывает байты данных в том же порядке, как они были отправлены, без изъятий и перестановок.</p></li>
+<li><p>Отсутствует сохранение границ сообщений (non message bounds-preserving): данные могут прийти иными порциями, нежели были отправлены. Например, если клиент отправил две порции по 400 байт, сервер может получить одну порцию в 800 байт или четыре порции по 200 байт.</p></li>
+</ul>
+<p>Потоковые сокеты работают обычно по протоколу TCP.</p>
+<p><a href="/study/courses/int/16/lab02_tcp.intro.pdf">Сжатое пособие</a> по особенностям работы и API потоковых сокетов.</p>
+<h2 id="установка-соединения">Установка соединения</h2>
+<ol class="example" style="list-style-type: decimal">
+<li><p>Создайте новый проект <code>lab04-tcp-client</code>. Подключите и инициализируйте бибилиотеку для работы с сокетами.</p></li>
+<li><p>Создайте потоковый сокет <code>channel</code>:</p>
+<pre><code>auto channel = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);</code></pre></li>
+<li><p>Реализуйте ввод адреса и порта в переменную <code>address</code> типа <code>sockaddr_in</code>.</p></li>
+<li><p>Добавьте в программу установку соединения с сервером:</p>
+<pre><code>const int result = ::connect(
+        channel, (const sockaddr*)&amp;address, sizeof(address).</code></pre></li>
+<li><p>Добавьте в программу закрытие соединения сразу после открытия:</p>
+<pre><code>::closesocket(channel);</code></pre></li>
+</ol>
+<p>При закрытии сокета установленное соединение разрывается и освобождаются связанные с сокетом ресурсы ОС, что экономит их. Над закрытым сокетом невозможны никакие операции API, поэтому вся описанная ниже работа с сокетом должна вестись <em>раньше</em> его закрытия.</p>
+<ol start="6" class="example" style="list-style-type: decimal">
+<li><p>Добавьте в программу обработку ошибок, которые могут возникнуть при вызове <code>socket()</code> и <code>connect()</code>.</p></li>
+<li><p>Проверьте работоспособность программы, запустив в качестве сервера <code>netcat</code> локально:</p>
+<pre><code>ncat -lkv 127.0.0.1 1234</code></pre>
+<p>Вывод своей программы и <code>netcat</code> занесите в отчет.</p></li>
+</ol>
+<ul>
+<li>Ключ <code>-l</code> (listen) запускает <code>netcat</code> в режиме приема подключений.</li>
+<li>Ключ <code>-k</code> (keep open) указывает <code>netcat</code> не завершаться после отключения клиента, а ждать новых подключений. Завершить ее можно через <em>Ctrl+C.</em></li>
+<li>Ключ <code>-v</code> (verbose) включает подробный вывод, в частности, без этого ключа <code>netcat</code> не сообщает, когда к ней подключился клиент.</li>
+<li>По умолчанию, без ключа <code>-u</code>, <code>netcat</code> работает по TCP, что и нужно.</li>
+</ul>
+<h2 id="прием-и-отправка-сообщений-произвольной-длины">Прием и отправка сообщений произвольной длины</h2>
+<p>Потоковые сокеты не гарантируют, что за один вызов <code>recv()</code> удастся принять блок данных любого размера, больше одного байта. Хотя для мелких блоков (например, для четырех байтов длины в протоколе, реализуемом в ЛР) наблюдать прием в несколько вызовов <code>recv()</code> маловероятно, для крупных блоков это естественно (например, при загрузке файла больше полутора килобайт. Надежные сетевые программы не должны пренебрегать этой особенностью потоковых сокетов ни к одном из случаев.</p>
+<p>Целесообразно реализовать функции для приема и передачи блока данных произвольного размера <code>size</code>:</p>
+<pre><code>int receive_some(SOCKET channel, void* data, size_t size);
+int send_some(SOCKET channel, const void* data, size_t size);</code></pre>
+<p>Для приема необходимо вести учет количества принятых байт:</p>
+<pre><code>int
+receive_some(SOCKET channel, void* data, size_t size) {
+    auto bytes = reinterpret_cast&lt;uint8_t*&gt;(data);
+    size_t bytes_received = 0;</code></pre>
+<p>До тех пор, пока не принято необходимое количество данных, требуется повторять вызов <code>recv()</code>, пытаясь считать все недостающие данные и разместить их в буфере, начиная с первой незанятой позиции:</p>
+<pre><code>    while (bytes_received &lt; size) {
+        int result = ::recv(
+                channel, &amp;bytes[bytes_received], size - bytes_received, 0);</code></pre>
+<p>В случае ошибки <code>recv()</code> возвращает отрицательное число или нуль, в этом случае продолжать прием невозможно. Если же возвращено положительное количество принятых байтов, его следует прибавить к счетчику принятых.</p>
+<pre><code>        if (result &lt;= 0) {
+            return result;
+        }
+        bytes_received += result;
+    }
+}</code></pre>
+<ol start="8" class="example" style="list-style-type: decimal">
+<li><p>В целях отладки же после отправки сообщения добавьте прием блока данных размером 12 байт (обработку ошибок — показ кода — напишите сами):</p>
+<pre><code>std::array&lt;char, 128&gt; data{};
+const int result = receive_some(channel, &amp;data[0], data.size());
+if (result &gt; 0) {
+    std::cout.write(&amp;data[0], result);
+}</code></pre></li>
+<li><p>Проверьте работу программы при помощи <code>netcat</code> и занесите в отчет вывод своей программы и вывод <code>necat</code>.</p>
+<ul>
+<li>Запустите <code>netcat</code> и подключитесь своей программой к нему.</li>
+<li>Из терминала <code>netcat</code> напишите сообщение: <code>hello world</code> <em>(Enter)</em> — строго 12 байт вместе с переводом строки. Убедитесь, что сообщение принимается программой.</li>
+<li>Удалите отладочный код из программы по завершении эксперимента.</li>
+</ul></li>
+<li><p>Реализуйте самостоятельно функцию для отправки блока данных произвольной длины:</p>
+<pre><code>int send_some(SOCKET channel, const void* data, size_t size);</code></pre></li>
+<li><p>В целях отладки после установки соединения добавьте отправку заготовленного сообщения (проверку ошибок — показ кода — напишите сами):</p>
+<pre><code>std::string message = &quot;hello from my app\n&quot;;
+int result = send_some(channel, &amp;message[0], message.size());</code></pre></li>
+<li><p>Проверьте работу программы при помощи <code>netcat</code> и занесите в отчет вывод своей программы и вывод <code>necat</code>.</p>
+<ul>
+<li>Запустите <code>netcat</code> и подключитесь своей программой к нему.</li>
+<li>Убедитесь, что сразу после подключения программы к <code>netcat</code> она отправляет сообщение, которое получается целиком.</li>
+<li>Удалите отладочный код из программы по завершении эксперимента.</li>
+</ul></li>
+</ol>
+<h2 id="получение-файлов">Получение файлов</h2>
+<p>Работа приложения происходит в цикле ввода команд и их обработки:</p>
+<pre><code>while (true) {
+    std::cerr &lt;&lt; &quot;&gt; &quot;;
+    std::string command;
+    std::cin &gt;&gt; command;
+
+    if (command == &quot;/quit&quot;) {
+        break;
+    }
+    else if (command == &quot;/get&quot;) {
+        std::string path;
+        std::cin &gt;&gt; path;
+        download(channel, path);
+    }
+    else {
+        std::cerr &lt;&lt; &quot;Commands:\n&quot;
+                &quot;\t/get &lt;file&gt;\n&quot;
+                &quot;\t/quit\n&quot;;
+    }
+}</code></pre>
+<p>Пользователь вводит <code>/quit</code>, чтобы выйти из программы, или <code>/get</code><em><code>файл</code></em>, чтобы скачать файл. Для простоты предполагается, что файлы находятся в текущем каталоге и пользователь вводит всегда относительные пути к ним.</p>
+<p>Функция <code>download()</code> отправляет запрос на загрузку файла и выполняет ее.</p>
+<pre><code>bool
+download(SOCKET channel, const std::string&amp; path) {</code></pre>
+<p>Алгоритм работы функции:</p>
+<ol style="list-style-type: decimal">
+<li>Сформировать и отправить запрос на файл.</li>
+<li>Принять размер и тип ответа.</li>
+<li>В зависимости от типа ответа:
+<ul>
+<li>если это ошибка (тип <code>ff</code>), вывести ее текст;</li>
+<li>если это содержимое файла (тип <code>00</code>), сохранить его;</li>
+<li>иначе сигнализировать о получении сообщения неожиданного типа.</li>
+</ul></li>
+</ol>
+<p>Размер запроса складывается из размера поля-типа (1 байт) и длины имени файла:</p>
+<pre><code>    uint32_t length = htonl(sizeof(Type) + path.size());
+    send_some(channel, &amp;length, sizeof(length));</code></pre>
+<p>Коды типов сообщений целесообразно занести в константы типа <code>Type</code>, размер которого совпадает с <code>uint8_t</code>. Это делается выше функции:</p>
+<pre><code>enum Type : uint8_t {
+    TYPE_GET = 0x00,
+    TYPE_LIST = 0x01,
+    TYPE_ERROR = 0xff
+};</code></pre>
+<p>Объявленные константы используются далее в функции <code>download()</code>:</p>
+<pre><code>    Type type = TYPE_GET;
+    send_some(channel, &amp;type, sizeof(type));</code></pre>
+<p>При отправке имени файла, хранящегося в переменной типа <code>std::string</code>, количество данных определяется не размером переменной, а длиной строки:</p>
+<pre><code>    send_some(channel, &amp;path[0], path.size());</code></pre>
+<p>Прием запускается сразу же после отправки:</p>
+<pre><code>    receive_some(channel, &amp;length, sizeof(length));
+    receive_some(channel, &amp;type, sizeof(type));</code></pre>
+<p>Порядок байт в принятом значении длины необходимо обратить из сетевого. Заодно же из <code>length</code> вычитается 1, чтобы осталось количество еще данных, которое осталось принять в данном сообщении:</p>
+<pre><code>    length = ntohl(length) - 1;</code></pre>
+<p>Обработка ответа выполняется в зависимости от его типа одной из функций, объявляемых до <code>download()</code> и реализуемых отдельно.</p>
+<pre><code>    switch (type) {
+    case TYPE_ERROR:
+        return process_error_response(channel, length - 1);
+    case TYPE_GET:
+        return process_get_response(channel, length - 1);
+    default:
+        return process_unexpected_response(channel, length, type);
+    }
+}</code></pre>
+<p>Для обработки сообщения об ошибке достаточно принять текст ошибки целиком и отобразить его:</p>
+<pre><code>bool
+process_error_response(SOCKET channel, uint32_t text_size) {
+    std::string text(text_size + 1, &#39;\0&#39;);
+    receive_some(channel, &amp;text[0], text_size);
+    std::cerr &lt;&lt; &quot;Server error: &quot; &lt;&lt; text &lt;&lt; &#39;\n&#39;;
+    return true;
+}</code></pre>
+<p>В случае прибытия сообщения неожиданного типа целесообразно печатать максимум информации для отладки: полное содержимое прибывшего сообщения. Для этого можно воспользоваться функцией <code>hex_dump()</code> из ЛР № 2:</p>
+<pre><code>bool
+process_unexpected_message(SOCKET channel, uint32_t length, Type type) {
+    std::cerr &lt;&lt; &quot;Protocol error: unexpected message &quot;
+            &lt;&lt; &quot;(type=&quot; &lt;&lt; (int)type &lt;&lt; &quot;, length=&quot; &lt;&lt; length &lt;&lt; &quot;)\n&quot;;
+
+    std::vector&lt;uint8_t&gt; data(length - 1);
+    receive_some(channel, &amp;data[0], data.size());
+
+    std::cerr &lt;&lt; &quot;Payload dump:\n&quot;;
+    hex_dump(&amp;data[0], data.size());
+    return true;
+}</code></pre>
+<p>Для загрузки файла принципиально возможно применить <code>read_some()</code>, однако нерационально: файл потенциально большого размера придется целиком загружать в буфер в памяти. Целесообразен иной подход: считывать данные ограниченными порциями из сокета и сразу же записывать очередную порцию в файл. Затраты памяти при этом (примерно размер порции) не зависят от размера файла.</p>
+<pre><code>void
+process_get_response(SOCKET channel, uint32_t file_size) {
+    std::clog &lt;&lt; &quot;Downloading &quot; &lt;&lt; file_size &lt;&lt; &quot; bytes...\n&quot;;
+
+    std::ofstream output(path);
+
+    uint32_t bytes_received = 0;
+    while (bytes_received &lt; file_size) {
+        std::array&lt;char, 4096&gt; buffer;
+        const int result = ::recv(channel, &amp;buffer[0], buffer.size(), 0);
+        if (result &lt;= 0) {
+            return false;
+        }
+        output.write(&amp;buffer[0], result);
+    }
+    return true;
+}</code></pre>
+<ol start="13" class="example" style="list-style-type: decimal">
+<li><p>Добавьте в функцию <code>download_file()</code> и во вспомогательные функции обработку ошибок: проверки результатов <code>receive_some()</code> и <code>send_some()</code>. В случае ошибок необходимо печатать пояснение (суть ошибки, ее код) и возвращать <code>false</code>.</p></li>
+<li><p>В основном цикле программы добавьте проверку результата <code>download_file()</code>: есть произошла критическая ошибка (результат <code>false</code>), цикл нужно прервать.</p></li>
+<li><p>Проверьте работу программы. Подключившись к тестовому серверу, скачайте в рамках одного сеанса:</p>
+<ul>
+<li>маленький текстовый файл <code>tiny.txt</code>;</li>
+<li>крупный файл-изображение <code>picture.jpg</code>;</li>
+<li>исполняемый файл тестового сервера <code>lab04-tcp-server</code> (Linux) или <code>lab04-tcp-server</code> (Windows);</li>
+<li>несуществующий файл <code>nonexistent</code> (сервер вернет ошибку, которая должна быть обработана).</li>
+</ul>
+<p>Убедитесь, что файлы доставлены без повреждений (открываются штатно). Занесите в отчет вывод своей программы в процессе.</p></li>
+</ol>
+<p>Адрес и порт тестового сервера уточните у преподавателя. После скачивания самого тестового сервера можно запускать его локально.</p>
+<h2 id="получение-списка-файлов-1">Получение списка файлов</h2>
+<ol start="16" class="example" style="list-style-type: decimal">
+<li><p>Добавьте в основной цикл программы поддержку новой команды <code>/list</code>:</p>
+<pre><code>else if (command == &quot;/list&quot;) {
+    list_files(channel);
+}</code></pre></li>
+</ol>
+<p>Функция <code>list_files()</code> принципиально может быть устроена так же, как <code>download_file()</code>: формировать запрос и получать в ответ данные, сообщение об ошибке или сообщение непредвиденного типа.</p>
+<pre><code>bool
+list_files(SOCKET channel) {</code></pre>
+<ol start="17" class="example" style="list-style-type: decimal">
+<li><p>Сформируйте и отправьте запрос на получение списка файлов в соответствии с протоколом: четыре байта длины, равной 1, и один байт типа.</p></li>
+<li><p>Примите длину ответа и его тип. Ответ-сообщения об ошибке и ответ непредвиденного типа обработайте так же, как в функции <code>download_file()</code>.</p></li>
+<li><p>Выполните разбор ответа типа <code>TYPE_LIST</code>, печатая имена файлов на экране.</p></li>
+</ol>
+<p>В целях тренировки разберем ответ так: считаем все оставшееся сообщение и будем вычленять отдельные имена файлов, анализируя полученный байтовый массив. Это более эффективно, чем последовательные вызовы <code>recv()</code> (каждый вызов — обращение к ОС), и практично: например, точно так же устроена часть протокола установки защищенного соединения TLS, используемого для HTTPS.</p>
+<pre><code>bool
+process_list_response(SOCKET channel, uint32_t data_length) {
+    std::vector&lt;uint8_t&gt; data(length - 1);
+    receive_some(channel, &amp;data[0], data.size());</code></pre>
+<p>Заведем указатель <code>entry</code> на данные, которые предстоит разобрать. Перед каждой итерацией цикла, кроме последней, <code>entry</code> указывает на байт, содержащий длину имени очередного файла. В конце <code>entry</code> станет указывать за пределы массива данных, и цикл прервется по условию.</p>
+<pre><code>    const uint8_t* entry = &amp;data[0];
+    while (entry &lt;= &amp;data.back()) {</code></pre>
+<p>Чтобы считать через <code>entry</code> длину массива, достаточно разыменовать <code>entry</code>. Затем <code>entry</code> увеличивается (сдвигается) на длину прочитанных данных — на 1. Если бы длина имени хранилась не в одном, а в нескольких байтах, перед разыменованием потребовалось бы приведение типов.</p>
+<pre><code>        const auto entry_length = *entry;
+        entry++;</code></pre>
+<p>Считывание имени файла заключается лишь в приведении типов: <code>entry</code> указывает на байты, необходимо же рассмотреть их как символы. Затем <code>entry</code> сдвигается на количество символов, то есть к началу следующей записи.</p>
+<pre><code>        const auto file_name = reinterpret_cast&lt;const char*&gt;(entry);
+        entry += entry_length;</code></pre>
+<p>Для вывода имени файла используется <code>std::cout.write()</code>, а не обычный вывод через <code>&lt;&lt;</code>, потому что в конце области, на которую указывает <code>file_name</code>, в пакете нет завершающего <code>'\0'</code>, и оператор <code>&lt;&lt;</code> продолжил бы выводить данные за пределами <code>entry_length</code>.</p>
+<pre><code>        std::cout.write(file_name, entry_length);
+        std::cout &lt;&lt; &#39;\n&#39;;
+    }
+    return true;
+}</code></pre>
+<ol start="20" class="example" style="list-style-type: decimal">
+<li><p>Добавьте в <code>list_files()</code>, <code>process_list_response()</code> и <code>main()</code> проверки ошибок, аналогичные пункту 13.</p></li>
+<li><p>Проверьте работу программы, запросив список файлов у тестового сервера, указанного преподавателем в пункте 15. Занесите полученный список в отчет.</p></li>
+</ol>
+    <hr/>
+    <p>
+		Козлюк&nbsp;Д.&nbsp;А. для&nbsp;кафедры Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2018&nbsp;г.
+
+        <span id="buttons">
+            <!--LiveInternet counter--><script type="text/javascript"><!--
+            document.write('<a href="http://www.liveinternet.ru/click" '+
+            'target=_blank><img src="http://counter.yadro.ru/hit?t52.1;r'+
+            escape(document.referrer)+((typeof(screen)=='undefined')?'':
+            ';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
+            ';i'+escape('Жж'+document.title.substring(0,80))+';'+Math.random()+
+            '" alt="" title="LiveInternet: показано число просмотров и посетителей за 24 часа" '+
+            'border=0 width=88 height=31 id="counter"><\/a>')//--></script><!--/LiveInternet-->
+
+            <script type="text/javascript" src="/study/courses/assets/scripts/orphus.js"></script>
+            <a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="/study/courses/assets/images/orphus.gif" border="0" width="88" height="31" /></a>
+	    </span>
+    </p>
+</body>
+</html>
