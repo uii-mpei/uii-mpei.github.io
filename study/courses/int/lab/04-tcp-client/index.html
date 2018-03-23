@@ -12,7 +12,6 @@
 <div id="header">
 <h1 class="title">Лабораторная работа № 4.  Клиент TCP для передачи файлов</h1>
 </div>
-<h4 id="версия-дляподготовки.-возможны-ошибки.-кзанятию-слегка-изменится." class="alert">Версия для подготовки. Возможны ошибки. К занятию слегка изменится.</h4>
 <h1 id="цель-работы">Цель работы</h1>
 <ul>
 <li>Научиться работать с потоковыми сокетами в блокирующем режиме.</li>
@@ -74,13 +73,15 @@ ff                          тип сообщения
 <li><p>Создайте потоковый сокет <code>channel</code>:</p>
 <pre><code>auto channel = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);</code></pre></li>
 <li><p>Реализуйте ввод адреса и порта в переменную <code>address</code> типа <code>sockaddr_in</code>.</p></li>
-<li><p>Добавьте в программу установку соединения с сервером:</p>
+<li><p>Добавьте в программу установку соединения с сервером при помощи функции <a href="https://msdn.microsoft.com/de-de/library/windows/desktop/ms737625(v=vs.85).aspx"><code>connect()</code></a>:</p>
 <pre><code>const int result = ::connect(
-        channel, (const sockaddr*)&amp;address, sizeof(address).</code></pre></li>
+        channel, (const sockaddr*)&amp;address, sizeof(address));</code></pre></li>
+</ol>
+<ol start="5" class="example" style="list-style-type: decimal">
 <li><p>Добавьте в программу закрытие соединения сразу после открытия:</p>
 <pre><code>::closesocket(channel);</code></pre></li>
 </ol>
-<p>При закрытии сокета установленное соединение разрывается и освобождаются связанные с сокетом ресурсы ОС, что экономит их. Над закрытым сокетом невозможны никакие операции API, поэтому вся описанная ниже работа с сокетом должна вестись <em>раньше</em> его закрытия.</p>
+<p>При закрытии сокета установленное соединение разрывается и освобождаются связанные с сокетом ресурсы ОС, что экономит их. Над закрытым сокетом невозможны никакие операции API, поэтому вся описанная ниже работа с сокетом должна вестись <em>раньше</em> его закрытия. Только в Windows эта функция называется <a href="https://msdn.microsoft.com/de-de/library/windows/desktop/ms737582(v=vs.85).aspx"><code>closesocket()</code></a>, POSIX вместо нее использует <code>close()</code>.</p>
 <ol start="6" class="example" style="list-style-type: decimal">
 <li><p>Добавьте в программу обработку ошибок, которые могут возникнуть при вызове <code>socket()</code> и <code>connect()</code>.</p></li>
 <li><p>Проверьте работоспособность программы, запустив в качестве сервера <code>netcat</code> локально:</p>
@@ -94,6 +95,7 @@ ff                          тип сообщения
 <li>По умолчанию, без ключа <code>-u</code>, <code>netcat</code> работает по TCP, что и нужно.</li>
 </ul>
 <h2 id="прием-и-отправка-сообщений-произвольной-длины">Прием и отправка сообщений произвольной длины</h2>
+<p>Отправка и прием данных из потоковых советов выполняется функциями <a href="https://msdn.microsoft.com/de-de/library/windows/desktop/ms740149(v=vs.85).aspx"><code>send()</code></a> и <a href="https://msdn.microsoft.com/de-de/library/windows/desktop/ms740121(v=vs.85).aspx"><code>recv()</code></a>. Их интерфейс подобен соответственно <code>sendto()</code> и <code>recvfrom()</code> дейтаграммных сокетов с тем отличием, что адреса узлов фиксированы соединением, и при каждом вызове их указывать не требуется. Однако, заметно отличается поведение, и следовательно, применение этих пар функций.</p>
 <p>Потоковые сокеты не гарантируют, что за один вызов <code>recv()</code> удастся принять блок данных любого размера, больше одного байта. Хотя для мелких блоков (например, для четырех байтов длины в протоколе, реализуемом в ЛР) наблюдать прием в несколько вызовов <code>recv()</code> маловероятно, для крупных блоков это естественно (например, при загрузке файла больше полутора килобайт. Надежные сетевые программы не должны пренебрегать этой особенностью потоковых сокетов ни к одном из случаев.</p>
 <p>Целесообразно реализовать функции для приема и передачи блока данных произвольного размера <code>size</code>:</p>
 <pre><code>int receive_some(SOCKET channel, void* data, size_t size);
@@ -101,7 +103,7 @@ int send_some(SOCKET channel, const void* data, size_t size);</code></pre>
 <p>Для приема необходимо вести учет количества принятых байт:</p>
 <pre><code>int
 receive_some(SOCKET channel, void* data, size_t size) {
-    auto bytes = reinterpret_cast&lt;uint8_t*&gt;(data);
+    auto bytes = reinterpret_cast&lt;char*&gt;(data);
     size_t bytes_received = 0;</code></pre>
 <p>До тех пор, пока не принято необходимое количество данных, требуется повторять вызов <code>recv()</code>, пытаясь считать все недостающие данные и разместить их в буфере, начиная с первой незанятой позиции:</p>
 <pre><code>    while (bytes_received &lt; size) {
@@ -197,9 +199,9 @@ download(SOCKET channel, const std::string&amp; path) {</code></pre>
 <p>Обработка ответа выполняется в зависимости от его типа одной из функций, объявляемых до <code>download()</code> и реализуемых отдельно.</p>
 <pre><code>    switch (type) {
     case TYPE_ERROR:
-        return process_error_response(channel, length - 1);
+        return process_error_response(channel, length);
     case TYPE_GET:
-        return process_get_response(channel, length - 1);
+        return process_get_response(channel, path, length);
     default:
         return process_unexpected_response(channel, length, type);
     }
@@ -218,7 +220,7 @@ process_unexpected_message(SOCKET channel, uint32_t length, Type type) {
     std::cerr &lt;&lt; &quot;Protocol error: unexpected message &quot;
             &lt;&lt; &quot;(type=&quot; &lt;&lt; (int)type &lt;&lt; &quot;, length=&quot; &lt;&lt; length &lt;&lt; &quot;)\n&quot;;
 
-    std::vector&lt;uint8_t&gt; data(length - 1);
+    std::vector&lt;uint8_t&gt; data(length);
     receive_some(channel, &amp;data[0], data.size());
 
     std::cerr &lt;&lt; &quot;Payload dump:\n&quot;;
@@ -226,8 +228,9 @@ process_unexpected_message(SOCKET channel, uint32_t length, Type type) {
     return true;
 }</code></pre>
 <p>Для загрузки файла принципиально возможно применить <code>read_some()</code>, однако нерационально: файл потенциально большого размера придется целиком загружать в буфер в памяти. Целесообразен иной подход: считывать данные ограниченными порциями из сокета и сразу же записывать очередную порцию в файл. Затраты памяти при этом (примерно размер порции) не зависят от размера файла.</p>
-<pre><code>void
-process_get_response(SOCKET channel, uint32_t file_size) {
+<pre><code>bool
+process_get_response(
+        SOCKET channel, const std::string&amp; pathm uint32_t file_size) {
     std::clog &lt;&lt; &quot;Downloading &quot; &lt;&lt; file_size &lt;&lt; &quot; bytes...\n&quot;;
 
     std::ofstream output(path);
@@ -240,6 +243,7 @@ process_get_response(SOCKET channel, uint32_t file_size) {
             return false;
         }
         output.write(&amp;buffer[0], result);
+        bytes_received += result;
     }
     return true;
 }</code></pre>
@@ -274,7 +278,7 @@ list_files(SOCKET channel) {</code></pre>
 <p>В целях тренировки разберем ответ так: считаем все оставшееся сообщение и будем вычленять отдельные имена файлов, анализируя полученный байтовый массив. Это более эффективно, чем последовательные вызовы <code>recv()</code> (каждый вызов — обращение к ОС), и практично: например, точно так же устроена часть протокола установки защищенного соединения TLS, используемого для HTTPS.</p>
 <pre><code>bool
 process_list_response(SOCKET channel, uint32_t data_length) {
-    std::vector&lt;uint8_t&gt; data(length - 1);
+    std::vector&lt;uint8_t&gt; data(length);
     receive_some(channel, &amp;data[0], data.size());</code></pre>
 <p>Заведем указатель <code>entry</code> на данные, которые предстоит разобрать. Перед каждой итерацией цикла, кроме последней, <code>entry</code> указывает на байт, содержащий длину имени очередного файла. В конце <code>entry</code> станет указывать за пределы массива данных, и цикл прервется по условию.</p>
 <pre><code>    const uint8_t* entry = &amp;data[0];
