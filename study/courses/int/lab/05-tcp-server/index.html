@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Лабораторная работа № 5.  Сервер TCP для пердачи файлов</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/study/courses/assets/styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Лабораторная работа № 5.  Сервер TCP для пердачи файлов</h1>
+</div>
+<h1 id="цель-работы">Цель работы</h1>
+<p>Научиться создавать серверы TCP в блокирующем режиме работы сокетов.</p>
+<h1 id="задание">Задание</h1>
+<p>Реализовать сервер <a href="../04-tcp-client">протокола обмена файлами из ЛР № 4</a>.</p>
+<p>После запуска сервер требует ввода адреса и порта для привязки и приема входящих подключений. Затем сервер бесконечно принимает новое подключение и обслуживает запросы клиента до его отсоединения (то есть обслуживается один клиент за раз).</p>
+<h1 id="выполнение-работы">Выполнение работы</h1>
+<ol class="example" style="list-style-type: decimal">
+<li>Создайте новый проект <code>lab05-tcp-server</code>, подключите необходимые библиотеки для работы с API сокетов. Для Windows инициализируйте API.</li>
+</ol>
+<h2 id="прием-подключений">Прием подключений</h2>
+<p>Сервер TCP работает по более сложной схеме, чем клиент (см. ту же <a href="../../16/lab02_tcp.intro.pdf">презентацию</a>, что в ЛР № 4):</p>
+<ol style="list-style-type: decimal">
+<li>Создается сокет-слушатель входящих подключений при помощи <code>socket()</code>. Изначально он ничем не отличается от сокета-передатчика, как в клиенте.</li>
+<li>Сокет привязывается к адресу и порту функцией <code>bind()</code>.</li>
+<li>Сокет переводится в режим слушателя функцией <code>listen()</code>.</li>
+<li>Входящее подключение принимается функцией <code>accept()</code>. При этом создается сокет-передатчик для данных принятого соединения.</li>
+<li>Через сокет-передатчик ведется обмен данными с удаленным узлом стандартными фнукциями <code>send()</code> и <code>recv()</code>.</li>
+<li>Сокет-передатчик закрывается функцией <code>closesocket()</code> или <code>close()</code>.</li>
+<li>Сокет-слушатель может принять новое подключение, вернувшись к пункту 4; либо оо может быть закрыт вызовом <code>closesocket()</code> или <code>close()</code>.</li>
+</ol>
+<p>В смысле ресурсов сокет-слушатель соответствует одному порту, через который клиенты могут подключаться к приложению, а сокет-передатчик — одному соединению. В простейшей реализации этой ЛР используется только один сокет-передатчик за раз, но их может быть много и они могут работать параллельно (ЛР № 6—7).</p>
+<ol start="2" class="example" style="list-style-type: decimal">
+<li><p>Создайте сокет-слушатель:</p>
+<pre><code>auto listener = ::socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);</code></pre></li>
+<li><p>При помощи функции <code>ask_endpoint()</code> из предыдущих ЛР запросите адрес и порт для привязки и привяжите к ним сокет функцией <code>bind()</code>.</p></li>
+<li><p>Переведите сокет в режим слушателя:</p>
+<pre><code>::listen(listener, 3)</code></pre></li>
+</ol>
+<p>Второй параметр [<code>listen()</code>][msdn/listen] — размер очереди входящих соединений. Он важен, если в то время, пока сервер обслуживает одного клиента (то есть пока не вызвана <code>accept()</code>) попытаются присоединиться новые. До трех первых из них станут в очередь на подключение (ОС проведет само подключение, но не позволит обмениваться данными), прочие сразу получат ошибку подключения. Максимально длинная очередь обозначается константой <code>SOMAXCONN</code>.</p>
+<p>Вызов [<code>accept()</code>][msdn/accept] для принятия нового подключения — блокирующий, то есть выполнение программы останавливается на нем, пока извне не попытается подключиться клиент. Помимо сокета-слушателя <code>accept()</code> принимает указатель на адрес и на размер адреса подключившегося клиента, полностью аналогично функции <code>recvfrom()</code> с ее адресом отправителя. При ошибке <code>accept()</code> возвращает <code>INVALID_SOCKET</code> (Windows) или <code>-1</code> (*nix).</p>
+<ol start="5" class="example" style="list-style-type: decimal">
+<li><p>В бесконечном цикле ведите прием подключений:</p>
+<pre><code>while (true) {
+    auto channel = ::accept(listener, nullptr, nullptr);
+
+    std::clog &lt;&lt; &quot;info: client connected\n&quot;;
+    serve_requests(channel);
+
+    ::closesocket(channel);
+    std::clog &lt;&lt; &quot;info: client disconnected\n&quot;;
+}</code></pre></li>
+<li><p>Добавьте обработку ошибок <code>accept()</code> — прерывайте цикл при ошибке.</p></li>
+<li><p>Добавьте получение адреса подключившегося клиента и его печать перед вызовом <code>serve_requests()</code>, как в ЛР № 3 для <code>recvfrom()</code>.</p></li>
+<li><p>Добавьте закрытие сокета после окончания цикла:</p>
+<pre><code>::closesocket(listener);</code></pre></li>
+<li><p>Проверьте работу программы — ее способность принимать подключения.</p>
+<ul>
+<li>Уберите цикл, но не его тело, то есть принимайте одно подключение за один сеанс работы программы.</li>
+<li><p>Временно замените вызов <code>serve_requests()</code> на прием единственного байта:</p>
+<pre><code>char byte;
+recv(channel, &amp;byte, sizeof(byte), 0);</code></pre></li>
+<li>Запустите программу, привяжите ее к адресу 127.0.0.1 и порту 1234.</li>
+<li><p>При помощи netcat присоединитесь к ней:</p>
+<pre><code>nc -nv 127.0.0.1 1234</code></pre></li>
+<li><p>Отправьте единственный байт (нажми <em>Enter</em> в netcat), чтобы завершить соединение (сервер считате один байт, завершит <code>recv()</code> и вызовет <code>closesocket()</code>).</p></li>
+</ul></li>
+</ol>
+<h2 id="обслуживание-запросов-и-обработка-ошибок">Обслуживание запросов и обработка ошибок</h2>
+<p>Обслуживание запросов — еще один цикл:</p>
+<pre><code>void
+serve_requests(SOCKET channel) {
+    while (serve_request(channel) {}
+}</code></pre>
+<p>При обслуживании одного запроса нужно считать размер и тип сообщения, затем действовать и формировать ответ в зависимости от типа:</p>
+<pre><code>bool send_error(SOCKET channel, const std::string&amp; error);
+bool serve_file(SOCKET channel, uint32_t path_length);
+bool serve_list(SOCKET channel);
+bool process_unexpected_message(SOCKET channel, uint32_t length, Type type);
+
+bool
+serve_request(SOCKET channel) {
+    uint32_t length;
+    receive_some(client, &amp;length, sizeof(length));
+
+    length = ::ntohl(length);
+
+    Type type;
+    receive_some(client, &amp;type, sizeof(type));
+
+    switch (type) {
+    case TYPE_GET:
+        return serve_file(client, length - 1);
+    case TYPE_LIST:
+        return serve_list(client);
+    default:
+        return process_unexpected_message(client, length, type);
+    }
+}</code></pre>
+<p>Используются <code>receive_some()</code> и <code>send_some()</code> из ЛР № 4.</p>
+<p>Функция <code>server_request()</code> должна возвращать <code>true</code>, если запрос успешно обслужен, и <code>false</code> в противном случае — при ошибках или отключении клиента.</p>
+<ol start="10" class="example" style="list-style-type: decimal">
+<li><strong>Здесь и далее</strong> в указаниях обработка ошибок опущена — необходимо добавлять ее ко всему коду лабораторной работы.</li>
+</ol>
+<p>Сетевые приложения должны работать корректно при любых прибывающих данных. В данном случае известно, что длина запроса клиента не превышает 300 байтов (самый длинный запрос содержит имя файла, которое протокол же ограничивает 255 байтами). Целесообразно вынести это значение в константу за пределами функций:</p>
+<pre><code>const uint32_t MAX_MESSAGE_LENGTH = 300;</code></pre>
+<ol start="11" class="example" style="list-style-type: decimal">
+<li><p>После преобразования длины добавьте ее проверку. В случае нарушения вызывайте функцию, отправляющую клиенту сообщение об ошибке:</p>
+<pre><code>bool send_error(SOCKET channel, const std::string&amp; message);</code></pre></li>
+<li><p>Реализуйте <code>send_error()</code>.</p></li>
+</ol>
+<p>Длина сообщения с ошибкой складывается из длины типа (1 байта) и длины сообщения. Длина передается в сетевом порядке байтов.</p>
+<pre><code>bool
+send_error(SOCKET channel, const std::string&amp; error) {
+    const uint32_t length = ::htonl(sizeof(Type) + error.size());
+    send_some(channel, &amp;length, sizeof(length));</code></pre>
+<p>У сообщений об ошибке специальный тип, и клиенты из ЛР № 4 умеют его обрабатывать:</p>
+<pre><code>    const Type type = TYPE_ERROR;
+    send_some(channel, &amp;type, sizeof(type));</code></pre>
+<p>Содержимое сообщения - собственно текст ошибки:</p>
+<pre><code>    send_some(channel, &amp;error[0], error.size());
+    return true;
+}</code></pre>
+<ol start="13" class="example" style="list-style-type: decimal">
+<li>Реализуйте функцию <code>process_unexpected_message()</code> — точно такую же, как <code>process_unexpected_response()</code> из ЛР № 4. В ее реализации потреюуется и <code>hex_dump()</code> из ЛР № 2.</li>
+</ol>
+<h2 id="передача-файлов">Передача файлов</h2>
+<p>Ключевая функция <code>send_file()</code> обслуживает запрос на загрузку файла. Она зеркальна функции <code>download_file()</code> из ЛР № 4.</p>
+<ol start="14" class="example" style="list-style-type: decimal">
+<li>Напишите функцию <code>send_file()</code> с обработкой возможных ошибок (которая не делается в приведенном ниже коде).</li>
+</ol>
+<p>Имя файла для загрузки не передается, а принимается. Буфер для приема в виде вектора заполняется нулями и на один байт больше, чем нужно. Дополнительный байт не заполняется и остается <code>'\0'</code>, таким образом указатель на начало вектора является указателем на завершающуюся нулем строку, т. н. строку C.</p>
+<pre><code>bool
+serve_file(SOCKET channel, uint32_t path_length) {
+    std::vector&lt;char&gt; path(path_length + 1, &#39;\0&#39;);
+    receive_some(channel, &amp;path[0], path_length);</code></pre>
+<p>Полученная строка C используется для открытия файла. В случае любых ошибок при открытии клиенту сообщается о невозможности доступа к файлу.</p>
+<pre><code>    std::fstream input(&amp;path[0], std::ios::in | std::ios::binary);
+    if (!input) {
+        return send_error(channel, &quot;file is inaccessible&quot;);
+    }</code></pre>
+<p>При работе с файлом есть <em>текущая позиция чтения</em> из него: при открытии она 0, если прочитать 10 символов, она станет 10, а если еще 10 — станет 20 и т. д. Можно узнать позицию методом <code>tellg()</code> и изменить ее методом <code>seekg()</code>. Чтобы определить размер файла, можно сместиться к его концу (на нулевое смещение от конца), узнать эту позицию и вернуться в начало:</p>
+<pre><code>    input.seekg(0, std::ios::end);
+    const auto size = input.tellg();
+    input.seekg(0, std::ios::beg);</code></pre>
+<p>Размер ответа — сумма размера типа (1 байт) и размера файла (<code>size</code> байтов); передается в сетевом порядке байт:</p>
+<pre><code>    const uint32_t length = ::htonl(sizeof(Type) + size);
+    send_some(channel, &amp;length, sizeof(length));
+
+    Type type = TYPE_GET;
+    send_some(channel, &amp;type, sizeof(type));</code></pre>
+<p>Чтение файла и отправка его содержимого по сети происходит аналогично приему: из файла читаются блоки фиксированного размера и отправляются по сети, пока не будет достигнут конец файла. Таким образом возможно отправлять даже очень крупные файлы, загружая в память лишь небольшие их фрагменты.</p>
+<pre><code>    while (!input.eof()) {
+        std::array&lt;char, 4096&gt; buffer;
+        auto bytes_to_send = input.readsome(&amp;buffer[0], buffer.size());
+        send_some(channel, &amp;buffer[0], bytes_to_send);
+    }
+    return true;
+}</code></pre>
+<h2 id="отправка-списка-файлов">Отправка списка файлов</h2>
+<p>Получение списка файлов в каталоге делается по-разному в зависимости от ОС. Готовая функция <code>list_files()</code> дана в <a href="listing.h"><code>listing.h</code></a>, она работает в Windows и Linux и возвращается вектор строк-имен файлов:</p>
+<pre><code>std::vector&lt;std::string&gt; list_files();</code></pre>
+<p>Файл предлагается сохранить в каталог своего проекта и подключить к программе:</p>
+<pre><code>#include &quot;listing.h&quot;</code></pre>
+<p>Функция <code>list_files()</code> выдает список только обычных файлов (не скрытых, не директорий) в текущем каталоге. Гарантируется, что ни одно имя не будет длиннее 255 символов (байтов).</p>
+<p>Список файлов получается в начале обработки запроса. Если он пуст, считается, что его по каким-то причинам не удалось получить (случай, когда рабочий каталог программы пуст, не рассматривается).</p>
+<pre><code>bool
+serve_list(SOCKET channel) {
+    const auto files = list_files();
+    if (files.empty()) {
+        return send_error(channel, &quot;unable to enumerate files&quot;);
+    }</code></pre>
+<p>Клиент принимал все содержимое сообщения за раз и разбирал его байт за байтом. Технически сервер не обязан так делать, можно отправлять длину и имя каждого файла отдельным вызовом <code>send_some()</code>, а потоковая природа сокета скроет это. Однако для тренировки в формировании двоичных сообщений полезнее создать ответ единым блоком <code>body</code> и отправить его сразу.</p>
+<pre><code>    std::vector&lt;uint8_t&gt; body;
+
+    for (const auto&amp; file : files) {</code></pre>
+<p>Переменная <code>file</code> содержит строку-имя очередного файла. К динамическому массиву <code>body</code> необходимо добавить один байт-длину <code>file</code> (типа <code>uint8_t</code>) и все байты строки <code>file</code>. Для этого необходимо увеличить длину <code>body</code>: новая длина равна сумме старой длины, одного байта и длины строки <code>file</code>.</p>
+<pre><code>        const auto old_body_size = body.size();
+        body.resize(old_body_size + sizeof(uint8_t) + file.length());</code></pre>
+<p>После изменения размера <code>body</code> состоит из двух участков: * от <code>&amp;body[0]</code> до <code>&amp;body[old_body_length - 1]</code> содержит данные, которые уже были в <code>body</code> до изменения размера; * от <code>&amp;body[old_body_size]</code> и до конца предназначен для записи новых данных.</p>
+<p>Значение <code>old_body_size</code> необходимо было сохранить до изменения размера, после этого его уже нельзя было бы вычислить — деление массива существует только с точки зрения логики программы, а не самого массива.</p>
+<p>Записывать данные во вторую область последовательно удобно с помощью указателя на первый из еще не использованных байтов, названный <code>place</code>:</p>
+<pre><code>        uint8_t* place = &amp;body[old_body_size];</code></pre>
+<p>Сначала в тот байт, на который указывает <code>place</code>, записывается длина имени очередного файла (функция <code>list_files()</code> гарантирует, что для любой из длин хватит восьми бит).</p>
+<pre><code>        *place = file.length();</code></pre>
+<p>Указатель <code>place</code> увеличивается на количество записанных данных, т. е. на один.</p>
+<pre><code>        place++;</code></pre>
+<p>Следующим шагом все символы <code>file</code> копируются в ту (свободную) область памяти, на которую указывает <code>place</code>:</p>
+<pre><code>        std::memcpy(place, &amp;file[0], file.length());
+    }</code></pre>
+<p>Если бы после этого требовалось бы записывать еще какие-либо данные через <code>place</code>, следовало бы увеличить <code>place</code> на количество записанных данных, т. е. на <code>file.length()</code>.</p>
+<p>Длина сообщения, сложенная из размера типа и размера файла, тип и содержимое файла отправляются последовательно в качестве ответа клиенту:</p>
+<pre><code>    const uint32_t length = ::htonl(sizeof(Type) + body.size());
+    send_some(channel, &amp;length, sizeof(length));
+
+    Type type = TYPE_LIST;
+    send_some(channel, &amp;type, sizeof(type));
+
+    send_some(channel, &amp;body[0], body.size());
+    return true;
+}</code></pre>
+    <hr/>
+    <p>
+		Козлюк&nbsp;Д.&nbsp;А. для&nbsp;кафедры Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2018&nbsp;г.
+
+        <span id="buttons">
+            <!--LiveInternet counter--><script type="text/javascript"><!--
+            document.write('<a href="http://www.liveinternet.ru/click" '+
+            'target=_blank><img src="http://counter.yadro.ru/hit?t52.1;r'+
+            escape(document.referrer)+((typeof(screen)=='undefined')?'':
+            ';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
+            ';i'+escape('Жж'+document.title.substring(0,80))+';'+Math.random()+
+            '" alt="" title="LiveInternet: показано число просмотров и посетителей за 24 часа" '+
+            'border=0 width=88 height=31 id="counter"><\/a>')//--></script><!--/LiveInternet-->
+
+            <script type="text/javascript" src="/study/courses/assets/scripts/orphus.js"></script>
+            <a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="/study/courses/assets/images/orphus.gif" border="0" width="88" height="31" /></a>
+	    </span>
+    </p>
+</body>
+</html>
