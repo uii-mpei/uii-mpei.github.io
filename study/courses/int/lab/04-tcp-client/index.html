@@ -220,7 +220,7 @@ process_error_response(SOCKET channel, uint32_t text_size) {
 }</code></pre>
 <p>В случае прибытия сообщения неожиданного типа целесообразно печатать максимум информации для отладки: полное содержимое прибывшего сообщения. Для этого можно воспользоваться функцией <code>hex_dump()</code> из ЛР № 2:</p>
 <pre><code>bool
-process_unexpected_message(SOCKET channel, uint32_t length, Type type) {
+process_unexpected_response(SOCKET channel, uint32_t length, Type type) {
     std::cerr &lt;&lt; &quot;Protocol error: unexpected message &quot;
             &lt;&lt; &quot;(type=&quot; &lt;&lt; (int)type &lt;&lt; &quot;, length=&quot; &lt;&lt; length &lt;&lt; &quot;)\n&quot;;
 
