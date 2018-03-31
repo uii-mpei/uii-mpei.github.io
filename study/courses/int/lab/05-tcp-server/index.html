@@ -156,15 +156,26 @@ serve_file(SOCKET channel, uint32_t path_length) {
     Type type = TYPE_GET;
     send_some(channel, &amp;type, sizeof(type));</code></pre>
 <p>Чтение файла и отправка его содержимого по сети происходит аналогично приему: из файла читаются блоки фиксированного размера и отправляются по сети, пока не будет достигнут конец файла. Таким образом возможно отправлять даже очень крупные файлы, загружая в память лишь небольшие их фрагменты.</p>
-<pre><code>    while (!input.eof()) {
+<pre><code>    while (true) {
         std::array&lt;char, 4096&gt; buffer;
-        auto bytes_to_send = input.readsome(&amp;buffer[0], buffer.size());
-        send_some(channel, &amp;buffer[0], bytes_to_send);
+        auto bytes_to_send = input.readsome(&amp;buffer[0], buffer.size());</code></pre>
+<div class="alert">
+<p>Результат чтения из файла стоит проверять на ошибки:</p>
+<pre><code>        if (input.bad()) {
+            std::fprintf(stderr, &quot;error: %s: I/O failure %d\n&quot;, __func__, errno);
+            return false;
+        }</code></pre>
+<p>Метод <code>readsome()</code> не пытается считать данные, если их больше не доступно, поэтому флаг <code>input.eof()</code> никогда не будет взведен, зато можно проверить достижение конца файла по результату <code>readsome()</code> и выйти из цикла:</p>
+<pre><code>        if (bytes_to_send == 0) {
+            break;
+        }</code></pre>
+</div>
+<pre><code>        send_some(channel, &amp;buffer[0], bytes_to_send);
     }
     return true;
 }</code></pre>
 <h2 id="отправка-списка-файлов">Отправка списка файлов</h2>
-<p>Получение списка файлов в каталоге делается по-разному в зависимости от ОС. Готовая функция <code>list_files()</code> дана в <a href="listing.h"><code>listing.h</code></a>, она работает в Windows и Linux и возвращается вектор строк-имен файлов:</p>
+<p>Получение списка файлов в каталоге делается по-разному в зависимости от ОС. Готовая функция <code>list_files()</code> дана в <a href="listing.h"><code>listing.h</code></a> <span class="alert">(изменен 31.03)</span>, она работает в Windows и Linux и возвращает вектор строк-имен файлов:</p>
 <pre><code>std::vector&lt;std::string&gt; list_files();</code></pre>
 <p>Файл предлагается сохранить в каталог своего проекта и подключить к программе:</p>
 <pre><code>#include &quot;listing.h&quot;</code></pre>

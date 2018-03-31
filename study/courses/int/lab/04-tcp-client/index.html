@@ -12,10 +12,9 @@
 <div id="header">
 <h1 class="title">Лабораторная работа № 4.  Клиент TCP для передачи файлов</h1>
 </div>
-<h1 id="тестовые-серверы" class="alert">Тестовые серверы</h1>
-<p>Адрес: 178.62.245.178, любой порт с 20000 по 20030 включительно.</p>
-<p>Имейте в виду, что сервер специально сделан точно таким, как вы будете писать в ЛР № 5, включая все его недостатки: * обслуживается только один клиент одновременно; * если клиент отключается без <code>closesocket()</code>, сервер на время (минуты) перестает принимать новые подключения.</p>
-<p>О проблемах сообщайте Дмитрию Козлюку.</p>
+<h1 id="тестовые-серверы">Тестовые серверы</h1>
+<p><span class="alert">Обновлено 31.03.</span></p>
+<p>Для тестирования своего клиента воспользуйтесь готовым сервером: <a href="lab05-tcp-server.exe">Windows (32 бита)</a>, <a href="lab05-tcp-server">Linux (64 бита)</a>. Запустите его в каталоге с файлами, подходящими для выполнения задания (ниже) и подключитесь к серверу своей программой.</p>
 <h1 id="цель-работы">Цель работы</h1>
 <ul>
 <li>Научиться работать с потоковыми сокетами в блокирующем режиме.</li>
@@ -235,11 +234,12 @@ process_unexpected_response(SOCKET channel, uint32_t length, Type type) {
 <pre><code>bool
 process_get_response(
         SOCKET channel, const std::string&amp; pathm uint32_t file_size) {
-    std::clog &lt;&lt; &quot;Downloading &quot; &lt;&lt; file_size &lt;&lt; &quot; bytes...\n&quot;;
-
-    std::ofstream output(path);
-
-    uint32_t bytes_received = 0;
+    std::clog &lt;&lt; &quot;Downloading &quot; &lt;&lt; file_size &lt;&lt; &quot; bytes...\n&quot;;</code></pre>
+<div class="alert">
+<p>Обратите внимание, что файл необходимо открыть строго в двоичном режиме (флаг <code>std::ios::binary</code>), потому что в текстовом режиме <code>std::fstream</code> автоматически преобразует переводы строк в зависимости от платформы (<code>&quot;\r\n&quot;</code> для Windows, <code>&quot;\n&quot;</code> для Linux, <code>&quot;\r&quot;</code> для Mac), что испортит двоичные файлы, например, изображения. Флаг <code>std::ios::trunc</code> указывает очистить файл при открытии, что позволяет не заботиться о том, был ли уже скачан файл с тем же именем — старая версия будет при открытии стерта.</p>
+<pre><code>    std::fstream output(path, std::ios::out | std::ios::trunc | std::ios::binary);</code></pre>
+</div>
+<pre><code>    uint32_t bytes_received = 0;
     while (bytes_received &lt; file_size) {
         std::array&lt;char, 4096&gt; buffer;
         const int result = ::recv(channel, &amp;buffer[0], buffer.size(), 0);
@@ -256,14 +256,13 @@ process_get_response(
 <li><p>В основном цикле программы добавьте проверку результата <code>download_file()</code>: есть произошла критическая ошибка (результат <code>false</code>), цикл нужно прервать.</p></li>
 <li><p>Проверьте работу программы. Подключившись к тестовому серверу, скачайте в рамках одного сеанса:</p>
 <ul>
-<li>маленький текстовый файл <code>tiny.txt</code>;</li>
-<li>крупный файл-изображение <code>picture.png</code>;</li>
+<li>маленький текстовый файл (меньше 1,5 КБ);</li>
+<li>крупный файл-изображение (несколько КБ);</li>
 <li>исполняемый файл тестового сервера <code>lab05-tcp-server</code> (Linux) или <code>lab05-tcp-server.exe</code> (Windows);</li>
-<li>несуществующий файл <code>nonexistent</code> (сервер вернет ошибку, которая должна быть обработана).</li>
+<li>файл с несуществующим именем (сервер вернет ошибку, которая должна быть обработана).</li>
 </ul>
 <p>Убедитесь, что файлы доставлены без повреждений (открываются штатно). Занесите в отчет вывод своей программы в процессе.</p></li>
 </ol>
-<p>Адрес и порт тестового сервера уточните у преподавателя. После скачивания самого тестового сервера можно запускать его локально.</p>
 <h2 id="получение-списка-файлов-1">Получение списка файлов</h2>
 <ol start="16" class="example" style="list-style-type: decimal">
 <li><p>Добавьте в основной цикл программы поддержку новой команды <code>/list</code>:</p>

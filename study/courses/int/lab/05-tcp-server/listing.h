@@ -39,6 +39,7 @@ list_files() {
 #else
 
 #include <dirent.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 static inline
@@ -54,7 +55,13 @@ list_files() {
 
     dirent* entry = nullptr;
     while ((entry = ::readdir(dir)) != nullptr) {
-        if ((entry->d_type != DT_REG) || (entry->d_name[0] == '.')) {
+        struct stat info;
+        if (::stat(entry->d_name, &info) < 0) {
+            std::fprintf(stderr, "warning: stat()=%d\n", errno);
+            continue;
+        }
+
+        if (!(info.st_mode & S_IFREG) || (entry->d_name[0] == '.')) {
             continue;
         }
 
