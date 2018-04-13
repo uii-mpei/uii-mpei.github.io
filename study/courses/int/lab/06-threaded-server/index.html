@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Лабораторная работа № 6.  Асинхронное взаимодействие на базе потоков</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/study/courses/assets/styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Лабораторная работа № 6.  Асинхронное взаимодействие на базе потоков</h1>
+</div>
+<h1 id="цель-работы">Цель работы</h1>
+<ul>
+<li>Научиться создавать асинхронные серверы на основе потоков.</li>
+<li>Пронаблюдать типовые особенности реализации и работы таких приложений.</li>
+</ul>
+<h1 id="введение">Введение</h1>
+<p>Во многих случаях желательно, чтобы сервер несколько клиентов одновременно, а не по очереди, как это делает программа из ЛР № 5. Например, посетители web-сайта не должны перед открытием страницы ожидать, пока другой пользователь получит от сервера свою. Одновременное обслуживание нескольких соединений называется <em>асинхронным режимом работы.</em></p>
+<p>Из курса системного ПО известен способ выполнять в программе несколько задач одновременно: потоки, или нити (threads). <em>Достоинство этого подхода к асинхронности — простота:</em> принципиально нужно лишь запускать цикл обработки запросов клиента в отдельном потоке, а в основном потоке продолжать прием новых подключений. Де-факто необходимо также, как в любом многопоточном приложении, обеспечить отсутствие гонок (races) при работе с общими ресурсами (разделяемыми, shared). Например, разделяемым ресурсом может быть список активных пользователей или банально стандартный поток вывода сообщений.</p>
+<p>Наиболее просто отсутствие гонок обеспечить, если с разделяемым ресурсом в каждый момент времени сможет работать только один поток, а прочие потоки будут бездействовать в ожидании своей очереди. Из курса системного ПО же известно, что это решается примитивами синхронизации, конкретно — критической областью. Потоки пытаются войти в критическую область (временно захватить ее и выполнить часть кода), но преуспеть может лишь один поток, остальные же при попытке захвата переходят в состояние ожидания, пока критическая область не будет освобождена.</p>
+<p>Одновременное обслуживание нескольких клиентов выгодно не только удобством, но и большей утилизацией канала связи, так как обычно сервер способен отдавать данные быстрее, чем клиент — принимать их. Однако совокупная скорость передачи, разумеется, ограничена каналом, и если один клиент способен полностью его задействовать, нескольким клиентам придется делить канал между собой.</p>
+<h1 id="задание">Задание</h1>
+<p>Образец сервера (Windows, 32 бита): <a href="lab06-threaded-server.exe"><code>lab06-threaded-server.exe</code></a>.</p>
+<h2 id="обработка-соединений-в-потоках">Обработка соединений в потоках</h2>
+<p>Средства для работы с потоками на C++ находятся в <code>&lt;thread&gt;</code>:</p>
+<pre><code>#include &lt;thread&gt;</code></pre>
+<ol class="example" style="list-style-type: decimal">
+<li><p>Вынесите цикл обработки запросов клиента (все, что делается после успешного <code>accept()</code>) в отдельную функцию, которая имеет вид:</p>
+<pre><code>void serve_requests(SOCKET client, const sockaddr_in&amp; peer);</code></pre></li>
+<li><p>Вызывайте эту функцию не напрямую из той точки, где ранее располагался цикл, а в новом потоке:</p>
+<pre><code>std::thread{serve_requests, client, peer}.detach();</code></pre></li>
+</ol>
+<p><code>std::thread{...}</code> создает новый объект, представляющий собой поток, в котором будет выполняться функция <code>serve_requests()</code> (первый аргумент), вызванная с параметрами <code>client</code> и <code>peer</code> (оставшиеся аргументы).</p>
+<p>У нового объекта сразу же вызывается метод <code>detach()</code>. Если этого не сделать, то по завершении итерации цикла приема подключений созданный объект будет уничтожен (так как окончилась его область видимости), при том что функция <code>serve_requests()</code> в потоке не завершилась — такое стечение обстоятельств приведет к краху программы. После <code>detach()</code> же удаление объекта не повлияет на выполняющийся поток.</p>
+<ol start="3" class="example" style="list-style-type: decimal">
+<li>Проверьте способность сервера обслуживать несколько клиентов сразу. Занесите в отчет вывод сервера. Порядок проверки:
+<ul>
+<li>запустите один экземпляр сервера;</li>
+<li>подключитесь к нему одновременно двумя экземплярами клиента;</li>
+<li>убедитесь, запросы обоих клиентов обслуживаются (например, <code>/list</code>);</li>
+<li>запустите параллельную загрузку клиентами больших файлов.</li>
+</ul></li>
+</ol>
+<p>Последний пункт требует организовать передачу, которая шла бы несколько секунд и дольше. Самый простой способ — передавать крупный файл. Если подходящего нет, в Windows 7 и выше его можно создать через PowerShell (вызывается из меню «Пуск»), например, размером 100 МБ:</p>
+<pre><code>[io.file]::Create(&quot;big.file&quot;).SetLength(100MB).Close</code></pre>
+<h2 id="подсчет-скорости-передачи">Подсчет скорости передачи</h2>
+<p>Организуем на сервере подсчет средней скорости передачи файла клиенту. Для этого будем делить количество уже переданных байтов файла на время, прошедшее с начала передачи. Чтобы вывод сервера оставался читаемым и компактным, будем печатать статистику не чаще раза в секунду.</p>
+<p>Функции для работы со временем в C++ — в заголовочном файле <code>&lt;chrono&gt;</code> и в пространстве имен <code>std::chrono</code>, а не <code>std</code>. Одним из ключевых понятий стандартной библиотеку являются часы (clock) — источник временных отметок (time points). Для замеров скорости выберем <code>std::chrono::steady_clock</code>, которые будем называть <code>Clock</code>, а их временную отметку — <code>Time</code>. Эти часы отличаются тем, что их время равномерно и монотонно возрастает, с ним удобно работать, как это принято в физике. («Обычное» календарное время отсчитывается значительно сложнее.)</p>
+<pre><code>using Clock = std::chrono::steady_clock;
+using Time = std::chrono::time_point&lt;Clock&gt;;</code></pre>
+<ol start="4" class="example" style="list-style-type: decimal">
+<li>Напишите вспомогательную функцию, которая выдает количество миллисекунд, прошедших со времени <code>start_time</code> до текущего.</li>
+</ol>
+<p>Получить текущее время выбранных часов можно функцией <code>now()</code>:</p>
+<pre><code>uint32_t
+get_elapsed_ms(Time start_time) {
+    const auto current_time = Clock::now();</code></pre>
+<p>Временные отметки можно вычитать, получая длительность (duration):</p>
+<pre><code>    const auto time_elapsed = current_time - start_time;</code></pre>
+<p>Далее требуется представить длительность в нужных единицах (миллисекундах) и получить их количество (count):</p>
+<pre><code>    const auto elapsed_milliseconds =
+            std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(time_elapsed);
+    return elapsed_milliseconds.count();
+}</code></pre>
+<ol start="5" class="example" style="list-style-type: decimal">
+<li>В функции <code>serve_file()</code> перед началом собственно передачи файла засекайте текущее время, время последнего показа статистики (<code>last_time</code>) и количество переданных байтов <code>bytes_sent</code>.</li>
+</ol>
+<pre><code>const auto start_time = std::chrono::steady_clock::now();
+auto last_time = start_time;
+uint32_t bytes_sent = 0;</code></pre>
+<ol start="6" class="example" style="list-style-type: decimal">
+<li><p>Успешной отправки очередной порции данных увеличивайте <code>bytes_sent</code> на количество переданных байтов.</p></li>
+<li><p>После передачи же очередной порции проверяйте, не прошло ли с момента последнего показа статистики секунды. Если прошла, отображайте скорость и запоминайте текущее время как время последнего показа.</p></li>
+</ol>
+<pre><code>const auto current_time = Clock::now();
+if (get_elapsed_ms(last_time) &gt; 1000) {
+    std::clog &lt;&lt; &quot;info: transferring at &quot;
+            &lt;&lt; 1000 * bytes_sent / get_elapsed_ms(start_time)
+            &lt;&lt; &quot; bytes/sec\n&quot;;
+    last_time = current_time;
+}</code></pre>
+<ol start="8" class="example" style="list-style-type: decimal">
+<li>После окончания передачи безусловно выводите среднюю скорость:</li>
+</ol>
+<pre><code>std::clog &lt;&lt; &quot;info: done transferring at &quot;
+        &lt;&lt; 1000 * bytes_sent / get_elapsed_ms(start_time)
+        &lt;&lt; &quot; bytes/sec\n&quot;;</code></pre>
+<ol start="9" class="example" style="list-style-type: decimal">
+<li><p>Подключитесь к серверу одним клиентом и загрузите крупный файл. Зафиксируйте в отчете вывод сервера.</p></li>
+<li><p>Подключитесь к серверу двумя клиентами и загрузить крупный файл одновременно, также зафиксировав вывод сервера в отчете.</p>
+<p><strong>Примечание.</strong> Вывод <em>может</em> выглядеть некорректно, как будто сообщения для разных клиентов смешиваются (так и есть).</p></li>
+</ol>
+<p>Отметим, что использовать среднюю скорость на протяжении сеанса на практике нужно с осторожностью, так как скорость может меняться в широких пределах. Наиболее ярко это можно наблюдать при загрузке крупных torrent´ов, например, дистрибутивов Linux и другого лицензионного ПО. В лабораторной работе средняя скорость используется как самая простая для расчета.</p>
+<h2 id="синхронизация-потоков">Синхронизация потоков</h2>
+<p>До сих пор потоки сервера работали без синхронизации с двумя разделяемыми ресурсами:</p>
+<ul>
+<li>стандартным потоком вывода ошибок (<code>stderr</code> или <code>std::clog</code>);</li>
+<li>глобальным буфером функции <code>inet_ntoa()</code>.</li>
+</ul>
+<p>Предлагается взаимодействовать с ними только через функции готового модуля <a href="sync.h"><code>sync.h</code></a>, который можно сохранить в каталог проекта и включить директивой <code>#include</code> в программу.</p>
+<p>Модуль объявляет <code>g_lock</code> — глобальную переменную-мьютекс (критическую область):</p>
+<pre><code>using Mutex = std::mutex;
+
+static Mutex g_lock;</code></pre>
+<p>Функция <code>void log(const char* format, ...)</code> работает так же, как <code>fprintf(stderr, ...)</code>, однако ее безопасно вызывать из нескольких потоков. Также она предваряет вывод служебным номером (ID) потока, из которого вызвана.</p>
+<p>Функция <code>std::string endpoint_to_string(const sockaddr_in&amp; address)</code> преобразует адрес в строку и потокобезопасна. Вообще говоря, вместо нее следовало бы использовать <code>inet_ntop()</code> или <code>InetNtop()</code>, однако они доступны лишь с Windows 8 или *nix.</p>
+<p>Заслуживает внимание первая строка обеих функций:</p>
+<pre><code>Guard guard{g_lock};</code></pre>
+<p>Тип <code>Guard</code> объявлен так:</p>
+<pre><code>using Guard = std::lock_guard&lt;Mutex&gt;;</code></pre>
+<p>Здесь применяется упоминавшийся в курсе «Технологии программирования» подход RAII (захват ресурса есть инициализация [переменной]). В данном случае при создании объекта <code>guard</code> типа <code>Guard</code> происходит вход в критическую область, а при его удалении (по завершении функции) — выход. Поскольку компилятор не может забыть удалить объект, программист не может забыть выйти из критической области, если. например, из функции появятся новые выходы. Без RAII можно было бы вручную вызывать <code>g_lock.lock()</code> в начале</p>
+<ol start="11" class="example" style="list-style-type: decimal">
+<li><p>Замените весь вывод в консоль, кроме как в функциях <code>ask_endpoint()</code> и <code>hex_dump()</code>, на потокобезопансые вызовы <code>log()</code>.</p></li>
+<li><p>Адаптируйте функцию <code>hex_dump()</code>.</p></li>
+</ol>
+<p>Чтобы не печатать ID потока у каждого байта, можно накапливать вывод в потоке типа <code>std::ostringstream</code>:</p>
+<pre><code>void
+hex_dump(const void* data, size_t size) {
+    std::ostringstream buffer;
+
+    const auto bytes = reinterpret_cast&lt;const uint8_t*&gt;(data);
+    for (size_t i = 0; i &lt; size; i++) {
+        if ((i + 1) % 16 == 0) {
+            out.put(&#39;\n&#39;);
+        }
+        buffer &lt;&lt; std::setw(2) &lt;&lt; std::setfill(&#39;0&#39;) &lt;&lt; std::hex &lt;&lt; (int)bytes[i];
+    }</code></pre>
+<p>Затем данные можно вывести одним вызовом <code>log()</code>:</p>
+<pre><code>    log(&quot;%s\n&quot;, buffer.str().c_str());
+}</code></pre>
+<ol start="13" class="example" style="list-style-type: decimal">
+<li>Если ранее при загрузке двух файлов одновременно наблюдались искажения вывода, повторите эксперимент и убедитесь, что вывод корректен.</li>
+</ol>
+<h1 id="контрольные-задания">Контрольные задания</h1>
+<p>Эта ЛР защищается вместе с ЛР № 7.</p>
+    <hr/>
+    <p>
+		Козлюк&nbsp;Д.&nbsp;А. для&nbsp;кафедры Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2018&nbsp;г.
+
+        <span id="buttons">
+            <!--LiveInternet counter--><script type="text/javascript"><!--
+            document.write('<a href="http://www.liveinternet.ru/click" '+
+            'target=_blank><img src="http://counter.yadro.ru/hit?t52.1;r'+
+            escape(document.referrer)+((typeof(screen)=='undefined')?'':
+            ';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
+            ';i'+escape('Жж'+document.title.substring(0,80))+';'+Math.random()+
+            '" alt="" title="LiveInternet: показано число просмотров и посетителей за 24 часа" '+
+            'border=0 width=88 height=31 id="counter"><\/a>')//--></script><!--/LiveInternet-->
+
+            <script type="text/javascript" src="/study/courses/assets/scripts/orphus.js"></script>
+            <a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="/study/courses/assets/images/orphus.gif" border="0" width="88" height="31" /></a>
+	    </span>
+    </p>
+</body>
+</html>
