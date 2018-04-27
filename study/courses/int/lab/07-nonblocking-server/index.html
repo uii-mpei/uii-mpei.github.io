@@ -1,0 +1,398 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Лабораторная работа № 7. Неблокирующий режим работы сокетов</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/study/courses/assets/styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Лабораторная работа № 7. Неблокирующий режим работы сокетов</h1>
+</div>
+<div class="alert">
+<p>Описание будет расширено и углублено, а также будут даны пояснения на занятии.</p>
+</div>
+<h1 id="цель-работы">Цель работы</h1>
+<ul>
+<li>Изучить отличительные особенности неблокирующего режима работы сокетов.</li>
+<li>Научиться использовать сокеты в неблокирующем режиме на примере реализации протокола обмена файлами.</li>
+</ul>
+<h1 id="задание">Задание</h1>
+<p><strong>Указание.</strong> Определенные фрагменты кода и целые функции уже были написаны в предыдущих ЛР, откуда их можно и нужно брать, однако программу удобнее писать заново — отличия от ЛР № 5 и 6 достаточно велики.</p>
+<ol class="example" style="list-style-type: decimal">
+<li><p>Создайте новый проект <code>lab07-nonblocking-server</code>. Подключите к библиотеки, необходимые для работы с сокетами. Инициализируйте API сокетов.</p></li>
+<li><p>Создайте сокет-слушатель и запишите код для приема одного подключения, как в ЛР № 5 и № 6.</p></li>
+</ol>
+<h2 id="прием-и-передача-блока-данных">Прием и передача блока данных</h2>
+<p>Перепишем функции <code>receive_some()</code> и <code>send_some()</code> для работы в неблокирующем режиме. По его сути они не могут гарантировать прием или отправку заданного количества байтов, поэтому вызывающему коду необходимо получать число байтов, которые были реально приняты или отправлены. Также ранее <code>receive_some()</code> не отличала отключение клиента от других ошибок, что было бы полезно. Итого есть три вида результата:</p>
+<pre><code>enum Status {
+    STATUS_OK,      // успех (данные переданые частично или полностью)
+    STATUS_END,     // штатное отключение клиента
+    STATUS_ERROR    // ошибка
+};</code></pre>
+<p>Сам результат дополнительно включает количество обработанных байтов, которое имеет смысл только вместе со <code>STATUS_OK</code>:</p>
+<pre><code>struct Result {
+    Status status;
+    size_t bytes;
+};</code></pre>
+<p>Новые прототипы функций:</p>
+<pre><code>Result receive_some(SOCKET channel, void* data, size_t size);
+Result send_some(SOCKET channel, const void* data, size_t size);</code></pre>
+<p>Логика приема данных порциями, пока это удается, сохраняется в <code>receive_some()</code>:</p>
+<pre><code>Result
+receive_some(SOCKET channel, void* data, size_t size) {
+    auto bytes = reinterpret_cast&lt;char*&gt;(data);
+    size_t bytes_received = 0;
+    while (bytes_received &lt; size) {
+        auto result = ::recv(channel, &amp;bytes[bytes_received], size - bytes_received, 0);</code></pre>
+<p>Отличия возникают при обработке ошибок. Код <code>WSAEWOULDBLOCK</code> необходимо обрабатывать особым образом: возвращать успешный результат, присовокупив к нему количество принятых данных:</p>
+<pre><code>        if (result &lt; 0) {
+            const auto code = WSAGetLastError();
+            if (code == WSAEWOULDBLOCK) {
+                return {STATUS_OK, bytes_received};
+            }</code></pre>
+<p>Все остальные коды действительно являются признаками ошибок:</p>
+<pre><code>            std::printf(&quot;error: recv()=%d\n&quot;, code);
+            return {STATUS_ERROR, bytes_received};
+        }</code></pre>
+<p>В случае штатного закрытия соединения клиентом <code>recv()</code> возвращает нуль:</p>
+<pre><code>        else if (result == 0) {
+            return {STATUS_END, bytes_received};
+        }
+
+        bytes_received += result;
+    }</code></pre>
+<p>Если выход из цикла произошел по условию в его заголовке, весь необходимый объем данных удалось успешно принять:</p>
+<pre><code>    return {STATUS_OK, bytes_received};
+}</code></pre>
+<ol start="3" class="example" style="list-style-type: decimal">
+<li>Адаптируйте аналогичным образом функцию <code>send_some()</code>. Отличие в том, что для <code>send()</code> результат 0 не является особенным.</li>
+</ol>
+<h2 id="модель-клиента">Модель клиента</h2>
+<p>В случае блокирующих сокетов, работавших в отдельных потоках, состояние клиента определялось местом программы, которое в данный момент выполнялось потоком клиента. В случае неблокирующих сокетов, состоянием необходимо управлять вручную. Основные состояния следующие:</p>
+<ul>
+<li><p>Прием запроса: ожидается поступление данных из сети, пока не будет считан запрос целиком, после чего можно начать его обслуживание. В этом режиме клиент начинает работу.</p>
+<pre><code>enum ClientState {
+    CLIENT_RECEIVE_REQUEST,</code></pre></li>
+<li><p>Отправка файла или отправка данных: ожидается возможность отправки данных (освобождение буфера отправки), пока не удастся отправить весь ответ, после чего клиент переходит в режим прием запроса.</p>
+<pre><code>    CLIENT_SERVE_FILE,
+    CLIENT_SERVE_DATA,</code></pre></li>
+<li><p>Завершенная работа: ничего не делается, это специальное состояние, которое наступает при отключении удаленного пользователя или при ошибках.</p>
+<pre><code>    CLIENT_SHUTDOWN
+};</code></pre></li>
+</ul>
+<p>С каждым состоянием связан собственный набор данных. Так, во время приема заголовка необходимо хранить его целиком, потому что заголовок может прийти по частям, следовательно, нужна возможность приостанавливать прием после каждой части, чтобы продолжить при получении следующей.</p>
+<pre><code>#pragma pack(push, 1)
+struct Header {
+    uint32_t length;
+    Type type;
+};
+#pragma pack(pop)
+
+struct RequestState {
+    Header fixed;</code></pre>
+<p>Заголовок используемого протокола передачи файлов (длина и тип сообщения) является фиксированной по длине частью запроса, отсюда его название. В некоторых сообщениях, например, в запросе файла, возможны данные переменной длины:</p>
+<pre><code>    std::vector&lt;uint8_t&gt; variable;</code></pre>
+<p>Для приема по частям необходимы счетчики, сколько байтов осталось принять из каждой части (теоретически достаточно одного счетчики, но два удобнее):</p>
+<pre><code>    uint32_t fixed_bytes_left;
+    uint32_t variable_bytes_left;
+};</code></pre>
+<p>В состоянии выдачи файла достаточно хранить дескриптор открытого файла. Его размер отправляется как часть заголовка, а данные считываются до конца.</p>
+<pre><code>struct FileState {
+    FILE* handle;
+};</code></pre>
+<p>Передача блока данных, например, списка файлов по команде <code>/list</code> принципиально не отличается от приема запроса переменной длины:</p>
+<pre><code>struct DataState {
+    std::vector&lt;uint8_t&gt; bytes;
+    uint32_t bytes_transmitted;
+};</code></pre>
+<p>Все эти данные необходимо хранить для каждого клиента, но использовать одновременно только одну группу в зависимости от состояния:</p>
+<pre><code>struct Client {
+    ClientState state;
+    RequestState header;
+    FileState file;
+    DataState data;</code></pre>
+<p>Очевидно, каждому клиенту необходимо хранить и собственный сокет, там же удобно хранить адрес удаленного узла.</p>
+<pre><code>    SOCKET channel;
+    sockaddr_in peer;
+};</code></pre>
+<h2 id="api-неблокирующего-режима">API неблокирующего режима</h2>
+<h3 id="переход-в-неблокирующий-режим">Переход в неблокирующий режим</h3>
+<p>Неблокирующий режим переключается для каждого сокета отдельно. Даже если сокет-слушатель работает в неблокирующем режиме, сокеты-передатчики, порождаемые <code>accept()</code>, начинают работать в блокирующем режиме. Для переключения используется функция <a href="http://man7.org/linux/man-pages/man2/ioctl.2.html"><code>ioctl()</code></a> (*nix) или <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms738573(v=vs.85).aspx"><code>ioctlsocket()</code></a> (Windows), однако с одинаковым параметром <code>FIONBIO</code> (<strong>F</strong>lag for <strong>IO</strong> control: <strong>n</strong>on-<strong>b</strong>locking <strong>IO</strong>):</p>
+<pre><code>bool
+make_nonblocking(SOCKET handle) {
+    unsigned long int on = 1;
+    const int result = ::ioctlsocket(handle, FIONBIO, &amp;on);
+    if (result &lt; 0) {
+        fprintf(stderr, &quot;error: ioctlsocket()=%d\n&quot;, WSAGetLastError());
+        return false;
+    }
+    return true;
+}</code></pre>
+<h3 id="мультиплексирование">Мультиплексирование</h3>
+<p>Мультиплексор в программировании сокетов — это специальная операция, которая заключается в ожидании событий, которые могут произойти на некоторых сокетах из группы. Например, мультиплексор одновременно ожидает, когда одному из сокетов-передатчиков поступит запрос клиента или сокету-слушателю придет новый запрос на подключение. Мультиплексор — единственная блокирующая операция, связанная с неблокирующими сокетами.</p>
+<p>Два стандартных мультиплексора — <code>select()</code> и <code>poll()</code> (<code>WSAPoll()</code> — несмотря на переименования, данная функция повторяет поведение POSIX.) В современных приложениях рекомендуется использовать <code>poll()</code>.</p>
+<p>Функция <code>poll()</code> принимает:</p>
+<ul>
+<li>массив <em>дескрипторов опроса (poll file descriptor)</em>, каждый из которых описывает, какие события и для какого сокета будут ожидаться;</li>
+<li>количество дескрипторов в массиве;</li>
+<li>максимальное время ожидания (таймаут).</li>
+</ul>
+<p>После выполнения <code>poll()</code> изменяет поле-флаги <code>revents</code> каждого дескриптора опроса, указывая, какие из запрошенных событий произошли с сокетом. Некоторые из событий, которые можно отслеживать (флаги):</p>
+<ul>
+<li><code>POLLIN</code> — поступление данных для сокета-передатчика (можно вызвать <code>recv()</code>) или новое подключение для сокета-слушателя (можно вызвать <code>accept()</code>);</li>
+<li><code>POLLOUT</code> — возможность передачи данных после установления соединения (можно вызвать <code>send()</code>) или окончание установления соединения (после неблокирующего вызова <code>connect()</code>);</li>
+<li><code>POLLERR</code> (в <code>revents</code>) — наличие ошибки.</li>
+</ul>
+<p>Если таймаут ожидания не нужен, его можно задать бесконечным, передав в качестве аргумента отрицательное число.</p>
+<p><code>WSAPoll()</code> доступна, начиная с Windows Vista. Чтобы использовать ее в своих программах необходимо <em>до</em> подключения <code>&lt;winsock2.h&gt;</code> указать, что будет использоваться этот новый API:</p>
+<pre><code>#define WINVER _WIN32_WINNT_WIN7
+#define _WIN32_WINNT _WIN32_WINNT_WIN7</code></pre>
+<h3 id="порядок-работы">Порядок работы</h3>
+<p>Следующий пример демонстрирует работу с одним сокетом-передатчиком в неблокирующем режиме. Разумеется, это не несет выгоды, однако позволяет сосредоточиться на сетевом API, а не на управлении несколькими клиентами.</p>
+<ol start="4" class="example" style="list-style-type: decimal">
+<li><p>После блокирующего приема подключения сокетом-слушателем переведите сокет-передатчик в неблокирующий режим (через <code>make_nonblocking()</code>) и проверьте наличие ошибок.</p></li>
+<li><p>Инициализируйте структуру-клиента с сокетом-передатчиком:</p></li>
+</ol>
+<pre><code>Client client;
+client.channel = channel;
+client.peer = peer;</code></pre>
+<p>Начальное состояние клиента — принимать запрос, причем осталось принять из фиксированной части её всю (пять байтов):</p>
+<pre><code>client.state = CLIENT_RECEIVE_REQUEST;
+client.header.fixed_bytes_left = sizeof(Header);</code></pre>
+<ol start="6" class="example" style="list-style-type: decimal">
+<li>В бесконечном цикле заполняйте единственный дескриптор опроса <code>fd</code>:</li>
+</ol>
+<pre><code>while (true) {
+    WSAPOLLFD fd;
+    switch (client.state) {</code></pre>
+<ul>
+<li><p>В состоянии приема запроса ожидается поступление данных:</p>
+<pre><code>case CLIENT_RECEIVE_REQUEST:
+    fd.fd = channel;
+    fd.events = POLLIN;
+    break;</code></pre></li>
+<li><p>В состояниях обслуживания запроса ожидается возможность отправки данных:</p>
+<pre><code>case CLIENT_SEND_DATA:
+case CLIENT_SEND_FILE:
+    fd.fd = channel;
+    fd.events = POLLOUT;
+    break;</code></pre></li>
+<li><p>Если клиент прекратил работу, вместо сокета передается отрицательное число — <code>poll()</code> игнорирует такие дескрипторы, что бывает удобно.</p>
+<pre><code>case CLIENT_TERMINATED:
+    fd.fd = -1;
+    break;
+}</code></pre></li>
+</ul>
+<ol start="7" class="example" style="list-style-type: decimal">
+<li>Вызовите <code>WSAPoll()</code> с единственным дескриптором и без таймаута:</li>
+</ol>
+<pre><code>const int result = ::WSAPoll(&amp;fd, 1, -1);
+fprintf(stderr, &quot;WSAPoll()=%d, WSAGetLastError()=%d, fd.revents=%d\n&quot;,
+        result, WSAGetLastError(), fd.revents);</code></pre>
+<p>Поскольку в памяти одиночный дескриптор и массив из одного дескриптора представлены одинаково, достаточно взять адрес дескриптора и указать длиной «массива» единицу.</p>
+<h2 id="обработка-запросов-в-неблокирующем-режиме">Обработка запросов в неблокирующем режиме</h2>
+<p>Любая операция обработки запроса в неблокирующем режиме имеет своим результатом некий прогресс:</p>
+<pre><code>enum Progress {
+    DONE,       // операция выполнена целиком
+    RUNNING,    // операция приостановлена (например, нужно больше данных)
+    FINISHED,   // обмен данными завершен (клиент штатно отключился)
+    FAILED      // произошла ошибка
+};</code></pre>
+<ol start="8" class="example" style="list-style-type: decimal">
+<li>После возвращения из <code>WSAPoll()</code> для всех сокетов, с которыми не произошло ошибок (а на данным этапе — для единственного), вызывайте функцию, которая продолжает начатые операции в зависимости от текущего состояния клиента (<code>state</code>):</li>
+</ol>
+<pre><code>   const Progress progress = serve_requests(client);
+   if ((progress == FINISHED) || (progress == FAILED)) {
+       break;
+   }
+}</code></pre>
+<ol start="9" class="example" style="list-style-type: decimal">
+<li>Объявите прототип функции <code>serve_requests()</code> до функции <code>main()</code> и реалзуйте ее: она обслуживает запросы, пока это удается делать до конца:</li>
+</ol>
+<pre><code>Progress
+serve_requests(Client&amp; client) {
+    Progress result = FAILED;
+    do {
+        result = serve_request(client);
+    } while (result == DONE);
+    return result;
+}</code></pre>
+<div class="alert">
+<p>Код ниже будет разобран на лабораторном занятии 27.04.</p>
+</div>
+<pre><code>Progress
+serve_request(Client&amp; client) {
+    if (client.state == CLIENT_RECEIVE_REQUEST) {
+        auto result = receive_request(client);
+        if (result != DONE) {
+            return result;
+        }
+
+        switch (client.header.fixed.type) {
+        case TYPE_GET:
+            begin_file_transmission(client);
+            break;
+        }
+    }
+
+    const auto result = send_header(client);
+    if (result != DONE) {
+        return result;
+    }
+
+    switch (client.state) {
+    case CLIENT_SEND_FILE:
+        return send_file(client);
+    case CLIENT_TERMINATED:
+        return FINISHED;
+    }
+}</code></pre>
+<pre><code>Progress
+receive_request(Client&amp; client) {
+    if (client.header.fixed_bytes_left &gt; 0) {
+        const auto data =
+                reinterpret_cast&lt;uint8_t*&gt;(&amp;client.header.fixed);
+        const auto offset =
+                sizeof(client.header.fixed) - client.header.fixed_bytes_left;
+        const auto result = receive_some(
+                client.channel,
+                &amp;data[offset],
+                client.header.fixed_bytes_left);
+        if (result.status == STATUS_ERROR) {
+            return FAILED;
+        }
+        if (result.status == STATUS_END) {
+            return FINISHED;
+        }
+        if (result.status == STATUS_OK) {
+            client.header.fixed_bytes_left -= result.bytes;
+            if (client.header.fixed_bytes_left &gt; 0) {
+                return RUNNING;
+            }
+
+            const auto bytes_left =
+                    ::ntohl(client.header.fixed.length) - sizeof(Type);
+            // TODO: check length
+            // TODO: limit length
+            client.header.variable.resize(bytes_left);
+            client.header.variable_bytes_left = bytes_left;
+        }
+    }
+
+    if (client.header.variable_bytes_left &gt; 0) {
+        const auto offset =
+                client.header.variable.size() - client.header.variable_bytes_left;
+        const auto result = receive_some(
+                client.channel,
+                &amp;client.header.variable[offset],
+                client.header.variable_bytes_left);
+        if (result.status == STATUS_ERROR) {
+            return FAILED;
+        }
+        if (result.status == STATUS_OK) {
+            client.header.variable_bytes_left -= result.bytes;
+            return (client.header.fixed_bytes_left == 0) ? DONE : RUNNING;
+        }
+    }
+    return DONE;
+}
+
+Progress
+send_header(Client&amp; client) {
+    if (client.header.fixed_bytes_left == 0) {
+        return DONE;
+    }
+
+    const auto data =
+            reinterpret_cast&lt;const uint8_t*&gt;(&amp;client.header.fixed);
+    const auto offset =
+            sizeof(client.header.fixed) - client.header.fixed_bytes_left;
+    const auto result = send_some(
+            client.channel,
+            &amp;data[offset],
+            client.header.fixed_bytes_left);
+    if (result.status == STATUS_ERROR) {
+        return FAILED;
+    }
+    if (result.status == STATUS_OK) {
+        client.header.fixed_bytes_left -= result.bytes;
+        return (client.header.fixed_bytes_left == 0) ? DONE : RUNNING;
+    }
+}
+
+// TODO: error handling
+bool
+begin_file_transmission(Client&amp; client) {
+    const std::string path{
+        reinterpret_cast&lt;const char*&gt;(&amp;client.header.variable[0]),
+        client.header.variable.size()};
+
+    FILE* file = ::fopen(path.c_str(), &quot;rb&quot;);
+
+    ::fseek(file, 0, SEEK_END);
+    const auto size = ::ftell(file);
+    ::fseek(file, 0, SEEK_SET);
+
+    client.state = CLIENT_SEND_FILE;
+    client.header.fixed.type = TYPE_GET;
+    client.header.fixed.length = ::htonl(size + sizeof(Type));
+    client.header.fixed_bytes_left = sizeof(Header);
+    client.file.handle = file;
+    return true;
+}
+
+Progress
+send_file(Client&amp; client) {
+    std::vector&lt;uint8_t&gt; buffer(4096);
+
+    while (true) {
+        const auto bytes_to_send =
+                ::fread(&amp;buffer[0], 1, buffer.size(), client.file.handle);
+        if (bytes_to_send == 0) {
+            if (::feof(client.file.handle)) {
+                ::fclose(client.file.handle);
+                client.state = CLIENT_RECEIVE_REQUEST;
+                client.header.fixed_bytes_left = sizeof(Header);
+                return DONE;
+            }
+
+            // TODO: error handling
+            return FAILED;
+        }
+
+        const auto result =
+                send_some(client.channel, &amp;buffer[0], bytes_to_send);
+        if (result.status == STATUS_OK) {
+            if (result.bytes &lt; bytes_to_send) {
+                const auto offset = (long)bytes_to_send - (long)result.bytes;
+                ::fseek(client.file.handle, offset, SEEK_CUR);
+                return RUNNING;
+            }
+        }
+    }
+}</code></pre>
+    <hr/>
+    <p>
+		Козлюк&nbsp;Д.&nbsp;А. для&nbsp;кафедры Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2018&nbsp;г.
+
+        <span id="buttons">
+            <!--LiveInternet counter--><script type="text/javascript"><!--
+            document.write('<a href="http://www.liveinternet.ru/click" '+
+            'target=_blank><img src="http://counter.yadro.ru/hit?t52.1;r'+
+            escape(document.referrer)+((typeof(screen)=='undefined')?'':
+            ';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
+            ';i'+escape('Жж'+document.title.substring(0,80))+';'+Math.random()+
+            '" alt="" title="LiveInternet: показано число просмотров и посетителей за 24 часа" '+
+            'border=0 width=88 height=31 id="counter"><\/a>')//--></script><!--/LiveInternet-->
+
+            <script type="text/javascript" src="/study/courses/assets/scripts/orphus.js"></script>
+            <a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="/study/courses/assets/images/orphus.gif" border="0" width="88" height="31" /></a>
+	    </span>
+    </p>
+</body>
+</html>
