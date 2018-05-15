@@ -12,9 +12,6 @@
 <div id="header">
 <h1 class="title">Лабораторная работа № 7. Неблокирующий режим работы сокетов</h1>
 </div>
-<div class="alert">
-<p>Описание и порядок выполнения изменены по сравнению с пятницей 27.04, однако задача и результат те же.</p>
-</div>
 <h1 id="цель-работы">Цель работы</h1>
 <ul>
 <li>Изучить отличительные особенности неблокирующего режима работы сокетов.</li>
@@ -302,7 +299,28 @@ struct Header {
 
 Result receive_some(SOCKET channel, void* data, size_t size);
 Result send_some(SOCKET channel, const void* data, size_t size);</code></pre>
-<p>Обработку запросов предлагается строить следующим образом. Вместо возврата <code>true</code>, если не произошло ни ошибки, ни отключения, <code>process_client()</code> вызывает функцию, которая обрабатывает пришедшие запросы и возвращает <code>false</code>, если клиент завершил работу (по любой причине), иначе — <code>true</code>.</p>
+<p>Обработку запросов предлагается строить следующим образом. <span class="alert">(Расширено 15.05.)</span></p>
+<ul>
+<li><p>В <code>run_server()</code> вместо ожидания события <code>POLLIN</code> всегда, клиент должен ожидать <code>POLLIN</code> или <code>POLLOUT</code> в зависимости от своего текущего состояния:</p>
+<pre><code>    for (const auto&amp; client : server.clients) {
+        WSAPOLLFD fd;
+        switch (client.state) {
+        case CLIENT_RECEIVE_REQUEST:
+            fd.events = POLLIN;
+            fd.fd = client.channel;
+            break;
+        case CLIENT_SEND_FILE:
+        case CLIENT_SEND_DATA:
+            fd.events = POLLOUT;
+            fd.fd = client.channel;
+            break;
+        default:
+            fprintf(stderr, &quot;debug: unexpected client state %d\n&quot;, client.state);
+            fd.fd = -1;
+        }
+        fds.push_back(fd);
+    }</code></pre></li>
+<li><p>Вместо возврата <code>true</code>, если не произошло ни ошибки, ни отключения, <code>process_client()</code> вызывает функцию, которая обрабатывает пришедшие запросы и возвращает <code>false</code>, если клиент завершил работу (по любой причине), иначе — <code>true</code>.</p>
 <pre><code>bool
 serve_requests(Client&amp; client) {
     Progress result = FAILED;
@@ -310,7 +328,8 @@ serve_requests(Client&amp; client) {
         result = serve_request(client);
     } while (result == DONE);
     return result == RUNNING;
-}</code></pre>
+}</code></pre></li>
+</ul>
 <p>Функция <code>serve_requests()</code> пытается обслуживать запросы, пока каждый из них удается обслужить целиком (условие цикла). Если цикл прервался, единственный случай, когда следует продолжить работу с клиентом — когда запрос обработан еще не полностью (<code>RUNNING</code>).</p>
 <p>Функция <code>serve_request()</code> должна быть готова принять клиента в любом состоянии и выполнить обработку запроса, начиная с соответствующего этапа (примем запроса, отправка заголовка ответа, отправка тела ответа). В каждом состоянии клиента прогресс отслеживается вспомогательными функциями, <code>serve_request()</code> не занимается этим:</p>
 <pre><code>Progress receive_request(Client&amp; client);
