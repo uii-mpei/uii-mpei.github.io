@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Лабораторная работа № 8. Технологии защищенных каналов связи</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/study/courses/assets/styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">Лабораторная работа № 8. Технологии защищенных каналов связи</h1>
+</div>
+<h1 id="задание">Задание</h1>
+<h2 id="криптография">Криптография</h2>
+<p>Для криптографических операций предлагается использовать кроссплатформенную программу и библиотеку OpenSSL. В лаборатории эта программа размещена на сетевом диске. Для возможности запуска предлагаемых по заданию команд необходимо в открытой консоли указать путь к OpenSSL (путь может измениться, тогда его можно уточнить у лаборанта):</p>
+<pre><code>set PATH=Z:\ИСиТ\OpenSSL;%PATH%</code></pre>
+<p>Утилита <code>openssl</code> объединяет очень разные функции. Как правило, первый аргумент <code>openssl</code> — команда (слово), затем следуют ключи команды (параметры с дефиса). Список команд можно получить через <code>openssl help</code>. По любой команде можно получить справку так: <code>openssl &lt;команда&gt; -help</code>.</p>
+<h3 id="симметричное-шифрование">Симметричное шифрование</h3>
+<ol class="example" style="list-style-type: decimal">
+<li><p>Получите один псевдослучайный килобайт для использования в качестве ключа:</p>
+<pre><code>openssl rand -out symmetric.key 1024</code></pre></li>
+<li><p>Зашифруйте файл с сообщением при помощи шифратора AES-256-CBC с полученным ключом:</p>
+<pre><code>openssl enc -e -kfile symmetric.key -in message.txt -out message.enc -aes-256-cbc</code></pre></li>
+</ol>
+<p>Здесь <code>-e</code> означает шифрование (команда <code>enc</code> используется и для расшифровки с ключом <code>-d</code>).</p>
+<ol start="3" class="example" style="list-style-type: decimal">
+<li><p>Расшифруйте файл обратно:</p>
+<pre><code>openssl enc -d -kfile symmetric.key -in message.enc -out message.dec -aes-256-cbc</code></pre>
+<p>Проверьте, что оригинал открытого текста совпадает с восстановленным:</p>
+<pre><code>comp message.txt message.dec</code></pre>
+<p>(ОС семейтсва *nix используют для той же цели программу <code>cmp</code>.)</p></li>
+</ol>
+<h3 id="генерация-ключевой-пары">Генерация ключевой пары</h3>
+<ol start="4" class="example" style="list-style-type: decimal">
+<li><p>Создайте закрытый (приватный) ключ размером 2048 бит для алгоритма RSA:</p>
+<pre><code>openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out alice.pri</code></pre></li>
+</ol>
+<p>Команда генерирует только закрытый ключ, потому что открытый можно восстановить из закрытого (это остаток от его деления на известное простое число). Закрытый ключ используется для расшифровки и нанесения электронной подписи, поэтому его необходимо держать в тайне.</p>
+<ol start="5" class="example" style="list-style-type: decimal">
+<li><p>Получите открытый ключ из закрытого:</p>
+<pre><code>openssl pkey -in alice.pri -out alice.pub -pubout</code></pre></li>
+</ol>
+<p>Открытый ключ используется для шифрования и проверки электронной подписи, поэтому может свободно распространяться. Например, можно опубликовать открытый ключ на своем сайте, чтобы любой мог написать зашифрованное письмо, которое прочтет только владелец, и проверить, что ответ тоже написан им.</p>
+<ol start="6" class="example" style="list-style-type: decimal">
+<li>Создайте еще две ключевые пары Боба и Чарли: <code>bob.pri</code> с <code>bob.pub</code> и <code>charlie.pri</code> с <code>charlie.pub</code> соответственно.</li>
+</ol>
+<h3 id="асимметричное-шифрование">Асимметричное шифрование</h3>
+<ol start="7" class="example" style="list-style-type: decimal">
+<li><p>Зашифруйте сообщение открытым ключом Алисы:</p>
+<pre><code>openssl rsautl -encrypt -pubin -inkey alice.pub -in message.txt -out message.rsa.enc</code></pre></li>
+<li><p>Расшифруйте сообщение закрытым ключом Алисы:</p>
+<pre><code>openssl rsautl -decrypt -inkey alice.pri -in message.rsa.enc -out message.rsa.dec</code></pre>
+<p>Проверьте, что восстановленный открытый текст соответствует оригиналу.</p></li>
+<li><p>Убедитесь, что расшифровать сообщение закрытым ключом Боба нельзя.</p></li>
+</ol>
+<h3 id="электронная-цифровая-подпись-эцп">Электронная цифровая подпись (ЭЦП)</h3>
+<ol start="10" class="example" style="list-style-type: decimal">
+<li><p>Сформируйте ЭЦП сообщения, то есть его хэш, зашифрованный закрытым ключом.</p>
+<pre><code>openssl dgst -sha256 -sign alice.pri -out message.txt.sig message.txt</code></pre></li>
+<li><p>Выполните проверку ЭЦП, то есть расшифровку хэша якобы сообщения открытым ключом и его сличение и хэшем сообщения.</p>
+<pre><code>openssl dgst -sha256 -verify alice.pub -signature message.txt.sig message.txt</code></pre></li>
+<li><p>Убедитесь, что если подпись формировать закрытым ключом Боба, проверка открытым ключом Алисы покажет отрицательный результат.</p></li>
+</ol>
+<h3 id="генерация-корневого-электронного-сертификата">Генерация корневого электронного сертификата</h3>
+<ol start="13" class="example" style="list-style-type: decimal">
+<li><p>Создайте запрос на подпись сертификата (certificate sign request, CSR) для Чарли:</p>
+<pre><code>openssl req -new -key charlie.pri -out charlie.csr</code></pre>
+<p>Сведения о владельце заполните произвольно, кроме <code>Common Name</code>, для которого используйте свое имя <em>латиницей.</em> Последующие поля оставьте пустыми.</p>
+<p>Пример:</p>
+<ul>
+<li>Country: RU</li>
+<li>State/province: N/A</li>
+<li>Locality: Moscow</li>
+<li>Organization: MPEI</li>
+<li>Organizational Unit: Control and Automation</li>
+<li>Common Name: Alice</li>
+</ul></li>
+<li><p>Удовлетворите запрос Чарли, использовав для подписи его же закрытый ключ, то есть создайте для Чарли самоподписанный сертификат:</p>
+<pre><code>openssl x509 -req -signkey charlie.pri -in charlie.csr -out charlie.crt -days 365</code></pre></li>
+<li><p>Просмотрите сертификат Чарли:</p>
+<pre><code>openssl x509 -in charlie.crt -text -noout</code></pre></li>
+</ol>
+<h3 id="формирование-иерархии-электронных-сертификатов">Формирование иерархии электронных сертификатов</h3>
+<ol start="16" class="example" style="list-style-type: decimal">
+<li><p>Создайте запрос на подпись сертификата Алисы.</p></li>
+<li><p>Подпишите сертификат Алисы ключом Чарли:</p>
+<pre><code>openssl x509 -req -days 365 \
+    -CAkey charlie.pri -CA charlie.crt -CAserial charlie.srl -CAcreateserial \
+    -in alice.csr -out alice.crt</code></pre>
+<p>Здесь обратные косые черты использованы как символ переноса строк, в Windows следует вести одно длинную строку, убрав <code>\</code>, либо заменить эти символы на <code>^</code>.</p></li>
+<li><p>Просмотрите сертификат Алисы.</p></li>
+<li><p>Проверьте подлинность сертификата Алисы:</p>
+<pre><code>openssl verify -verbose -issuer_checks -CAfile charlie.crt alice.crt</code></pre></li>
+<li><p>Аналогичным образом создайте сертификат Боба, заверенный Чарли.</p></li>
+</ol>
+<h2 id="прокси-и-vpn">Прокси и VPN</h2>
+<p>Используются внешние серверы, доступ к которым следует получить у лаборантов.</p>
+<h3 id="локальный-socks-прокси">Локальный SOCKS-прокси</h3>
+<p>Очень просто организовать SOCKS-прокси, имя доступ на удаленный сервер по SSH. При этом прокси-сервер запускается на клиентской машине (где запущена <code>ssh</code> или PuTTY), и программы на ней могут подключиться к указанному порту по адресу <code>127.0.0.1</code>.</p>
+<p>Из консоли прокси-сервер запускается ключом <code>-D</code> с указанием порта:</p>
+<pre><code>```
+ssh -D 8888 &lt;прочие параметры&gt;
+```</code></pre>
+<p>При использовании PuTTY необходимо в разделе настроек <em>Connection → SSH → Tunnels</em> в поле <em>Source port</em> ввести локальный порт, к которому должны будут подключаться клиенты, ниже выбрать переключатели <em>Dynamic</em> и <em>IPv4,</em> после чего нажать <em>Add</em>, чтобы в список туннелей оказалась добавлена такая строка: <code>4D8888</code>, что очевидно.</p>
+<p>Для работы прокси необходимо оставить подключенный терминал открытым.</p>
+<p>В распространенных ОС имеются системные настройки прокси, откуда их может получить любая программа. Также большая часть ПО, способного работать через прокси, позволяет указать адрес прокси в своих настройках (крупным исключением является Google Chrome и другие браузеры этого семейства).</p>
+<ol start="21" class="example" style="list-style-type: decimal">
+<li><p>Организуйте локальный SOCKS5-прокси с выделенным вам сервером.</p></li>
+<li><p>Настройте бразуер использовать запущенный прокси и убедитесь, что он действительно применяется, то есть запросы к сайтам делаются с адреса сервера. Для этого посетите любой сайт, отображающий адрес IP клиента, с прокси и без него.</p></li>
+</ol>
+<h2 id="vpn">VPN</h2>
+<p>(boss fight)</p>
+<p>Напомним, что виртуальная частная сеть (virtual private network, VPN) представляет собой систему туннелей и действует на сетевом уровне.</p>
+<ol start="23" class="example" style="list-style-type: decimal">
+<li>Настроить сервер OpenVPN и подключиться к нему клиентом, взяв за основу <a href="https://wiki.archlinux.org/index.php/OpenVPN_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)#.D0.9E.D1.81.D0.BD.D0.BE.D0.B2.D0.BD.D0.B0.D1.8F_.D0.BA.D0.BE.D0.BD.D1.84.D0.B8.D0.B3.D1.83.D1.80.D0.B0.D1.86.D0.B8.D1.8F_L3_IP_.D0.BC.D0.B0.D1.80.D1.88.D1.80.D1.83.D1.82.D0.B8.D0.B7.D0.B0.D1.86.D0.B8.D0.B8">инструкцию</a>.</li>
+</ol>
+<p>Для этого можно использовать два внешних сервера, если в лаборатории невозможно установить OpenVPN. Сервер и клиент должны использовать созданные в этой ЛР ранее ключи и сертификаты.</p>
+<ul>
+<li><p>Параметры для протокола Диффи-Хеллмана (<code>dh2048.pem</code>) можно сгенерировать следующим образом:</p>
+<pre><code>openssl dhparam -out dh2048.pem dh2048</code></pre></li>
+<li><p>Шаблон конфигурации сервера OpenVPN: <a href="openvpn-server.conf"><code>openvpn-server.conf</code></a></p></li>
+<li><p>Шаблон конфигурации клиента сервеOpenVPN: <a href="openvpn-client.conf"><code>openvpn-client.conf</code></a></p></li>
+</ul>
+    <hr/>
+    <p>
+		Козлюк&nbsp;Д.&nbsp;А. для&nbsp;кафедры Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2018&nbsp;г.
+
+        <span id="buttons">
+            <!--LiveInternet counter--><script type="text/javascript"><!--
+            document.write('<a href="http://www.liveinternet.ru/click" '+
+            'target=_blank><img src="http://counter.yadro.ru/hit?t52.1;r'+
+            escape(document.referrer)+((typeof(screen)=='undefined')?'':
+            ';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
+            ';i'+escape('Жж'+document.title.substring(0,80))+';'+Math.random()+
+            '" alt="" title="LiveInternet: показано число просмотров и посетителей за 24 часа" '+
+            'border=0 width=88 height=31 id="counter"><\/a>')//--></script><!--/LiveInternet-->
+
+            <script type="text/javascript" src="/study/courses/assets/scripts/orphus.js"></script>
+            <a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="/study/courses/assets/images/orphus.gif" border="0" width="88" height="31" /></a>
+	    </span>
+    </p>
+</body>
+</html>
