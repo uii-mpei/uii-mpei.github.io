@@ -1,0 +1,236 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>СПО. ЛР № 2. Указания к выполнению</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/study/courses/assets/styles/style.css" type="text/css" />
+</head>
+<body>
+<div id="header">
+<h1 class="title">СПО. ЛР № 2. Указания к выполнению</h1>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#вариант-1.-обмен-сообщениями-через-разделяемую-память">Вариант 1. Обмен сообщениями через разделяемую память</a><ul>
+<li><a href="#c-нетипизированные-указатели-приведение-типов-и-auto">[C++] Нетипизированные указатели, приведение типов и <code>auto</code></a></li>
+</ul></li>
+<li><a href="#вариант-2.-хранилище-значений-по-ключу-с-доступом-через-именованные-каналы">Вариант 2. Хранилище значений по ключу с доступом через именованные каналы</a><ul>
+<li><a href="#сервер">Сервер</a><ul>
+<li><a href="#c-разбор-строк">[C++] Разбор строк</a></li>
+</ul></li>
+<li><a href="#клиент">Клиент</a></li>
+</ul></li>
+<li><a href="#вариант-3.-обмен-сообщениями-через-механизм-почтовых-ящиков-mailslots">Вариант 3. Обмен сообщениями через механизм почтовых ящиков (mailslots)</a></li>
+<li><a href="#вариант-4.-запуск-дочернего-процесса-с-перенаправлением-потоков-ввода-вывода">Вариант 4. Запуск дочернего процесса с перенаправлением потоков ввода-вывода</a></li>
+</ul>
+</div>
+<p>Разделы, отмеченные <code>[C++]</code>, могут представлять интерес для всех вариантов.</p>
+<hr />
+<p>Почти все процессы так или иначе взаимодействуют с другими:</p>
+<ul>
+<li>При работе из командной строки ввод в оболочку (<code>cmd.exe</code> в Windows) передается вызываемой программе, а вывод забирается у нее и отображается в оболочке; используются анонимные каналы.</li>
+<li>Весь интернет — это среда для обмена данными между процессами-клиентами (например, браузерами) и программами-серверами (соответственно, web-серверами). Процессы при этом запущены на разных машинах.</li>
+<li>Программы, работающие с сервером баз данных, передают ему запросы и получают ответы. Это может происходить как на одной машине, так и по сети. Например, MS SQL Server позволяет общаться с ним по сети, через именованные каналы или через разделяемую память.</li>
+<li>Обычные программы получают команды и запросы системным службам, в Windows обычно через механизм RPC (remote procedure call) или через оконные сообщения; в *nix — обычно через локальные сокеты (UNIX domain sockets).</li>
+</ul>
+<p>Не взаимодействуют с другими только самые простые задачи (хотя иногда очень важные, например, служебные потоки ядра ОС).</p>
+<p>В лабораторной работе изучаются именованные каналы, анонимные каналы и разделяемая память (как механизмы, присутствующие во всех популярных ОС) и Windows mailslots (как реализующие популярную во многих ОС концепцию). Не изучаются сеетвые сокеты (как обширная тема, выходящая за пределы дисциплины) и RPC (как специфичный для Windows механизм).</p>
+<h1 id="вариант-1.-обмен-сообщениями-через-разделяемую-память">Вариант 1. Обмен сообщениями через разделяемую память</h1>
+<p>Механизм разделяемой памяти (shared memory) позволяет создать в каждом из взаимодействующих процессов область виртуальной памяти, содержимое которой будет общим для всех участвующих процессов. Любой из этих процессов может записать данные в разделяемую память, и другие процессы смогут их считать. Это самый быстрый способ IPC, потому что работа с памятью не требует системных вызовов (кроме, возможно, страничных прерываний). Разделяемая память работает только в пределах машины.</p>
+<p>В Windows разделяемая память реализована на основе механизма проецирования файлов в память (file mapping). Проецирование файлов в память позволяет создать область памяти, содержимое которой будет совпадать с файлом или его частью. Чтение из этой области будет работать как чтение из файла, запись в нее — как запись в файл. Несколько процессов могут проецировать в свою память одни и те же файлы или их части, тогда содержимое этих областей памяти будет разделяемым между ними. Поэтому работа с разделяемой памятью начинается с функции <a href="https://docs.microsoft.com/en-us/windows/desktop/api/WinBase/nf-winbase-createfilemappinga"><code>CreateFileMapping()</code></a>. Ее параметры:</p>
+<ul>
+<li><p><code>HANDLE hFile</code> — дескриптор открытого файла, который проецируется. Если вместо него передать <code>INVALID_HANDLE_VALUE</code>, будет использована часть системного файла подкачки.</p></li>
+<li><p><code>LPSECURITY_ATTRIBUTES lpFileMappingAttributes</code> — указатель на атрибуты безопасности разделямой памяти (ограничения доступа к ней). Если не нужно особых условий, допускается передать <code>NULL</code>.</p></li>
+</ul>
+<p><code>DWORD flProtect</code> — режим доступа к области памяти: только для чтения, для чтения и записи (<code>PAGE_READWRITE</code>) и другие варианты.</p>
+<ul>
+<li><code>DWORD dwMaximumSizeHigh, DWORD dwMaximumSizeLow</code> — максимально допустимый размер области, которую смогут спроецировать процессы при помощи создаваемого отображения файла в память. Размер — 64-битное значение, поэтому передается в двух 32-битных переменных: для старших и младших разрядов.</li>
+</ul>
+<p><code>LPCSTR lpName</code> — имя файлового отображения, по которому другие процессы могут отыскать его функцией <a href="https://docs.microsoft.com/en-us/windows/desktop/api/winbase/nf-winbase-openfilemappinga"><code>OpenFileMapping()</code></a></p>
+<p><code>CreateFileMapping()</code> возвращает дескриптор файлового отображения.</p>
+<p>Далее этот дескриптор передается функции <a href="https://msdn.microsoft.com/en-us/df9f54cd-b2de-4107-a1c5-d5a07045851e"><code>MapViewOfFile()</code></a>, которая проецирует часть файлового отображения в адресное пространство процесса, возвращая указатель на область памяти с проекцией:</p>
+<pre><code>LPVOID memory = MapViewOfFile(...);</code></pre>
+<p>Также <code>MapViewOfFile()</code> передаются желаемые права доступа к участку памяти (например, <code>FILE_MAP_ALL_ACCESS</code> для полного доступа), смещение от начала файлового отображения (тоже в виде двух чисел, в случае ЛР это нули) и размер проецируемой области (имеет смысл проецировать все отображение).</p>
+<hr />
+<h2 id="c-нетипизированные-указатели-приведение-типов-и-auto">[C++] Нетипизированные указатели, приведение типов и <code>auto</code></h2>
+<p><code>LPVOID</code> (псевдоним для <code>void*</code>) — так называемый <em>нетипизированный указатель:</em> адрес памяти, по которому могут находиться данные любого типа. От обычных указателей он отличается тем, что его нельзя разыменовать (компилятору неизвестно, какого типа значение должно получиться после разыменования). Поэтому для его использования нужно <em>приведение типов (type cast):</em></p>
+<pre><code>char* message = reinterpret_cast&lt;char*&gt;(memory);</code></pre>
+<p>Это означает: взять адрес, хранящийся в <code>memory</code>, рассмотреть его как адрес символов, и поместить тот же адрес в указатель на символы <code>message</code>. Вместо конструкции <code>reinterpret_cast</code> можно встретить короткую форму в стиле C:</p>
+<pre><code>char* message = (char*)memory;</code></pre>
+<p>Однако громоздкая форма введена в C++ намеренно: приведение типов — опасная операция в том смысле, что компилятор не может проверить корректность приведения типов (программист утверждает, что по адресу <code>memory</code> будет строка, но компилятор не может проверить, не ошибается ли программист). Поэтому чем меньше в программе приведений типов и чем более они заметны, тем лучше.</p>
+<p>Чтобы не писать <code>char*</code> слева и справа (очевидно, что раз <code>memory</code> приводится к типу <code>char*</code>, тип <code>message</code> будет таким же) можно использовать ключевое слово <code>auto</code>:</p>
+<pre><code>auto message = reinterpret_cast&lt;char*&gt;(memory);</code></pre>
+<hr />
+<p>Так можно записать данные в разделяемую область:</p>
+<pre><code>char input[128];
+fgets(input, sizeof(input), stdin);
+strcpy(message, input);</code></pre>
+<p>Функция <code>fgets()</code> из стандартной библиотеки C++ <code>&lt;cstdio&gt;</code> считывает строку из файла. В данном случае в качестве файла выступает стандартный поток ввода <code>stdin</code>. Также функция принимает буфер, куда сохраняется строка, и его размер.</p>
+<p>Функция <code>strcpy()</code> копирует данные из второй строки C в первую. (Напомним: строка C — указатель на массив символов; ее копирование — копирование каждого символа из одной области памяти в другую.) В данном случае сообщение из буфера <code>input</code> копируется в разделяемую память по адресу, находящемуся в <code>message</code>.</p>
+<p>Для считывания данных не нужно и промежуточного буфера:</p>
+<pre><code>printf(&quot;Message from shared memory: %s\n&quot;, message);</code></pre>
+<p>По окончании работы с разделяемой памятью нужно прекратить ее проецирование функцией <a href="https://msdn.microsoft.com/en-us/aa366882"><code>UnmapViewOfFile()</code></a>.</p>
+<p>Также нужно освободить объект-отображение. Для этого используется универсальная функция для закрытия дескрипторов <a href="https://msdn.microsoft.com/en-us/library/ms724211(v=VS.85).aspx"><code>CloseHandle()</code></a>.</p>
+<h1 id="вариант-2.-хранилище-значений-по-ключу-с-доступом-через-именованные-каналы">Вариант 2. Хранилище значений по ключу с доступом через именованные каналы</h1>
+<p>Именованные каналы (named pipes) позволяют ровно двум процессам передавать последовательность сообщений или просто байтов. С использованием пары каналов (в *nix) или одного дуплексного канала (в Windows) это удобно для сценариев, когда процессы делают запросы и получают на них ответы. Каналы уступают в скорости разделяемой памяти (каждое обращение к каналу — системный вызов), но не требуют обращений к оборудованию*, данные передаются через память. Еще одно удобство именованных каналов в том, что работа с ними ведется как с файлами, например, можно процессу, ожидающему файл с исходными данными передать канал, данные в котором генерируются другим процессом.</p>
+<p><strong>*</strong> Именованные каналы позволяют сообщаться и процессам на различных машинах, в этом случае, очевидно, используется оборудование — сетевая карта.</p>
+<h2 id="сервер">Сервер</h2>
+<p>Для ввода данных в этом варианте целесообразно использовать средства C++ из заголовочного файла <code>&lt;iostream&gt;</code> и строки C++ из <code>&lt;string&gt;</code>. Например, так вводится имя канала:</p>
+<pre><code>std::string name;
+std::cin &gt;&gt; name;
+
+auto path = &quot;\\\\.\\pipe\\&quot; + path;
+
+auto pipe = CreateNamedPipe(path.c_str(), ...);</code></pre>
+<p>Полный путь к каналу формируется из переменной <code>name</code> в переменной <code>path</code>. Сравнивая его с документацией, можно видеть, что в строках специальный символ <code>\</code> требует удвоения. (Внимание: программы-примеры требуют вводить полный путь.)</p>
+<p>Выражение <code>path.c_str()</code> получает из объекта-строки <code>path</code> указатель на строку C с ее символами путем вызова метода <code>c_str()</code>.</p>
+<p>Функция <a href="https://docs.microsoft.com/en-us/windows/desktop/api/Winbase/nf-winbase-createnamedpipea"><code>CreateNamedPipe()</code></a>, помимо имени канала, принимает также режим открытия (принимающий, передающий или дуплексный) и режим работы канала (ориентированный на байты или на сообщения). Размеры буферов приема и передачи целесообразно указать порядка типового размера сообщения, например, по 64. Таймаут операций и атрибуты безопасности для данный ЛР не важны, можно указать их как <code>0</code> и <code>NULL</code> соответственно. <code>CreateNamedPipe()</code> возвращает дескриптор канала.</p>
+<p>Этот дескриптор принимает <a href="https://msdn.microsoft.com/en-us/library/Aa365146(v=VS.85).aspx"><code>ConnectNamedPipe()</code></a>. Ее второй параметр предназначен для асинхронной работы, выходящей за рамки ЛР, поэтому его можно сделать <code>NULL</code>.</p>
+<p>Функция <a href="https://docs.microsoft.com/en-us/windows/desktop/api/fileapi/nf-fileapi-readfile"><code>ReadFile()</code></a> принимает дескриптор канала и буфер для считываемых из него данных с размером этого буфера. В качестве буфера можно использовать строку C++ следующим образом:</p>
+<pre><code>std::string command(64, &#39;\0&#39;);
+ReadFile(pipe, &amp;command[0], command.size(), NULL, NULL);</code></pre>
+<p>Первая инструкция создает переменную <code>command</code> типа <code>std::string</code>, состоящую из 64 символов конца строки (<code>'\0'</code>). Вторая инструкция передает указатель <code>&amp;command[0]</code> на символы в строке <code>command</code> как буфер для <code>ReadFile()</code>. Размер буфера получается вызовом метода <code>size()</code> у <code>command</code>.</p>
+<hr />
+<h3 id="c-разбор-строк">[C++] Разбор строк</h3>
+<p>Вычитывать отдельные слова из строки-команды можно с помощью средств стандартного заголовочного файла <code>&lt;sstream&gt;</code>:</p>
+<pre><code>std::istringstream parser{command};
+std::string keyword;
+parser &gt;&gt; keyword;</code></pre>
+<p>Переменная <code>parser</code> типа <code>std::istringstream</code> — это <em>поток ввода</em> из строки, то есть <code>parser</code> работает так же, как <code>std::cin</code>, но читает не с клавиатуры, а из строки <code>command</code>. В данном случае на последней строки считывается первое слово в переменную <code>keyword</code>. Если повторить эту операцию, будет прочитано второе слово. Например, так можно обрабатывать команду <code>set</code>:</p>
+<pre><code>if (keyword == &quot;set&quot;) {
+    std::string name;
+    std::string value;
+    parser &gt;&gt; name &gt;&gt; value;</code></pre>
+<hr />
+<p>Как сохранить в словаре значение <code>value</code> по ключу <code>name</code>? Работа со словарями типа <code>std::map</code> описана в <a href="https://docs.google.com/document/d/12HaYKjOMaqygGyenepie4jfWPTkzqsm-ZYqFnSuT8PQ">пособии</a>. Переменную-словарь нужно завести в начале функции <code>main()</code>. Для продолжения обработки команды <code>set</code> нужно записать значение в словарь (названный <code>data</code>):</p>
+<pre><code>    data[name] = value;</code></pre>
+<p>Ответ сервера записывается в канал функцией <a href="https://docs.microsoft.com/en-us/windows/desktop/api/fileapi/nf-fileapi-writefile"><code>WriteFile()</code></a>, которая аналогична <code>ReadFile()</code>:</p>
+<pre><code>    std::string response = &quot;acknowledged&quot;;
+    WriteFile(pipe, response.c_str(), response.size(), NULL, NULL);
+}</code></pre>
+<p>Структура программы-сервера следующая: цикл работы с клиентами (одна итерация на одно подключение, выход по запросу пользователя сервера), внутри которого цикл обработки команд клиента (выход по команде <code>quit</code>). Таким образом, на верхнем уровне сервер устроен так:</p>
+<pre><code>pipe = CreateNamedPipe(...)
+
+while (true) {
+    ConnectNamedPipe(pipe, ...);
+
+    while (true) {
+        ReadFile(pipe, ...);
+
+        // обработка различных команд (опущена)
+
+        if (command == &quot;quit&quot;) {
+            DisconnectNamedPipe(pipe);
+            break;
+        }
+    }
+
+    // запрос продолжения у пользователя, break при отказе (опущено)
+}</code></pre>
+<h2 id="клиент">Клиент</h2>
+<p>Подключение к именованному каналу выполняется универсальной функцией <a href="https://docs.microsoft.com/en-us/windows/desktop/api/fileapi/nf-fileapi-createfilea"><code>CreateFile()</code></a>. Ключевой параметр — <em>полное</em> имя канала. Желаемые режимы доступа <code>GENERIC_READ | GENERIC_WRITE</code>, так как клиент и пишет в канал команды, и читает ответы на них. Разделения доступа и особых атрибутов безопасности не требуется, можно передать <code>0</code> и <code>NULL</code>. Подключение производится к существующему каналу (режим <code>OPEN_EXISTING</code>), особых атрибутов у канала нет (<code>FILE_ATTRIBUTE_NORMAL</code>).</p>
+<h1 id="вариант-3.-обмен-сообщениями-через-механизм-почтовых-ящиков-mailslots">Вариант 3. Обмен сообщениями через механизм почтовых ящиков (mailslots)</h1>
+<p>Механизм почтовых ящиков (mailslots) изначально реализован в Windows для совместимости с OS/2. Поскольку развитие OS/2 прекратилось в 1990-е, а в других ОС нет mailslots, это уникальный для Windows и непопулярный в целом механизм. В *nix аналогичная задача — отправка сообщений от многих клиентов одновременно одному серверу — решается обычно через локальные сокеты (UNIX domain sockets), отсутствующие в Windows. Поэтому, хотя конкретно mailslots и мало распространены, реализуемый ими принцип весьма практичен.</p>
+<p>Функцию <a href="https://docs.microsoft.com/en-us/windows/desktop/api/Winbase/nf-winbase-createmailslota"><code>CreateMailslot()</code></a> требуется вызывать с указанием особых атрибутов безопасности, как описано в задании. С учетом приведенного там же кода это делается так:</p>
+<pre><code>auto attributes = create_security_attributes();
+auto mailslot = CreateMailslot(..., &amp;attributes);</code></pre>
+<p>Об использовании <code>ReadFile()</code> и <code>WriteFile()</code> см. указания к варианту 2.</p>
+<h1 id="вариант-4.-запуск-дочернего-процесса-с-перенаправлением-потоков-ввода-вывода">Вариант 4. Запуск дочернего процесса с перенаправлением потоков ввода-вывода</h1>
+<p>Перед выполнением рекомендуется внимательно ознакомиться с заданием и пояснениями к нему.</p>
+<p>Укрупненный алгоритм работы программы:</p>
+<ol style="list-style-type: decimal">
+<li>Создать анонимный канал для ввода и для вывода (по два дескриптора).</li>
+<li>Сделать дескрипторы тех концов каналов, которые будут использоваться дочерним процессом, наследуемыми.</li>
+<li>Создать дочерний процесс, передав ему дескрипторы-концы каналов для использования в качестве стандартного ввода и вывода.</li>
+<li>В цикле считывать команду с клавиатуры, записывать ее в канал ввода, читать результат из канала вывода и печатать на экран.</li>
+</ol>
+<p>Чтобы дескрипторы каналов могли быть наследуемыми, нужно при создании канала передавать атрибуты безопасности:</p>
+<pre><code>SECURITY_ATTRIBUTES attributes;
+attributes.nLength = sizeof(SECURITY_ATTRIBUTES);
+attributes.bInheritHandle = TRUE;
+attributes.lpSecurityDescriptor = NULL;</code></pre>
+<p>Анонимные каналы создаются функцией <a href="https://msdn.microsoft.com/en-us/library/Aa365152(v=VS.85).aspx"><code>CreatePipe()</code></a>, например, для канала ввода:</p>
+<pre><code>HANDLE input_pipe_read_end;
+HANDLE input_pipe_write_end;
+CreatePipe(&amp;input_pipe_read_end, &amp;input_pipe_write_end, &amp;attributes, 0);</code></pre>
+<p>Здесь <code>input_pipe_read_end</code> — конец канала, из которого производится чтение, то есть тот конец, который будет передан дочернему процессу.</p>
+<p>Канал вывода создается аналогично для второй пары дескрипторов, только из них в дочерний процесс будет передаваться конец для записи в канал.</p>
+<p>В дополнение к атрибутам безопасности необходимо разрешить наследование функцией <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms724935(v=vs.85).aspx"><code>SetHandleInformation()</code></a> для тех дескрипторов-концов, которые остаются в текущем процессе (на примере канала ввода, для канала вывода аналогично):</p>
+<pre><code>SetHandleInformation(input_pipe_write_end, HANDLE_FLAG_INHERIT, 0);</code></pre>
+<p>Для создания дочернего процесса нужно подготовить структуру <a href="https://docs.microsoft.com/en-us/windows/desktop/api/processthreadsapi/ns-processthreadsapi-_startupinfoa"><code>STRATUPINFO</code></a>, указав в ней концы каналов для передачи в создаваемый процесс и необходимые флаги:</p>
+<pre><code>STARTUPINFO startup_info;
+ZeroMemory(&amp;startup_info, sizeof(startup_info));
+startup_info.cb = sizeof(startup_info);
+startup_info.hStdInput = input_pipe_read_end;
+startup_info.hStdOutput = output_pipe_write_end;
+startup_info.hStdError = output_pipe_write_end;
+startup_info.dwFlags |= STARTF_USESTDHANDLES;</code></pre>
+<p>Функция <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa366920(v=vs.85).aspx"><code>ZeroMemory()</code></a> заполняет нулями участок памяти, заданный указателем на начало и длиной.</p>
+<p>Знак <code>|=</code> — оператор сокращенного присваивания, совмещенного с побитовым «ИЛИ», то есть с добавлением флага в комбинацию:</p>
+<pre><code>startup_info.dwFlags = startup_info.dwFlags | STARTF_USESTDHANDLES;</code></pre>
+<p>При запуске дочернего процесса функцией <a href="https://docs.microsoft.com/en-us/windows/desktop/api/processthreadsapi/nf-processthreadsapi-createprocessa"><code>CreateProcess()</code></a> для большей части параметров годится значение по умолчанию, то есть передается <code>0</code> или <code>NULL</code>.</p>
+<pre><code>PROCESS_INFORMATION pi;
+CreateProcess(
+    NULL,
+    &quot;cmd.exe&quot;,
+    NULL,
+    NULL,
+    TRUE,
+    0,
+    NULL,
+    NULL,
+    &amp;startup_info,
+    &amp;pi);</code></pre>
+<p>Необходимо указать лишь имя исполняемого файла (<code>&quot;cmd.exe&quot;</code>), признак необходимости наследовать дескрипторы (<code>TRUE</code>), а также указатели на <code>STARTUPINFO</code> и <code>PROCESS_INFORMATION</code> с результатами вызова (дескрипторами процесса и потока).</p>
+<p>Далее следует цикл отображения приглашений командной строки, чтения команд и выдачи результатов.</p>
+<p>Чтение приглашения выполняется функцией <code>ReadFile()</code>, о которой написано в указаниях к варианту 2. Следует обратить внимание, что дочерний процесс не пишет в конце своего вывода символ <code>'\0'</code>, поэтому нужно выводить ровно те символы, которые были получены, а не просто весь буфер, так как нельзя рассчитывать на наличие у него <code>'\0'</code> в конце:</p>
+<pre><code>DWORD bytes_read;
+do {
+    char buffer[64];
+    ReadFile(output_pipe_write_end, buffer, sizeof(buffer), &amp;bytes_read, NULL);
+    fwrite(buffer, bytes_read, 1, stdout);</code></pre>
+<p>Здесь стандартная функция С++ для записи в файл <code>fwrite()</code> (из <code>&lt;cstdio&gt;</code>) получает в качестве файла стандартный поток вывода <code>stdout</code>.</p>
+<p>Заканчивать чтение очередного блока вывода дочернего процесса нужно тогда, когда будет прочитано 0 байтов:</p>
+<pre><code>} while (bytes_read != 0);</code></pre>
+<p>Напомним, цикл <code>do { ... } while (...);</code> в C++ аналогичен циклу <code>repeat... until</code> в Pascal, но с инвертированным условием.</p>
+<p>Запрос у пользователя команды вкупе с проверкой вежливости можно выполнить так:</p>
+<pre><code>char* input = NULL;
+char buffer[256];
+while (!input) {
+    fgets(buffer, sizeof(buffer), stdin);
+    if (!strncmp(buffer, &quot;thanks&quot;, 6)) {
+        break;
+    }
+    else if (strncmp(buffer, &quot;please&quot;, 6)) {
+        fprintf(stderr, &quot;Please ask politely!\n&gt; &quot;);
+    }
+    else {
+        input = buffer + sizeof(PLEASE);
+    }
+}</code></pre>
+<p>Все функции здесь — из стандартной библиотеки C++. Разобрать его или написать аналог самостоятельно предлагается в качестве упражнения. По окончании цикла либо будет <code>input == NULL</code> (и тогда нужно выйти из программы), либо <code>input</code> будет указывать на начало непосредственно команды (без слова <code>please</code>).</p>
+<p>Команда передается дочернему процессу путем записи в канал ввода через дескриптор <code>input_pipe_write_end</code> функцией <code>WriteFile()</code> (см. указания к варианту 2). В качестве буфера ей передается <code>input</code>, его длину можно вычислить стандартной функцией <code>strlen()</code>.</p>
+    <hr/>
+    <p>
+		Козлюк&nbsp;Д.&nbsp;А. для&nbsp;кафедры Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2018&nbsp;г.
+
+        <span id="buttons">
+            <!--LiveInternet counter--><script type="text/javascript"><!--
+            document.write('<a href="http://www.liveinternet.ru/click" '+
+            'target=_blank><img src="http://counter.yadro.ru/hit?t52.1;r'+
+            escape(document.referrer)+((typeof(screen)=='undefined')?'':
+            ';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
+            ';i'+escape('Жж'+document.title.substring(0,80))+';'+Math.random()+
+            '" alt="" title="LiveInternet: показано число просмотров и посетителей за 24 часа" '+
+            'border=0 width=88 height=31 id="counter"><\/a>')//--></script><!--/LiveInternet-->
+
+            <script type="text/javascript" src="/study/courses/assets/scripts/orphus.js"></script>
+            <a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="/study/courses/assets/images/orphus.gif" border="0" width="88" height="31" /></a>
+	    </span>
+    </p>
+</body>
+</html>
