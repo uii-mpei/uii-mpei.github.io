@@ -197,7 +197,9 @@ do {
 <pre><code>} while (bytes_read != 0);</code></pre>
 <p>Напомним, цикл <code>do { ... } while (...);</code> в C++ аналогичен циклу <code>repeat... until</code> в Pascal, но с инвертированным условием.</p>
 <p>Запрос у пользователя команды вкупе с проверкой вежливости можно выполнить так:</p>
-<pre><code>char* input = NULL;
+<pre><code>const char PLEASE[] = &quot;please&quot;;
+
+char* input = NULL;
 char buffer[256];
 while (!input) {
     fgets(buffer, sizeof(buffer), stdin);
