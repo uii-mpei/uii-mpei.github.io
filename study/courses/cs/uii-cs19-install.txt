@@ -1,0 +1,44 @@
+﻿Инструкция по установке ПО
+==========================
+
+Дмитрий Козлюк <dmitry.kozliuk@gmail.com>
+
+
+1. Компилятор GCC 8.1 (MinGW-w64)
+
+Официальный сайт GCC: https://gcc.gnu.org
+Официальный сайт MinGW-w64 (версия для Windows): https://mingw-w64.org
+
+Архив по ссылке должен быть распакован в каталог C:\MinGW (его нужно создать):
+https://netix.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/threads-win32/sjlj/i686-8.1.0-release-win32-sjlj-rt_v6-rev0.7z
+
+
+2. Среда разработки CodeBlocks
+
+Официальный сайт: http://www.codeblocks.org
+
+Установочный файл:
+https://vorboss.dl.sourceforge.net/project/codeblocks/Binaries/17.12/Windows/codeblocks-17.12-setup.exe
+
+Набор настроек по умолчанию CodeBlocks.zip или по ссылке:
+http://uii.mpei.ru/study/courses/common/codeblocks-17.12-settings.zip
+Каталог CodeBlocks из архива должен быть размещен
+в %USERPROFILE%/AppData/Roaming пользователя-студента.
+
+
+3. Система контроля версий Git
+
+Официальный сайт: http://git-scm.com
+
+Установочный файл:
+https://github.com/git-for-windows/git/releases/download/v2.20.1.windows.1/Git-2.20.1-32-bit.exe
+
+
+4. Сборочная система CMake
+
+Официальный сайт: https://cmake.org
+
+Установочный файл:
+https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3-win32-x86.msi
+
+Выбрать вариант «Add CMake to the system PATH for all users».
