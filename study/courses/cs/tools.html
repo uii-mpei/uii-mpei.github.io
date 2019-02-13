@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Инструкция по установке ПО</title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Инструкция по установке ПО</h1>
+</div>
+<p>Это краткая версия, как установить такую же среду, как в лаборатории. Больше вариантов (например, для Mac или не CodeBlocks) — в <a href="/study/courses/common/ide.html">общей инструкции</a>.</p>
+<p>В Windows XP каталоги установки и проектов не должны содержать пробелов и кириллицы.</p>
+<h2 id="компилятор-gcc-8.1-mingw-w64">Компилятор GCC 8.1 (MinGW-w64)</h2>
+<p>Создать каталог <code>C:\MinGW</code> и распаковать в него <a href="https://netix.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/8.1.0/threads-win32/sjlj/i686-8.1.0-release-win32-sjlj-rt_v6-rev0.7z">архив</a>.</p>
+<p>Официальный сайт GCC: <a href="https://gcc.gnu.org" class="uri">https://gcc.gnu.org</a>.<br />
+Официальный сайт MinGW-w64 (версия для Windows): <a href="https://mingw-w64.org" class="uri">https://mingw-w64.org</a>.</p>
+<h2 id="среда-разработки-codeblocks">Среда разработки CodeBlocks</h2>
+<ol style="list-style-type: decimal">
+<li><a href="https://vorboss.dl.sourceforge.net/project/codeblocks/Binaries/17.12/Windows/codeblocks-17.12-setup.exe">Установить</a> CodeBlocks, все по умолчанию, но в конце не запускать среду.</li>
+<li>Открыть «Проводник», в строку адреса ввести <code>%AppData%\Roaming</code> и нажать <em>Enter</em> (для редактирования адреса надо нажать на значок папки слева от адреса).</li>
+<li>Распаковать в открывшуюся папку <a href="http://uii.mpei.ru/study/courses/common/codeblocks-17.12-settings.zip">архив настроек</a>. (Если каталог <code>CodeBlocks</code> уже существует, заменить его.)</li>
+</ol>
+<p>Официальный сайт: <a href="http://www.codeblocks.org" class="uri">http://www.codeblocks.org</a>.</p>
+<h2 id="система-контроля-версий-git">Система контроля версий Git</h2>
+<p><a href="https://github.com/git-for-windows/git/releases/download/v2.20.1.windows.1/Git-2.20.1-32-bit.exe">Просто установить.</a></p>
+<p>Официальный сайт: <a href="http://git-scm.com" class="uri">http://git-scm.com</a>.</p>
+<h2 id="сборочная-система-cmake">Сборочная система CMake</h2>
+<p>При <a href="https://github.com/Kitware/CMake/releases/download/v3.13.3/cmake-3.13.3-win32-x86.msi">установке</a> выбрать вариант «Add CMake to the system PATH for all users».</p>
+<p>Официальный сайт: <a href="https://cmake.org" class="uri">https://cmake.org</a>.</p>
+    <hr/>
+    <p>
+		Козлюк&nbsp;Д.&nbsp;А., Мохов&nbsp;А.&nbsp;С., Василькова&nbsp;П.&nbsp;Д. для&nbsp;кафедры Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2019&nbsp;г.
+
+        <span id="buttons">
+            <!--LiveInternet counter--><script type="text/javascript"><!--
+            document.write('<a href="http://www.liveinternet.ru/click" '+
+            'target=_blank><img src="http://counter.yadro.ru/hit?t52.1;r'+
+            escape(document.referrer)+((typeof(screen)=='undefined')?'':
+            ';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
+            ';i'+escape('Жж'+document.title.substring(0,80))+';'+Math.random()+
+            '" alt="" title="LiveInternet: показано число просмотров и посетителей за 24 часа" '+
+            'border=0 width=88 height=31 id="counter"><\/a>')//--></script><!--/LiveInternet-->
+
+            <script type="text/javascript" src="/study/courses/assets/scripts/orphus.js"></script>
+            <a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="/study/courses/assets/images/orphus.gif" border="0" width="88" height="31" /></a>
+	    </span>
+    </p>
+</body>
+</html>
