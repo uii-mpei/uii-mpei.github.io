@@ -1,87 +1,74 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
 <head>
-  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
   <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <title>РПОСУ. ЛР № 1. Основы языка C++</title>
-  <style>
-      code{white-space: pre-wrap;}
-      span.smallcaps{font-variant: small-caps;}
-      span.underline{text-decoration: underline;}
-      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
   </style>
-  <style>
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
-}
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {  }
-@media screen {
-a.sourceLine::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
 </head>
 <body>
-<header id="title-block-header">
+<div id="header">
 <h1 class="title">РПОСУ. ЛР № 1. Основы языка C++</h1>
-</header>
+</div>
+<div id="TOC">
+<ul>
+<li><a href="#цель-работы">Цель работы</a></li>
+<li><a href="#задание">Задание</a></li>
+<li><a href="#указания-квыполнению-работы">Указания к выполнению работы</a><ul>
+<li><a href="#ввод-данных">Ввод данных</a></li>
+<li><a href="#обработкаданных">Обработка данных</a><ul>
+<li><a href="#определение-индексакорзины-позначению-элемента">Определение индекса корзины по значению элемента </a></li>
+<li><a href="#определение-диапазоначисел-вмассиве">Определение диапазона чисел в массиве</a></li>
+<li><a href="#формирование-корзин">Формирование корзин</a></li>
+</ul></li>
+<li><a href="#вывод-данных">Вывод данных</a><ul>
+<li><a href="#этап-1-минимально-работающий-вариант">Этап 1: минимально-работающий вариант</a></li>
+<li><a href="#автоматическая-проверкапоэталонному-вводу-ивыводу">Автоматическая проверка по эталонному вводу и выводу</a></li>
+<li><a href="#этап-2.-выравнивание-подписей-столбцов">Этап 2. Выравнивание подписей столбцов </a></li>
+<li><a href="#этап-3.-масштабирование-столбцовгистограммы">Этап 3. Масштабирование столбцов гистограммы</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#варианты-индивидуальных-заданий">Варианты индивидуальных заданий</a></li>
+</ul>
+</div>
 <p><strong>Дополнительные материалы</strong> (в ЛР объясняется необходимый минимум):</p>
 <ul>
 <li><a href="http://cmd.readthedocs.io/cmd.html">Основы работы с командной строкой</a></li>
@@ -89,13 +76,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="http://ab57.ru/cmdlist/fc.html">Документация к программе FC</a></li>
 </ul>
 <h1 id="цель-работы">Цель работы</h1>
-<ol type="1">
+<ol style="list-style-type: decimal">
 <li>Владеть базовыми конструкциями и типами языка C++.</li>
 <li>Уметь работать в среде программирования CodeBlocks.</li>
 <li>Уметь автоматически проверять программы по эталонному вводу и выводу.</li>
 </ol>
 <h1 id="задание">Задание</h1>
-<ol type="1">
+<ol style="list-style-type: decimal">
 <li>Написать программу для построения гистограммы массива чисел.</li>
 <li>Доработать программу в соответствии с вариантом.</li>
 </ol>
@@ -111,22 +98,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>Подписи к столбцам выровнены до трех знакомест (можно считать, что в корзину больше 999 чисел не попадет).</p></li>
 <li><p>Ширина всей гистограммы (подписи и звездочек в каждом столбце) должна  укладываться в 80 симоволов. Если в корзину попало больше чисел, все столбцы нужно пропорционально сжать, чтобы выполнить условие.</p></li>
 </ul>
-<h1 id="указания-к-выполнению-работы">Указания к выполнению работы</h1>
+<h1 id="указания-квыполнению-работы">Указания к выполнению работы</h1>
 <p>Алгоритм работы программы логично разделить на три этапа:</p>
-<ol type="1">
+<ol style="list-style-type: decimal">
 <li>Ввод данных (считывание массива чисел и количества столбцов).</li>
 <li>Обработка данных (расчет количества чисел, попавших в каждую корзину).</li>
 <li>Вывод данных (отображение рассчитанных значений в виде гистограммы).</li>
 </ol>
 <p>Ввод данных составляет:</p>
-<ol type="1">
+<ol style="list-style-type: decimal">
 <li>Ввод количества значений (целого числа).</li>
 <li>Ввод значений (цикл, заполняющий массив).</li>
 <li>Ввод количества корзин (целого числа).</li>
 </ol>
 <p>Обработка заключается в том, чтобы массив чисел преобразовать в массив их количеств в каждой корзине. Для этого нужно рассмотреть каждое число, узнать номер корзины, в которую оно попадает, и увеличить счетчик чисел для этой корзины.</p>
 <p>Вывод данных имеет смысл выполнить в несколько подходов: сначала элементарно, чтобы убедиться в правильности обработки, затем реализовать требования к отображению.</p>
-<ol type="1">
+<ol style="list-style-type: decimal">
 <li>Отображать для каждой корзины количество чисел в ней, ось и такое же количество звездочек, сколько чисел в корзине.</li>
 <li>Выровнять подписи до трех знакомест.</li>
 <li>Масштабировать высоты столбцов, чтобы уложиться в 80 символов.</li>
@@ -134,29 +121,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 id="ввод-данных">Ввод данных</h2>
 <p>Входные данные (переменные): количество чисел, числа, количество корзин.</p>
 <p>В C++ есть специальный тип <code>size_t</code>, подходящий для размеров массивов: целое неотрицательное число с широким диапазоном значений. Целесообразно  использовать его для количества чисел:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb3-1" title="1"><span class="dt">size_t</span> number_count;</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">size_t</span> number_count;</code></pre></div>
 <p>Имя переменной сообщает, что в ней хранится: number count по-английски  «количество чисел». Всем переменным нужно давать осмысленные имена  (исключения: счетчики циклов <code>i</code>, <code>j</code>, … и математические формулы). Программы чаще читаются, чем пишутся — их понятность важнее размера. Скорости набора текста помогает редактор, подсказывающий имена по мере ввода.</p>
 <p>Ввод стандартный:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb4-1" title="1">cout &lt;&lt; <span class="st">&quot;Enter number count: &quot;</span>;</a>
-<a class="sourceLine" id="cb4-2" title="2">cin &gt;&gt; number_count;</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">cout &lt;&lt; <span class="st">&quot;Enter number count: &quot;</span>;
+cin &gt;&gt; number_count;</code></pre></div>
 <p>Отображение кириллицы в консоли Windows требует ухищрений. Применять их не нужно, во всех ЛР достаточно англоязычного вывода.</p>
 <p>Массив значений состоит из действительных чисел, выберем для них тип <code>double</code>. Размер массива определяется во время работы программы переменной <code>number_count</code>, то есть это динамический массив. Его можно реализовать через <code>new[]</code>/<code>delete[]</code>, но в современном C++ принято использовать вектор, в данном случае — <code>vector&lt;double&gt;</code>.</p>
 <p>Для использования <code>vector&lt;T&gt;</code> нужно подключить часть стандартной библиотеки:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb5-1" title="1"><span class="pp">#include </span><span class="im">&lt;vector&gt;</span></a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="pp">#include </span><span class="im">&lt;vector&gt;</span></code></pre></div>
 <p>При объявлении переменной <code>numbers</code> (числа) типа <code>vector&lt;T&gt;</code> можно сразу указать размер:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb6-1" title="1">vector&lt;<span class="dt">double</span>&gt; numbers(number_count);</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">vector&lt;<span class="dt">double</span>&gt; numbers(number_count);</code></pre></div>
 <p>Очевидно, это нужно делать после ввода <code>number_count</code>. Если бы <code>numbers</code> была объявлена до этого, ей не нужно было бы передавать аргумент в скобках; вместо этого после ввода <code>number_count</code> нужно было бы изменить размер:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb7-1" title="1">numbers.resize(number_count);</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">numbers.resize(number_count);</code></pre></div>
 <p>Однако безопаснее объявлять переменные как можно ближе к месту первого использования: меньше риск случайно обратиться к ним до инициализации. Например, если объявить <code>numbers</code> в начале программы, ничто не помешает обратиться к его элементам до вызова <code>resize()</code>, что приведет к ошибке.</p>
 <p>Числа вводятся в <code>numbers</code> стандартным циклом <code>for</code> со счетчиком. Код нужно написать самостоятельно.</p>
 <p>Количество корзин <code>bin_count</code> целесообразно сделать того же типа, что и <code>number_count</code> и вводить так же.</p>
-<h2 id="обработка-данных">Обработка данных</h2>
+<h2 id="обработкаданных">Обработка данных</h2>
 <p>Необходимо для каждой корзины подсчитать количество попавших в нее чисел, то есть заполнить массив счетчиков. Тип счетчика — <code>size_t</code>, потому что  это по сути такое же количество, как количество чисел. Их массив имеет размер <code>bin_count</code>, а начальные значения в нем — нули:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb8-1" title="1">vector&lt;<span class="dt">size_t</span>&gt; bins(bin_count, <span class="dv">0</span>);</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">vector&lt;<span class="dt">size_t</span>&gt; bins(bin_count, <span class="dv">0</span>);</code></pre></div>
 <p>Как по значению элемента определить номер корзины, куда он попадает?</p>
-<h3 id="определение-индекса-корзины-по-значению-элемента">Определение индекса корзины по значению элемента </h3>
+<h3 id="определение-индексакорзины-позначению-элемента">Определение индекса корзины по значению элемента </h3>
 <p>Рассмотрим сначала простой случай, когда значения распределены от нуля до некоторого максимума <code>high</code>. Тогда, чтобы получить индекс корзины по значению элемента, нужно поделить значение на ширину столбца и отбросить дробную часть. Ширина столбца будет <code>(high / bin_count)</code>. Как перейти к этому простому случаю от исходного? Очевидно, чтобы перевести значение из <code>[min; max]</code> в <code>[0; high]</code> можно вычесть из значения <code>min</code>, тогда <code>high = max - min</code>. Подстановка в итоговую формулу дает (это выражение появится в программе позже):</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb9-1" title="1"><span class="dt">size_t</span> bin_index = (number - min) * bin_count / (max - min);</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">size_t</span> bin_index = (number - min) * bin_count / (max - min);</code></pre></div>
 <p>Можно рассуждать и по-другому. Очевидно, что минимальный элемент попадет в первую корзину (с индексом 0), максимальный — в последнюю корзину, а элемент, значение которого посередине между ними — в корзину посередине. Можно ожидать, что формула будет линейным преобразованием числа <code>number</code> в индекс корзины <code>bin_index</code>:</p>
 <pre class="text"><code>bin_index = factor * (number + shift)</code></pre>
 <p>Определим, чем равны коэффициенты <code>factor</code> (множитель) и <code>shift</code> (сдвиг). Минимум <code>min</code> должен переходить в индекс 0:</p>
@@ -170,18 +157,18 @@ shift  = -min</code></pre>
 <pre class="text"><code>size_t bin_index = column_count * (number - min) / (max - min);</code></pre>
 <p>Тип <code>size_t</code> для <code>bin_index</code> несомненный — такой же, как количество корзин. Результат деления будет дробным, однако C++ отбрасывает дробную часть, если дробное выражение присвоить целочисленной переменной.</p>
 <p>Можно заметить, что при <code>number == max</code> значение <code>bin_index</code> будет <code>bin_count</code>, а это недопустимый индекс для массива <code>bins</code>. Выходом будет после расчета по формуле уменьшать <code>bin_count</code> на 1 в этом случае. Ошибка появилась потому, что в формуле смешаны непрерывные и целочисленные операции.</p>
-<h3 id="определение-диапазона-чисел-в-массиве">Определение диапазона чисел в массиве</h3>
+<h3 id="определение-диапазоначисел-вмассиве">Определение диапазона чисел в массиве</h3>
 <p>Для расчета индексов столбцов нужно найти наибольший и наименьший элементы в массиве. Разберем эту простую задачу подробно, чтобы изучить диапазонный цикл <code>for</code> (range-based for loop). Формулировка решения: <em>для каждого</em> массива  чисел сравнить его с максимумом и минимумом, при необходимости скорректировать максимум или минимум. Заметим, что решение не оперирует индексами  в массиве — только значением очередного элемента. Для выражение этой идеи  в C++ есть диапазонный цикл <code>for</code>:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb15-1" title="1"><span class="dt">double</span> min = numbers[<span class="dv">0</span>];</a>
-<a class="sourceLine" id="cb15-2" title="2"><span class="dt">double</span> max = numbers[<span class="dv">0</span>];</a>
-<a class="sourceLine" id="cb15-3" title="3"><span class="cf">for</span> (<span class="dt">double</span> x : numbers) {</a>
-<a class="sourceLine" id="cb15-4" title="4">    <span class="cf">if</span> (x &lt; min) {</a>
-<a class="sourceLine" id="cb15-5" title="5">        min = x;</a>
-<a class="sourceLine" id="cb15-6" title="6">    }</a>
-<a class="sourceLine" id="cb15-7" title="7">    <span class="cf">else</span> <span class="cf">if</span> (x &gt; max) {</a>
-<a class="sourceLine" id="cb15-8" title="8">        max = x;</a>
-<a class="sourceLine" id="cb15-9" title="9">    }</a>
-<a class="sourceLine" id="cb15-10" title="10">}</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">double</span> min = numbers[<span class="dv">0</span>];
+<span class="dt">double</span> max = numbers[<span class="dv">0</span>];
+<span class="cf">for</span> (<span class="dt">double</span> x : numbers) {
+    <span class="cf">if</span> (x &lt; min) {
+        min = x;
+    }
+    <span class="cf">else</span> <span class="cf">if</span> (x &gt; max) {
+        max = x;
+    }
+}</code></pre></div>
 <p>Запись <code>for (double x : numbers) { ... }</code> означает: выполнить тело цикла  <em>для каждого</em> элемента <code>x</code> (типа <code>double</code>) из массива <code>numbers</code>, то есть в точности соответствует логике решения.</p>
 <p>Отметим оформление кода:</p>
 <ul>
@@ -196,21 +183,21 @@ shift  = -min</code></pre>
 <p>Для каждого элемента <code>bin</code> массива <code>bins</code> нужно вывести значение <code>bin</code>, символ <code>|</code> и <em>bin</em> звездочек (внутренним циклом со счетчиком); после звездочек нужен перевод строки. Код нужно написать самостоятельно.</p>
 <p>На этом этапе можно проверить работу программы: ввести данные из примера  (десять чисел, три корзины) и визуально сопоставить гистограммы.</p>
 <p>На последующих этапах нужно будет проверять работу программы на десятках чисел, вводить которые долго и чревато ошибками. Можно записать числа в файл и вставлять в консоль, но сравнивать результаты (считать звездочки) не легче. Проблема усугубляется, если нужно проводить много тестов.</p>
-<h3 id="автоматическая-проверка-по-эталонному-вводу-и-выводу">Автоматическая проверка по эталонному вводу и выводу</h3>
+<h3 id="автоматическая-проверкапоэталонному-вводу-ивыводу">Автоматическая проверка по эталонному вводу и выводу</h3>
 <p>Можно полностью автоматически вводить данные в программу, сохранять ее вывод и сравнивать с эталоном, получая простой ответ: пройден ли тест.</p>
 <p>Эталонный ввод при этом читается из файла, вывод записывается в файл, который затем сравнивается с файлом эталонного вывода. При этом не требуется добавлять в программу работу с файлами и логику проверки, если знать, как устроен ввод и вывод, и уметь пользоваться стандартными утилитами.</p>
 <p>Дальнейшая работа ведется в консоли из каталога с файлом <code>*.exe</code>, в CodeBlocks это может быть <code>bin\Debug</code>. При затруднениях в работе с консолью можно воспользоваться <a href="http://cmd.readthedocs.io/cmd.html">руководством</a>.</p>
 <h4 id="командная-строка-windows">Командная строка Windows</h4>
 <p>Командная строка (терминал) запускается через <em>Win+R</em>, <code>cmd</code> или путем ввода <code>cmd</code> в строку адреса в «Проводнике» и нажатия <em>Enter.</em> Текст <code>C:\&gt;</code> слева от курсора называется <em>приглашением (prompt).</em> Приглашение показывает текущий каталог — корень диска C. Перейти в другой каталог можно командой <code>cd</code>, например, <code>cd lab01</code>. Если нужно перейти на другой диск, добавляется <em>ключ (опция)</em> <code>/d</code>, например: <code>cd /d L:\A-01-18\username</code>. Чтобы не вводить путь вручную, можно нажимать <em>Tab</em> после ввода первых символов имени каталога, и Windows дополнит путь. Если нужно повторить одну из предыдущих команд, стрелки вверх и вниз проматывают историю.</p>
-<h4 id="стандартные-потоки-и-их-перенаправление">Стандартные потоки и их перенаправление</h4>
+<h4 id="стандартные-потокииих-перенаправление">Стандартные потоки и их перенаправление</h4>
 <p>Обычно для простоты говорят, что ввод происходит с клавиатуры, а вывод — на  экран. На самом деле ввод происходит из особого устройства — <em>стандартного ввода (standard input, stdin),</em> а вывод поступает на устройство <em>стандартного вывода (standard output, stdout).</em> По умолчанию стандартный ввод связан с клавиатурой, а вывод — с терминалом (окном консоли в Windows). Однако можно при запуске программы указать, что стандартным вводом для нее будет не клавиатура, а файл <em>(перенаправление ввода, input redirection):</em></p>
 <pre class="shell"><code>C:\lab01&gt; lab01.exe &lt; 01-example.input.txt
 Enter number count: Enter numbers: Enter bin count: 2|**
 5|*****
 3|***</code></pre>
 <ul>
-<li>эталонный ввод <a href="01-example.input.txt">01-example.input.txt</a></li>
-<li>эталонный вывод <a href="01-example.expected.txt">01-example.expected.txt</a></li>
+<li>эталонный ввод <a href="01-example.input.txt" class="uri">01-example.input.txt</a></li>
+<li>эталонный вывод <a href="01-example.expected.txt" class="uri">01-example.expected.txt</a></li>
 </ul>
 <p>Видно, что гистограмма строится правильно, но картину портят приглашения ввода (<code>Enter number count</code> и прочие).</p>
 <p>Аналогично можно направить стандартный вывод в файл:</p>
@@ -218,7 +205,7 @@ Enter number count: Enter numbers: Enter bin count: 2|**
 <p>Вывода на терминал нет — он весь в <code>01-example.actual.txt</code>, и если его просмотреть, окажется, что он соответствует предшествующему выводу.</p>
 <p>Как избавиться от приглашений, которые не нужны в режиме автоматических тестов? Проблема заключается в том, что у программы есть значимый, информативный вывод (собственно гистограмма), а есть декоративный вывод (приглашения). Только самой программе «известно», где какой вывод — без ее модификации не обойтись.</p>
 <p>Помимо стандартного вывода существует <em>стандартный вывод ошибок (stderr).</em> Такое название сложилось исторически, а на практике принято писать в него декоративный вывод. Этот поток доступен в C++ как <code>cerr</code>:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb18-1" title="1">cerr &lt;&lt; <span class="st">&quot;Enter number count: &quot;</span>;</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">cerr &lt;&lt; <span class="st">&quot;Enter number count: &quot;</span>;</code></pre></div>
 <p>Нужно самостоятельно заменит вывод приглашений (но не гистограммы) в <code>cout</code> на их вывод в <code>cerr</code>.</p>
 <p>Если теперь запустить программу как обычно (без перенаправления), ее работа  внешне не изменится, потому что стандартный вывод ошибок по умолчанию тоже связан с терминалом. Если же перенаправить вывод в файл, записанное в <code>cerr</code> появится в терминале, но не в файле <code>01-example.actual.txt</code>:</p>
 <pre class="shell"><code>C:\lab01&gt; lab01.exe &lt; 01-example.input.txt &gt; 01-example.actual.txt
@@ -251,36 +238,36 @@ fc /N 01-example.actual.txt 01-example.expected.txt</code></pre>
 <p>Чтобы запускать файл из «Проводника» и при ошибках окно не закрывалось, можно к последней строки добавить <code>|| pause</code>.</p>
 <h3 id="этап-2.-выравнивание-подписей-столбцов">Этап 2. Выравнивание подписей столбцов </h3>
 <p>Требуется количество чисел, попавших в каждый столбец, дополнять при выводе пробелами так, чтобы суммарно подпись занимала четыре знакоместа (символа). Хотя в C++ и есть средства форматирования, реализуем выравнивание вручную:</p>
-<ol type="1">
+<ol style="list-style-type: decimal">
 <li>Если число меньше 100, вывести пробел (он займет место разряда сотен).</li>
 <li>Если число меньше 10, вывести пробел (он займет место разряда десятков).</li>
 <li>Вывести число.</li>
 </ol>
 <p>Необходимо написать код самостоятельно и автоматически проверить его:</p>
 <ul>
-<li>эталонный ввод <a href="02-alignment.input.txt">02-alignment.input.txt</a>;</li>
-<li>эталонный вывод <a href="02-alignment.expected.txt">02-alignment.expected.txt</a>.</li>
+<li>эталонный ввод <a href="02-alignment.input.txt" class="uri">02-alignment.input.txt</a>;</li>
+<li>эталонный вывод <a href="02-alignment.expected.txt" class="uri">02-alignment.expected.txt</a>.</li>
 </ul>
-<h3 id="этап-3.-масштабирование-столбцов-гистограммы">Этап 3. Масштабирование столбцов гистограммы</h3>
+<h3 id="этап-3.-масштабирование-столбцовгистограммы">Этап 3. Масштабирование столбцов гистограммы</h3>
 <p>Поскольку ограничена ширина всей гистограммы (включая подписи и ось), ограничение на длину столбца будет <em>80 − 4 − 1 = 75</em> символов.</p>
 <p>Если в корзине самым большим количеством чисел не больше 75, масштабирование не нужно.</p>
 <p>Для масштабирования из количества чисел <code>count</code> в каждой корзине нужно  получить ее высоту <code>height</code> (количество звездочек). Масштабирование должно  работать так, чтобы самый высокий столбец имел 75 звездочек, следовательно, для него <code>height = 75 * 1.0</code>. Для прочих корзин вместо 1,0 должен быть множитель-доля количества чисел в этой корзине от максимального количества: <code>height = 75 * count / max_count</code>. Однако напрямую эту формулу записать на C++ нельзя: деление целых чисел <code>count</code> и <code>max_count</code> даст целое же число.</p>
 <p>Необходимо указать компилятору, что <code>count</code> нужно рассматривать как дробное. Это называется приведением типов (type cast):</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb24-1" title="1"><span class="dt">size_t</span> height = <span class="dv">75</span> * (<span class="kw">static_cast</span>&lt;<span class="dt">double</span>&gt;(count) / max_count);</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="dt">size_t</span> height = <span class="dv">75</span> * (<span class="kw">static_cast</span>&lt;<span class="dt">double</span>&gt;(count) / max_count);</code></pre></div>
 <p>Выражение <code>static_cast&lt;T&gt;(x)</code> означает: рассматривать выражение <code>x</code> как имеющее тип <code>T</code>. Можно встретить другую форму записи, так называемое приведение в стиле C (C-style cast): <code>((double)count)</code>. Почему в C++ более громоздкий синтаксис? Дело в том, что приведение типов — это место  в программе, где программист берет на себя ответственность, что преобразование имеет смысл, поэтому лучше, когда оно резко выделяется в тексте программы.</p>
 <p>Заметим, что в данном примере можно было бы обойтись вообще без приведения типов, если сделать <code>max_count</code> типа <code>double</code>, однако приведение типов  часто встречается на практике — необходимо уметь его делать.</p>
 <p>Константа 75 используется как минимум в двух местах, что плохо. во-первых, если потребуется поменять ее, придется искать и редактировать все эти места. Во-вторых, при чтении кода будет непонятен ее смысл. По последней причине  такие числа в коде называются магическими константами. Их нужно выносить в неизменяемые переменные с понятными именами или комментариями. Обычно  их размещают в самом начале программы:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb25-1" title="1"><span class="at">const</span> <span class="dt">size_t</span> SCREEN_WIDTH = <span class="dv">80</span>;</a>
-<a class="sourceLine" id="cb25-2" title="2"><span class="at">const</span> <span class="dt">size_t</span> MAX_ASTERISK = SCREEN_WIDTH - <span class="dv">4</span> - <span class="dv">1</span>;</a></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="at">const</span> <span class="dt">size_t</span> SCREEN_WIDTH = <span class="dv">80</span>;
+<span class="at">const</span> <span class="dt">size_t</span> MAX_ASTERISK = SCREEN_WIDTH - <span class="dv">4</span> - <span class="dv">1</span>;</code></pre></div>
 <p>Итак, требуется самостоятельно реализовать:</p>
-<ol type="1">
+<ol style="list-style-type: decimal">
 <li>Поиск наибольшего количества чисел в одной корзине (можно совместить в подсчетом чисел в корзинах).</li>
 <li>Масштабирование столбцов.</li>
 </ol>
 <p>Результат необходимо автоматически проверить:</p>
 <ul>
-<li>эталонный ввод <a href="03-scaling.input.txt">03-scaling.input.txt</a></li>
-<li>эталонный вывод <a href="03-scaling.expected.txt">03-scaling.expected.txt</a></li>
+<li>эталонный ввод <a href="03-scaling.input.txt" class="uri">03-scaling.input.txt</a></li>
+<li>эталонный вывод <a href="03-scaling.expected.txt" class="uri">03-scaling.expected.txt</a></li>
 </ul>
 <h1 id="варианты-индивидуальных-заданий">Варианты индивидуальных заданий</h1>
 <p>Решение должно включать: код программы, файлы эталонного ввода и вывода, BAT-файл для автоматической проверки.</p>
@@ -379,5 +366,24 @@ fc /N 01-example.actual.txt 01-example.expected.txt</code></pre>
 <p><strong>Указание.</strong> В начале программы добавьте <code>srand(time(0))</code>, чтобы случайные числа отличались между запусками программы (аналог <code>Randomize()</code> в Pascal). Для составления эталонного вывода замените <code>time(0)</code> на 42.</p>
 <h4 id="вариант-18">Вариант 18</h4>
 <p>Избавьте программу от предположения о наибольшем возможном количестве чисел в столбце. Находите наибольшее и используйте это значение, чтобы выровнять подписи по правому краю, не расходуя при этом лишних знакомест.</p>
+    <hr/>
+    <p>
+		Козлюк&nbsp;Д.&nbsp;А., Мохов&nbsp;А.&nbsp;С., Василькова&nbsp;П.&nbsp;Д. для&nbsp;кафедры Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2019&nbsp;г.
+
+        <span id="buttons">
+            <!--LiveInternet counter--><script type="text/javascript"><!--
+            document.write('<a href="http://www.liveinternet.ru/click" '+
+            'target=_blank><img src="http://counter.yadro.ru/hit?t52.1;r'+
+            escape(document.referrer)+((typeof(screen)=='undefined')?'':
+            ';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
+            ';i'+escape('Жж'+document.title.substring(0,80))+';'+Math.random()+
+            '" alt="" title="LiveInternet: показано число просмотров и посетителей за 24 часа" '+
+            'border=0 width=88 height=31 id="counter"><\/a>')//--></script><!--/LiveInternet-->
+
+            <script type="text/javascript" src="/study/courses/assets/scripts/orphus.js"></script>
+            <a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="/study/courses/assets/images/orphus.gif" border="0" width="88" height="31" /></a>
+	    </span>
+    </p>
 </body>
 </html>
