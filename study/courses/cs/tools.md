@@ -34,7 +34,7 @@ lang: ru
 Официальный сайт: <http://www.codeblocks.org>.
 
 [codeblocks/installer]: https://vorboss.dl.sourceforge.net/project/codeblocks/Binaries/17.12/Windows/codeblocks-17.12-setup.exe
-[codeblocks/config]: http://uii.mpei.ru/study/courses/common/codeblocks-17.12-settings.zip
+[codeblocks/config]: http://uii.mpei.ru/study/courses/common/CodeBlocks.zip
 
 
 ## Система контроля версий Git
