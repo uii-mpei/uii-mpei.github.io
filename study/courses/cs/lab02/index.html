@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>РПОСУ. ЛР № 2. Система контроля версий Git</title>
+  <style>
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style>
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<div>
+    <a href="http://uii.mpei.ru">Сайт кафедры</a> →
+    <a href="/study/courses">Дисциплины ИТ</a> →
+    <a href="/study/courses/cs">РПОСУ</a>
+</div>
+<header id="title-block-header">
+<h1 class="title">РПОСУ. ЛР № 2. Система контроля версий Git</h1>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#цель-работы">Цель работы</a></li>
+<li><a href="#выполнение-работы">Выполнение работы</a><ul>
+<li><a href="#вход-в-терминал-и-создание-структуры-каталогов">Вход в терминал и создание структуры каталогов</a></li>
+<li><a href="#инициализация-репозитария-и-настройка-git">Инициализация репозитария и настройка Git</a></li>
+<li><a href="#создание-коммитов">Создание коммитов</a><ul>
+<li><a href="#занесение-файлов-под-контроль-версий">Занесение файлов под контроль версий</a></li>
+<li><a href="#составление-сообщений-к-коммитам">Составление сообщений к коммитам</a></li>
+<li><a href="#создание-коммитов-с-изменениями">Создание коммитов с изменениями</a></li>
+</ul></li>
+<li><a href="#игнорирование-файлов">Игнорирование файлов</a></li>
+<li><a href="#просмотр-истории">Просмотр истории</a><ul>
+<li><a href="#работа-с-журналом-репозитария">Работа с журналом репозитария</a></li>
+<li><a href="#просмотр-коммитов">Просмотр коммитов</a></li>
+<li><a href="#просмотр-изменений">Просмотр изменений</a></li>
+<li><a href="#использование-gui">Использование GUI</a></li>
+</ul></li>
+<li><a href="#откат-изменений">Откат изменений</a></li>
+<li><a href="#обмен-кодом-через-удаленное-хранилище">Обмен кодом через удаленное хранилище</a><ul>
+<li><a href="#регистрация-на-github">Регистрация на GitHub</a></li>
+<li><a href="#отправка-проекта-на-github">Отправка проекта на GitHub</a></li>
+<li><a href="#получение-проекта-с-github">Получение проекта с GitHub</a></li>
+</ul></li>
+<li><a href="#совместная-работа-над-проектом-без-конфликтов-правок">Совместная работа над проектом без конфликтов правок</a></li>
+<li><a href="#разрешение-конфликтов-правок-при-совместной-работе">Разрешение конфликтов правок при совместной работе</a></li>
+<li><a href="#использование-веток">Использование веток</a><ul>
+<li><a href="#редактор-vim">Редактор Vim</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#пример-контрольного-задания">Пример контрольного задания</a></li>
+</ul>
+</nav>
+<hr />
+<h1 id="цель-работы">Цель работы</h1>
+<ol type="1">
+<li><p>Знать понятия и компоненты систем контроля версий (СКВ), порядок и приемы работы с ними.</p></li>
+<li><p>Уметь участвовать в командной разработке, используя конкретную СКВ — Git, а также популярный хостинг репозитариев — GitHub.</p></li>
+</ol>
+<h1 id="выполнение-работы">Выполнение работы</h1>
+<p>Выполнять необходимо все действия. Для удобства по тексту отмечены пункты, способ выполнения которых нужно придумать <strong>самостоятельно.</strong></p>
+<p>Отчет должен содержать все введенные команды (но не их вывод), пояснения, что было сделано между пунктами (например, отредактирован файл), а также то, что требуется добавить в отчет по тексту задания.</p>
+<h2 id="вход-в-терминал-и-создание-структуры-каталогов">Вход в терминал и создание структуры каталогов</h2>
+<p>Большая часть работы будет выполняться в терминале (командной строке). Для Windows вместе с Git поставляется программа Git Bash: эмулятор терминала Linux. Ее можно запустить из контекстного меню любого каталога пунктом <em>Git Bash Here</em> или из меню «Пуск».</p>
+<p><strong>Самостоятельно.</strong> Создайте каталог <code>lab02</code> для данной ЛР (например, в своей сетевой папке) и запустите в нем Git Bash.</p>
+<p>В терминале откроется <em>приглашение (prompt)</em> примерно такого вида:</p>
+<pre><code>user@mpei-dc-win7 MINGW32 /c/lab02
+$</code></pre>
+<p>Здесь важен рабочий каталог <code>/c/lab02</code> и символ <code>$</code> — начало ввода команд.</p>
+<p>Просмотреть файлы в рабочем каталоге можно командой <code>ls</code>. В каталоге <code>lab02</code> пусто, поэтому <code>ls</code> ничего не выведет.</p>
+<p>В ходе работы будем имитировать проект с двумя участниками: Алисой и Бобом. Компьютеры Алисы и Боба имитируют папки <code>lab02/alice</code> и <code>lab02/bob</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" title="1"><span class="fu">mkdir</span> alice</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="fu">mkdir</span> bob</a></code></pre></div>
+<p>Переход между каталогами делается командой <code>cd</code>. Перейдем «на компьютер Алисы» — в каталог <code>alice</code>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" title="1"><span class="bu">cd</span> alice</a></code></pre></div>
+<p><strong>Самостоятельно.</strong> Создайте здесь каталог <code>project</code> и перейдите в него.</p>
+<p>Чтобы перейти на уровень выше можно командой <code>cd ..</code> (две точки в конце).</p>
+<p><strong>Самостоятельно.</strong> Перейдите из каталога проект вверх, затем снова в каталог <code>project</code>.</p>
+<p>Все команды нужно заносить в отчет. Текст в Git Bash копируется при выделении, ничего нажимать не нужно; скопированное можно вставить в любую другую программу <em>Ctrl+V,</em> как обычно. Для вставки в сам Git Bash нажмите правую кнопку мыши.</p>
+<h2 id="инициализация-репозитария-и-настройка-git">Инициализация репозитария и настройка Git</h2>
+<p>Инициализируем репозитарий в текущем каталоге:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" title="1"><span class="fu">git</span> init</a></code></pre></div>
+<p>К приглашению командной строки добавилось <code>(master)</code>: имя текущий ветви Git. Ветвь <code>master</code> используется по умолчанию.</p>
+<p>Git хранит три набора настроек:</p>
+<ul>
+<li><p>Системные — для всех пользователей компьютера, как правило, их не меняют.</p></li>
+<li><p>Пользовательские — для данного пользователя системы (<code>user</code> в примере). На практике чаще всего пользуются ими. Хранятся в профиле пользователя.</p></li>
+<li><p>Локальные — для отдельного репозитария, хранятся в нем же. Используются, если нужно работать с проектами от разного имени (примеры: личные и корпоративные проекты отдельно, Алиса и Боб в случае ЛР).</p></li>
+</ul>
+<p>Локальные настройки имеют приоритет перед пользовательскими, а те — перед системными. Настройки Git сами не находятся под контролем версий, они специфичны для конкретного компьютера или конкретной копии репозитария.</p>
+<p>Настроим репозитарий Алисы, чтобы коммиты были от ее имени:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb5-1" title="1"><span class="fu">git</span> config user.name <span class="st">&#39;Alice (KozlyukDA)&#39;</span></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="fu">git</span> config user.email <span class="st">&#39;alice@example.com&#39;</span></a></code></pre></div>
+<p>В имя пользователя включите свою фамилию и инициалы, как в примере. Технически допустимы любые символы, однако в реальных проектах принята латиница. Почта может быть любой, Git просто указывает ее в коммитах.</p>
+<h2 id="создание-коммитов">Создание коммитов</h2>
+<p>Запустите CodeBlocks и создайте проект в репозитарии Алисы. Убедитесь, что не создается ненужных подкаталогов:</p>
+<p><em>Project title:</em> <code>project</code><br />
+<em>Folder to create project in:</em> <code>C:\lab02\alice</code><br />
+<em>Project filename:</em> <code>project.cbp</code><br />
+<em>Resulting filename:</em> <code>C:\lab02\alice\project\project.cbp</code></p>
+<p>Соберите проект.</p>
+<h3 id="занесение-файлов-под-контроль-версий">Занесение файлов под контроль версий</h3>
+<p>Вернувшись в Git Bash, просмотрим состояние рабочей копии:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb6-1" title="1"><span class="fu">git</span> status</a></code></pre></div>
+<p><strong>В отчете</strong> нужно пояснить, что означает каждая строка вывода этой команды.</p>
+<p>Добавим файл <code>main.cpp</code> в отслеживаемые (в индекс):</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb7-1" title="1"><span class="fu">git</span> add main.cpp</a></code></pre></div>
+<p>На Windows может отобразиться такое сообщение:</p>
+<pre class="text"><code>warning: LF will be replaced by CRLF in main.cpp
+The file will have its original line endings in your working directory</code></pre>
+<p>Оно безвредно. Смысл в том, что Git хранит файлы с немного измененном виде, чтобы обеспечивать удобную работу с репозитарием в любой операционной системе.</p>
+<p><strong>Самостоятельно.</strong> Еще раз просмотрите состояние рабочей копии и поясните в отчете изменения.</p>
+<p>Выполним коммит с файлом <code>main.cpp</code> и коротким сообщением:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb9-1" title="1"><span class="fu">git</span> commit -m <span class="st">&#39;code: заготовка программы&#39;</span></a></code></pre></div>
+<h3 id="составление-сообщений-к-коммитам">Составление сообщений к коммитам</h3>
+<p>На практике важно, чтобы описания коммитов были информативными: в будущем по ним быстро читают историю проекта, ищут коммиты по ключевым словам. Заголовок (первая строка) должен быть коротким (желательно до 50 символов) и описывать суть изменений, потому что только он показывается в списке коммитов. Часто в заголовок включают тему (к какой части проекта относится коммит) или номер задачи в системе отслеживания ошибок:</p>
+<ul>
+<li><code>code: заготовка программы</code> — изменен код (а не документация, например)</li>
+<li><code>build: update CMake version</code> — коммит относится к сборке</li>
+<li><code>обрабатывает пустой массив | fixes #1234</code> — исправляет ошибку № 1234</li>
+<li><code>timer: учет високосных лет #4321</code> — доработка таймера по задаче № 4321</li>
+</ul>
+<p>Временным незаконченным коммитам иногда приписывают <code>WIP:</code> (work in progress).</p>
+<p>Из заголовка должно быть ясно, что в целом сделано и зачем (почему, для чего). Обычно нет смысла писать, какие именно файлы и функции были изменены, потому что это можно просмотреть в самом коммите. После заголовка через пустую строку может идти расширенное пояснение (тело), иногда очень длинное.</p>
+<p>Как и для исходного кода, главный критерий — понятность и единообразие. Можно писать на русском или английском, в совершенной форме или в повелительном наклонении — но одинаково во всех коммитах.</p>
+<p><strong>Самостоятельно.</strong> Добавьте файл <code>project.cbp</code> в индекс и сделайте коммит с ним, тема — <code>build</code>.</p>
+<h3 id="создание-коммитов-с-изменениями">Создание коммитов с изменениями</h3>
+<p>Заменим тело функции <code>main()</code> на ввод двух чисел:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb10-1" title="1">cout &lt;&lt; <span class="st">&quot;Enter A and B: &quot;</span>;</a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="dt">int</span> a, b;</a>
+<a class="sourceLine" id="cb10-3" title="3">cin &gt;&gt; a &gt;&gt; b;</a></code></pre></div>
+<p><strong>Самостоятельно.</strong> Просмотрите состояние репозитария. В отчете поясните различия между случаем, когда добавлялся новый файл, и когда изменился существующий.</p>
+<p>Чтобы закоммитить изменения, есть три способа:</p>
+<ul>
+<li><p>Сначала выбрать файлы, изменения которых должны войти в коммит, затем сделать коммит:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb11-1" title="1"><span class="fu">git</span> add main.cpp</a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="fu">git</span> commit -m <span class="st">&quot;...&quot;</span></a></code></pre></div>
+<p>Этот способ удобен, если измнения присутствуют не только в тех файлах, которые коммитятся. Например, если работа над кодом уже закончена, а документация еще не дописана и коммитить ее не нужно.</p></li>
+<li><p>Добавить в индекс все изменения, затем сделать коммит:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb12-1" title="1"><span class="fu">git</span> add -u</a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="fu">git</span> commit -m <span class="st">&quot;...&quot;</span></a></code></pre></div>
+<p>Способ удобен, если измнено много файлов. После <code>git add -u</code>, которая добавляет в индекс измененные файлы, можно командой <code>git add &lt;файл&gt;</code> добавить в индекс новые файлы.</p></li>
+<li><p>Добавить все изменения в индекс и сделать коммит в один шаг:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb13-1" title="1"><span class="fu">git</span> commit -a -m <span class="st">&quot;...&quot;</span></a></code></pre></div>
+<p>Способ полностью эквивалентен предыдущему и удобен, если коммит меняет только существующие файлы.</p></li>
+</ul>
+<p><strong>Самостоятельно.</strong> Сделайте коммит с изменениями в <code>main.cpp</code> первым способом.</p>
+<p><strong>Самостоятельно.</strong> Сделайте другими способами еще два коммита, меняющих <code>main.cpp</code>: вывод суммы чисел и вывод разности чисел.</p>
+<p><strong>Внимание.</strong> Код доработок должен быть составлен в точности так:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb14-1" title="1">cout &lt;&lt; <span class="st">&quot;A + B = &quot;</span> &lt;&lt; a + b &lt;&lt; <span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span></a>
+<a class="sourceLine" id="cb14-2" title="2">     &lt;&lt; <span class="st">&quot;A - B = &quot;</span> &lt;&lt; a - b &lt;&lt; <span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span>;</a></code></pre></div>
+<p>Дальнейшие дополнения тоже должны продолжать одну большую инструкцию вывода, а не быть отдельными. Это нужно для того, чтобы в последующих пунктах можно было наблюдать некоторые примечательные ситуации.</p>
+<h2 id="игнорирование-файлов">Игнорирование файлов</h2>
+<p>Можно заметить, что в выводе команды <code>git status</code> все время присутствуют каталоги <code>bin/</code> и <code>obj/</code>. Они содержат бинарные файлы (целевой <code>*.exe</code> и промежуточные), которые являются производными от исходного кода, уже находящегося под контролем версий. Является грубой ошибкой заносить под контроль версий продукты сборки. То же самое относится к файлам, в которых некоторые среды сохраняют, например, состояние редактора: открытые файлы и расположение окон одного члена команды не нужны в общем хранилище.</p>
+<p>Укажем Git игнорировать присутствие каталога <code>bin</code>. Для этого создадим в CodeBlocks новый файл <em>(File → New… → Empty)</em> и запишем в него строку:</p>
+<pre class="text"><code>/bin</code></pre>
+<p>Косая черта в начале означает путь от корня репозитария (каталога <code>project</code>), без нее игнорировался бы файл или каталог <code>bin</code> в любой подпапке. Сохраним файл в корне репозитарий под именем <code>.gitignore</code>, именно с точкой в начале.</p>
+<p>Каждое правило игнорирования пишется на отдельной строке <code>.gitignore</code>.</p>
+<p>Выполнив <code>git status</code>, можно видеть, что каталог <code>bin</code> не отображается.</p>
+<p><strong>Самостоятельно.</strong> Занесите каталог <code>obj</code> в список игнорируемых и убедитесь, что это удалось.</p>
+<p>Файл <code>.gitignore</code> может и обычно должен находиться под контролем версий.</p>
+<p><strong>Самостоятельно.</strong> Создайте коммит с <code>.gitignore</code>, тема — <code>git</code>.</p>
+<h2 id="просмотр-истории">Просмотр истории</h2>
+<h3 id="работа-с-журналом-репозитария">Работа с журналом репозитария</h3>
+<p>Журнал репозитария показывает команда <code>git log</code>. У нее много опций, например:</p>
+<ul>
+<li><code>git log --stat</code> показывает файлы, измененные в коммитах;</li>
+<li><code>git log --oneline --decorate</code> показывает коммиты компактно;</li>
+<li><code>git log --oneline --decorate --all --graph</code> делает то же для всех веток.</li>
+</ul>
+<p>Среди прочего, команда показывает для каждого коммита его хэш, например, <code>d2e8af7ff9c4684d0deb60d3305474bcaf69ce5c</code>. Некоторые версии команды показывают хэш сокращенно — краткий вариант тоже будет восприниматься командами Git, которые принимают хэш.</p>
+<p>Попробуйте каждую из приведенных команд. <strong>В отчете</strong> подробно опишите, что показывается <code>git log --stat</code> для последнего коммита.</p>
+<p>Коммиты можно фильтровать по разным признакам:</p>
+<ul>
+<li><code>git log -- main.cpp</code> показывает затрагивающие <code>main.cpp</code>;</li>
+<li><code>git log --grep "code:"</code> показывает коммиты с <code>code:</code> в сообщении.</li>
+</ul>
+<p><strong>Самостоятельно.</strong> Найдите сначала коммиты по теме <code>build</code>, затем коммиты, затрагивающие <code>project.cbp</code>.</p>
+<h3 id="просмотр-коммитов">Просмотр коммитов</h3>
+<p>Содержимое отдельных коммитов просматривается командой <code>git show &lt;refspec&gt;</code>, где <code>&lt;refspec&gt;</code> может быть хэшем коммита, именем ветви или выражением, которое задает, на сколько от них отступить в истории.</p>
+<p>Просмотрим последний коммит тремя эквивалентными способами:</p>
+<ol type="1">
+<li><code>git show HEAD</code> (текущий)</li>
+<li><code>git show master</code> (по имени ветви)</li>
+<li><code>git show d2e8af</code> (по хэшу нужного коммита)</li>
+</ol>
+<p>Для просмотра предыдущего коммита можно либо записать его хэш, либо указать, что от последнего нужно отступить на один коммит: <code>HEAD~1</code>.</p>
+<p><strong>Самостоятельно.</strong> Просмотрите предпоследний коммит <strong>(в отчете</strong> зафиксируйте результат единожды) тремя способами.</p>
+<h3 id="просмотр-изменений">Просмотр изменений</h3>
+<p>Внесем изменения в <code>main.cpp</code>: добавим печать произведения чисел, но не станем пока делать коммит.</p>
+<p>Просмотрим изменения в рабочей копии:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb16-1" title="1"><span class="fu">git</span> diff</a></code></pre></div>
+<p><strong>В отчете</strong> необходимо пояснить все компоненты отображаемого патча.</p>
+<p>Первый аргумент команды <code>git diff</code> включает показ изменений от указанного коммита до последнего, включая изменения в рабочей копии:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb17-1" title="1"><span class="fu">git</span> diff HEAD~2</a></code></pre></div>
+<p>С двумя аргументами команда показывает разницу между указанными коммитами, например, так можно исключить изменения в рабочей копии из вывода предыдущей команды:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb18-1" title="1"><span class="fu">git</span> diff HEAD~2 HEAD</a></code></pre></div>
+<p><strong>Самостоятельно.</strong> Просмотрите изменения между самым первым коммитом и коммитом, добавляющим вывод разности.</p>
+<h3 id="использование-gui">Использование GUI</h3>
+<p>Просмотр истории — одна из операций в СКВ, которую иногда удобнее выполнять из графической среды. Вместе с Git поставляется графическая оболочка gitk (Git GUI), которую можно вызвать пунктом <em>Git GUI Here</em> в контекстном меню папки проекта. Эта оболочка очень примитивная, на практике пользуются <a href="https://git-scm.com/downloads/guis">более мощными</a> или встроенными в среду разработки.</p>
+<p>Просмотр истории в gitk делается из меню <em>Repository → Visualize All Branch History.</em> Можно выбирать коммит для просмотра из списка; смотреть как изменения <em>(Diff),</em> так и версии файлов <em>(Old version, New version);</em> искать коммиты.</p>
+<p><strong>В отчет</strong> ничего заносить не нужно.</p>
+<h2 id="откат-изменений">Откат изменений</h2>
+<p><strong>Самостоятельно.</strong> Закоммитьте изменения в рабочей копии (вывод произведения).</p>
+<p>Предположим, необходимо отменить (откатить) этот коммит, то есть вернуться к предыдущему. Для этого воспользуемся командной <code>git reset</code>:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb19-1" title="1"><span class="fu">git</span> reset --hard HEAD~1</a></code></pre></div>
+<p>Здесь <code>HEAD~1</code> указывает на коммит, к которому нужно откатить состояние рабочей копии, а ключ <code>--hard</code> означает, что нужно привести рабочую копию точно к состоянию выбранного коммита.</p>
+<p>CodeBlocks (и другие среды) могут при этом показать предупреждение, что файл на диске был изменен, и предложить загрузить его заново. Следует согласиться.</p>
+<p>Добавим над функцией <code>main()</code> комментарий:</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb20-1" title="1"><span class="co">// you may type whatever you want</span></a></code></pre></div>
+<p>Уберем изменения в <code>main.cpp</code> другим способом — откатив этот файл к состоянию в последнем коммите (<code>HEAD</code>):</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb21-1" title="1"><span class="fu">git</span> checkout HEAD -- main.cpp</a></code></pre></div>
+<p>Второй способ необходим, чтобы откатывать отдельные файлы. Аргумент <code>HEAD</code> необязателен, но вместо него можно указать не последний, а любой другой коммит. Это полезно, если нужно восстановить состояние одного файла таким, какое оно было в известный момент.</p>
+<h2 id="обмен-кодом-через-удаленное-хранилище">Обмен кодом через удаленное хранилище</h2>
+<h3 id="регистрация-на-github">Регистрация на GitHub</h3>
+<p>Зарегистрируйтесь на <a href="https://github.com">GitHub</a> под именем вида <code>KozlyukDA</code>. При регистрации нужно указывать действующую почту — на нее придет письмо для подтверждения регистрации.</p>
+<h3 id="отправка-проекта-на-github">Отправка проекта на GitHub</h3>
+<p><a href="https://help.github.com/articles/create-a-repo/">Создайте репозитарий</a> под названием <code>cs-lab02</code>. Вопреки рекомендациям по ссылке, не нужно добавлять в репозитарий файл <code>README.md</code> или лицензию.</p>
+<p>После создания пустого репозитария будет показана страница с инструкциями, как настроить связь с хранилищем на GitHub:</p>
+<ol type="1">
+<li>В разделе <em>Quick setup</em> нужно выбрать вариант HTTPS.</li>
+<li>В разделе <em>…or push an existing repository from the command line</em> даны команды, которые необходимо выполнить.</li>
+</ol>
+<p>При взаимодействии с удаленным хранилищем будет запрошено имя пользователя и пароль от GitHub.</p>
+<p>Обновите страницу и убедитесь, что проект успешно загружен на GitHub. Любой файл можно просмотреть в бразуере. По ссылке <em>Commits</em> можно просматривать коммиты.</p>
+<h3 id="получение-проекта-с-github">Получение проекта с GitHub</h3>
+<p>Предположим, к разработке проекта присоединяется Боб. Откройте новый терминал Git Bash в каталоге <code>bob</code>. Клонируйте проект:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb22-1" title="1"><span class="fu">git</span> clone <span class="op">&lt;</span>адрес<span class="op">&gt;</span> <span class="op">&lt;</span>каталог<span class="op">&gt;</span></a></code></pre></div>
+<p>На место <code>&lt;адреса&gt;</code> нужно подставить адрес, который использовался в команде <code>git remote add</code> (его можно всегда отобразить командой <code>git remote -v</code>). Каталог — название папки для проекта: используйте <code>project</code>, если не указывать, это было бы название репозитария (<code>cs-lab02</code>).</p>
+<p>Перейдите в каталог проекта «на машине Боба» (здесь и далее это означает работу во втором терминале и над файлами в <code>bob/project</code>):</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb23-1" title="1"><span class="bu">cd</span> project</a></code></pre></div>
+<p><strong>Самостоятельно.</strong> «На машине Боба» настройте Git (<code>git config</code>) аналогично тому, как это делалось для Алисы в начале лабораторной работы.</p>
+<h2 id="совместная-работа-над-проектом-без-конфликтов-правок">Совместная работа над проектом без конфликтов правок</h2>
+<p>«На машине Боба» добавьте в программу печать произведения чисел и сделайте коммит. Просмотрите последний коммит и убедитесь, что он сделан от имени Боба.</p>
+<p>Отправьте коммит на GitHub (используйте те же учетные данные, что и ранее):</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb24-1" title="1"><span class="fu">git</span> push</a></code></pre></div>
+<p>Обновите страницу GitHub и убедитесь, что коммит попал в удаленный репозитарий. Обратите внимание, что авторство коммитов записано в самих коммитах, оно не зависит от пользователя системы или GitHub.</p>
+<p>«На машине Алисы» (то есть в первом терминале, в каталоге <code>alice/project</code>) выполните загрузку изменений:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb25-1" title="1"><span class="fu">git</span> fetch</a></code></pre></div>
+<p>Убедитесь, что в рабочей копии изменений еще не произошло.</p>
+<p>Просмотрите историю всех веток:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb26-1" title="1"><span class="fu">git</span> log --oneline --decorate --all --graph</a></code></pre></div>
+<p>Как можно видеть, ветка <code>master</code> отстает на один коммит от ветки <code>origin/master</code> (версии ветки <code>master</code> из удаленного репозитария под названием <code>origin</code>, то есть на GitHub).</p>
+<p>Продвиньте ветку <code>master</code> к скачанной версии:</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb27-1" title="1"><span class="fu">git</span> pull --ff-only</a></code></pre></div>
+<p>Убедитесь, что рабочая копия проекта «у Алисы» соответствует версии «у Боба».</p>
+<p>Команда <code>git pull</code> автоматически делает <code>git fetch</code>, поэтому можно было бы применять только ее, но важно понимать, что получение изменений в Git двухфазное: загрузка новой части истории и синхронизация положения веток.</p>
+<p><strong>Самостоятельно.</strong> «От имени Алисы» добавьте в программу печать деления, сделайте коммит, отправьте его на GitHub и получите новую версию «на машине Боба». Иначе говоря, повторите шаги выше, поменяв местами роли Алисы и Боба.</p>
+<h2 id="разрешение-конфликтов-правок-при-совместной-работе">Разрешение конфликтов правок при совместной работе</h2>
+<p>Предположим, Алиса решает добавить в программу печать максимума из чисел, а Боб — минимума.</p>
+<p><strong>Внимание.</strong> Код вывода в программе перед выполнением дальнейшего должен иметь следующий вид:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb28-1" title="1">cout &lt;&lt; <span class="st">&quot;A + B = &quot;</span> &lt;&lt; a + b &lt;&lt; <span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span></a>
+<a class="sourceLine" id="cb28-2" title="2">     &lt;&lt; <span class="st">&quot;A - B = &quot;</span> &lt;&lt; a - b &lt;&lt; <span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span></a>
+<a class="sourceLine" id="cb28-3" title="3">     &lt;&lt; <span class="st">&quot;A * B = &quot;</span> &lt;&lt; a * b &lt;&lt; <span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span></a>
+<a class="sourceLine" id="cb28-4" title="4">     &lt;&lt; <span class="st">&quot;A / B = &quot;</span> &lt;&lt; a / b &lt;&lt; <span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span>;</a></code></pre></div>
+<p>В противном случае код нужно привести в соответствие отдельным коммитом и синхронизировать состояние «у Алисы» и «у Боба».</p>
+<p>«На машине Алисы» дополните программу печатью максимума, сделайте коммит и отправьте его на GitHub.</p>
+<p>«На машине Боба» дополните программу печатью минимума, сделайте коммит и попытайтесь отправить его на GitHub. Как можно видеть, удаленный репозитарий не принимает изменений: коммит Боба основан не на последнем существующем коммите.</p>
+<p>«От лица Боба» загрузите коммиты из удаленного хранилища и отобразите историю всех веток — результат нужно представить <strong>в отчете.</strong></p>
+<p>Можно видеть, что ветка <code>master</code> раздвоилась. Бобу нужно переместить свой коммит поверх коммита Алисы, то есть поверх <code>origin/master</code>:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb29-1" title="1"><span class="fu">git</span> rebase origin/master</a></code></pre></div>
+<p>Однако эта команда завершается с ошибкой, сообщающей о конфликте в <code>main.cpp</code>. Просмотрите состояние хранилища и поясните <strong>в отчете.</strong></p>
+<p>«На машине Боба» в CodeBlocks место конфликта будет отмечено прямо в коде. Необходимо <strong>самостоятельно:</strong></p>
+<ol type="1">
+<li>Удалить метки конфликта: <code>&lt;&lt;&lt;&lt; ...</code>, <code>... &gt;&gt;&gt;&gt;</code> и <code>=====</code>.</li>
+<li>Отредактировать код так, чтобы он включал и правки Алисы, и правки Боба.</li>
+<li>Убедиться, что программа компилируется и работает.</li>
+</ol>
+<p>После того, как конфликт разрешен, нужно добавить файл в индекс и продолжить прерванную операцию <code>rebase</code>:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb30-1" title="1"><span class="fu">git</span> add main.cpp</a>
+<a class="sourceLine" id="cb30-2" title="2"><span class="fu">git</span> rebase --continue</a></code></pre></div>
+<p>Убедитесь, что история хранилища теперь имеет желаемый вид (зафиксировав это <strong>в отчете)</strong> и отправьте изменения на GitHub.</p>
+<h2 id="использование-веток">Использование веток</h2>
+<p>Предположим, пока Боб синхронизировал изменения, Алиса решила изменить тип чисел с целых на действительные. Предполагая, что это займет время, Алиса ведет работу в отдельной ветке. На момент начала работы репозитарий Алисы <em>не</em> синхронизирован с GitHub, то есть последний коммит добавляет печать максимума. Все действия ведутся «на машине Алисы».</p>
+<p>Создайте ветку <code>double</code>:</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb31-1" title="1"><span class="fu">git</span> branch double</a></code></pre></div>
+<p>Переключитесь на нее:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb32-1" title="1"><span class="fu">git</span> checkout double</a></code></pre></div>
+<p><strong>Примечание.</strong> Создание ветки и переключение на нее можно делать одной командой: <code>git checkout -b double</code>. Этой команде можно передать аргумент-ссылку на коммит, где создать ветку.</p>
+<p>Можно заметить, что текущая ветка в приглашении терминала изменилась.</p>
+<p>Замените тип переменных <code>a</code> и <code>b</code> на <code>double</code> и сделайте коммит.</p>
+<p>Переключитесь на ветку <code>master</code>:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb33-1" title="1"><span class="fu">git</span> checkout master</a></code></pre></div>
+<p><strong>Самостоятельно.</strong> Синхронизируйте ветку <code>master</code> «на машине Алисы» с GitHub. Просмотрите историю всех веток и занесите результат <strong>в отчет.</strong></p>
+<p>Слейте ветку <code>double</code> в <code>master</code>:</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb34-1" title="1"><span class="fu">git</span> merge double</a></code></pre></div>
+<p>В результате слияния образуется специальный новый коммит (merge commit), к которому Git предлагает написать сообщение в редакторе. Строки, начинающиеся с октоторпа («решетки», <code>#</code>), в сообщение не войдут.</p>
+<p>Просмотрите и занесите <strong>в отчет</strong> историю всех веток репозитария.</p>
+<h3 id="редактор-vim">Редактор Vim</h3>
+<p>Vim — продвинутый текстовый редактор. Он не является частью Git, но популярен в системах семейства *nix, поэтому предлагается по умолчанию. Не обязательно его использовать, но нужно знать минимум для обращения с ним.</p>
+<p>После запуска Vim находится в так называемом <em>нормальном режиме.</em> Чтобы начать вводить текст, нужно перейти <em>в режим вставки,</em> например, нажав <code>i</code> (одну клавишу). В режиме вставки можно набирать текст обычным образом. Вернуться в нормальный режим можно нажатием <em>Escape.</em> Находясь в нормальном режиме, можно сохранить сообщение и выйти из Vim нажатием <code>ZZ</code> (две заглавные Z, то есть <em>Shift+Z</em> два раза).</p>
+<p>Если вместо <em>Shift+Z</em> нажать <em>Ctrl+Z,</em> Vim будет приостановлен, а коммит останется незавершенным. В этом случае нужно вернуться в Vim командой <code>fg</code> в терминале.</p>
+<p>Чтобы писать длинные сообщения, но не использовать Vim, можно указать другой редактор (например, примитивный <code>nano</code>):</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb35-1" title="1"><span class="va">EDITOR=</span>nano <span class="fu">git</span> merge double</a></code></pre></div>
+<h1 id="пример-контрольного-задания">Пример контрольного задания</h1>
+<ol type="1">
+<li>Создать новый репозитарий.</li>
+<li>Закоммитить файл <code>task.txt</code> с цифрами от 0 до 9 на отдельных строках.</li>
+<li>Удалить строки с цифрами от 5 до 8, закоммитить.</li>
+<li>Просмотреть предпоследний коммит.</li>
+<li>Создать ветку <code>task</code> от предыдущего коммита.</li>
+<li>Переключиться на ветку <code>task</code>.</li>
+<li>Добавить в начало файла строки с буквами <code>a</code>, <code>b</code>, <code>c</code>, закоммитить.</li>
+<li>Переключиться на ветку <code>master</code>.</li>
+<li>Добавить в начало файла строки с буквами <code>d</code>, <code>e</code>, <code>f</code>, закоммитить.</li>
+<li>Слить ветку <code>task</code> в <code>master</code>, разрешив конфликт так, чтобы буквы шли по порядку.</li>
+</ol>
+    <hr/>
+    <p>
+		Козлюк&nbsp;Д.&nbsp;А., Мохов&nbsp;А.&nbsp;С., Василькова&nbsp;П.&nbsp;Д. для&nbsp;кафедры Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2019&nbsp;г.
+
+        <span id="buttons">
+            <!--LiveInternet counter--><script type="text/javascript"><!--
+            document.write('<a href="http://www.liveinternet.ru/click" '+
+            'target=_blank><img src="http://counter.yadro.ru/hit?t52.1;r'+
+            escape(document.referrer)+((typeof(screen)=='undefined')?'':
+            ';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
+            ';i'+escape('Жж'+document.title.substring(0,80))+';'+Math.random()+
+            '" alt="" title="LiveInternet: показано число просмотров и посетителей за 24 часа" '+
+            'border=0 width=88 height=31 id="counter"><\/a>')//--></script><!--/LiveInternet-->
+
+            <script type="text/javascript" src="/study/courses/assets/scripts/orphus.js"></script>
+            <a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="/study/courses/assets/images/orphus.gif" border="0" width="88" height="31" /></a>
+	    </span>
+    </p>
+</body>
+</html>
