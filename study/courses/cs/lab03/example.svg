@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'>
+  <g transform='translate(0,200)'>
+    <g transform='scale(1,-1)'>
+      <line x1='0' y1='0' x2='100' y2='0' stroke='red' stroke-width='4' />
+      <line x1='100' y1='0' x2='100' y2='100' stroke='blue' stroke-width='4' />
+      <line x1='100' y1='100' x2='170.71067811865476' y2='170.71067811865476' stroke='darkgreen' stroke-width='4' />
+    </g>
+  </g>
+</svg>
