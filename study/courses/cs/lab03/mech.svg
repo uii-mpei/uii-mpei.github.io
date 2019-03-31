@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg width='300' height='200' viewBox='0 0 300 200' xmlns='http://www.w3.org/2000/svg'>
+<g transform='translate(0,200)'>
+<g transform='scale(1,-1)'>
+<line x1='0' y1='0' x2='50' y2='86.6025' stroke='red'/>
+<line x1='50' y1='86.6025' x2='136.603' y2='136.603' stroke='blue'/>
+<line x1='136.603' y1='136.603' x2='235.083' y2='153.967' stroke='darkgreen'/>
+<line x1='235.083' y1='153.967' x2='246.555' y2='170.35' stroke='black'/>
+<line x1='246.555' y1='170.35' x2='266.251' y2='173.823' stroke='black'/>
+<line x1='235.083' y1='153.967' x2='251.466' y2='142.496' stroke='black'/>
+<line x1='251.466' y1='142.496' x2='271.163' y2='145.969' stroke='black'/>
+</g>
+</g>
+<text x='15' y='200'>A</text>
+<text x='40' y='100'>B</text>
+<text x='130' y='50'>C</text>
+<text x='220' y='70'>D</text>
+<text x='235' y='25'>F</text>
+<text x='270' y='20'>E</text>
+<text x='250' y='80'>G</text>
+<text x='275' y='70'>H</text>
+</svg>

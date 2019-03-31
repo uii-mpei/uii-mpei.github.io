@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
 <head>
   <meta charset="utf-8" />
@@ -118,17 +118,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#написание-модульных-тестов">Написание модульных тестов</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#часть-4.-использование-структур-перечислений-и-операторов">Часть 4. Использование структур, перечислений и операторов</a><ul>
+<li><a href="#часть-4.-использование-структур-и-операторов">Часть 4. Использование структур и операторов</a><ul>
 <li><a href="#задача-2">Задача</a></li>
-<li><a href="#указания-3">Указания</a><ul>
-<li><a href="#план-решения">План решения</a></li>
-<li><a href="#section">…</a></li>
+<li><a href="#указания-3">Указания</a></li>
 </ul></li>
-</ul></li>
-<li><a href="#введение">Введение</a></li>
-<li><a href="#постановка-задачи">Постановка задачи</a></li>
-<li><a href="#план-решения-1">План решения</a></li>
-<li><a href="#ввод-данных">Ввод данных</a></li>
 </ul>
 </nav>
 <hr />
@@ -158,6 +151,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><em>вызывает</em> в процессе работы функцию поиска min и max.</li>
 </ul></li>
 </ul>
+<p>При отсутствии решения ЛР № 1 его можно взять <a href="https://github.com/PlushBeaver/cs19-lab01">здесь</a>.</p>
 <h2 id="указания">Указания</h2>
 <h3 id="функция-ввода-чисел">Функция ввода чисел</h3>
 <p>Сколько параметров у функции? Один — количество вводимых чисел. Сколько и каких значений функция возвращает? Одно значение — вектор из действительных чисел. Что функция позволяет <em>сделать?</em> Ввести числа (input numbers). Таким образом, функция имеет вид:</p>
@@ -227,17 +221,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Можно видеть, что функциями фактически выделены блоки ввода данных, обработки данных и вывода результатов. Ввод данных частично находится вне функции <code>input_numbers()</code>, потому что иначе она оказалась бы слишком специфичной, «заточенной» под программу. Функция же ввода массива может быть полезной во многих случаях.</p>
 <p>Помимо выделения блоков кода, функции определяют взаимодействие между частями программы и скрывают реализацию этих частей. Через типы параметров функций и их возвращаемых значений фиксируется, какой информацией обмениваются части программы <em>(интерфейсы</em> этих частей, не путать с интерфейсом пользователя). При грамотной декомпозиции интерфейсы сохраняются (иногда дополняясь) при модернизации частей программы.</p>
 <ol start="5" class="example" type="1">
-<li>Добейтесь корректной работы программы и сделайте коммит.</li>
+<li><p>Добейтесь корректной работы программы.</p></li>
+<li><p>Сделайте коммит с текущим состоянием проекта и отправьте его на GitHub.</p></li>
 </ol>
+<p>Если вы клонировали авторское решение ЛР № 1, изменить адрес репозитария на собственный можно такой командой (с правильным адресом):</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb8-1" title="1"><span class="fu">git</span> remote set-url origin https://github.com/<span class="op">&lt;</span>username<span class="op">&gt;</span>/<span class="op">&lt;</span>repo<span class="op">&gt;</span>.git</a></code></pre></div>
 <h1 id="часть-2.-вывод-гистограммы-как-изображения-в-формате-svg">Часть 2. Вывод гистограммы как изображения в формате SVG</h1>
 <p>Изображения в формате SVG представляют собой текстовые файлы, в которых перечислены геометрические фигуры (линии, прямоугольники и прочие) и их свойства (положение, размер, цвет и другие). Кроме самих геометрических фигур, файл содержит заголовок и окончание.</p>
-<p>Например, такой файл SVG описывает изображение размером 200×300 точек с линией из точки <em>(0, 0)</em> в точку <em>(100, 100)</em> синего цвета толщиной 4 точки:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode xml"><code class="sourceCode xml"><a class="sourceLine" id="cb8-1" title="1"><span class="kw">&lt;?xml</span> version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; <span class="kw">?&gt;</span></a>
-<a class="sourceLine" id="cb8-2" title="2"><span class="kw">&lt;svg</span><span class="ot"> width=</span><span class="st">&#39;200&#39;</span><span class="ot"> height=</span><span class="st">&#39;300&#39;</span><span class="ot"> viewBox=</span><span class="st">&#39;0 0 200 300&#39;</span><span class="ot"> xmlns=</span><span class="st">&#39;http://www.w3.org/2000/svg&#39;</span><span class="kw">&gt;</span></a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="kw">&lt;line</span><span class="ot"> x1=</span><span class="st">&#39;0&#39;</span><span class="ot"> y1=</span><span class="st">&#39;0&#39;</span><span class="ot"> x2=</span><span class="st">&#39;100&#39;</span><span class="ot"> y2=</span><span class="st">&#39;100&#39;</span><span class="ot"> stroke=</span><span class="st">&#39;blue&#39;</span><span class="ot"> stroke-width=</span><span class="st">&#39;4&#39;</span><span class="kw">/&gt;</span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="kw">&lt;/svg&gt;</span></a></code></pre></div>
+<p>Например, <a href="example.svg">такой файл SVG</a> описывает изображение размером 200×300 точек с линией из точки <em>(0, 0)</em> в точку <em>(100, 100)</em> синего цвета толщиной 4 точки:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode xml"><code class="sourceCode xml"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">&lt;?xml</span> version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; <span class="kw">?&gt;</span></a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="kw">&lt;svg</span><span class="ot"> width=</span><span class="st">&#39;200&#39;</span><span class="ot"> height=</span><span class="st">&#39;300&#39;</span><span class="ot"> viewBox=</span><span class="st">&#39;0 0 200 300&#39;</span><span class="ot"> xmlns=</span><span class="st">&#39;http://www.w3.org/2000/svg&#39;</span><span class="kw">&gt;</span></a>
+<a class="sourceLine" id="cb9-3" title="3"><span class="kw">&lt;line</span><span class="ot"> x1=</span><span class="st">&#39;0&#39;</span><span class="ot"> y1=</span><span class="st">&#39;0&#39;</span><span class="ot"> x2=</span><span class="st">&#39;100&#39;</span><span class="ot"> y2=</span><span class="st">&#39;100&#39;</span><span class="ot"> stroke=</span><span class="st">&#39;blue&#39;</span><span class="ot"> stroke-width=</span><span class="st">&#39;4&#39;</span><span class="kw">/&gt;</span></a>
+<a class="sourceLine" id="cb9-4" title="4"><span class="kw">&lt;/svg&gt;</span></a></code></pre></div>
 <p>Здесь строка <code>&lt;line... /&gt;</code> описывает линию. Выше нее находится заголовок файла, ниже нее — окончание файла.</p>
 <p>Система координат SVG отличается от математической: ось Y направлена вниз, то есть точка <em>(0,0)</em> находится в верхнем левом углу. Координаты в SVG действительные, то есть может быть точка <em>(0.5, 3.14).</em></p>
+<p>Фрагменты вида <code>&lt;svg&gt;</code> или <code>&lt;line&gt;</code> называются <em>элементами,</em> или <em>тэгами.</em> Параметры вида <code>height='300'</code> называются <em>атрибутами</em> элементов. Подробнее об SVG можно прочитать <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element">здесь</a>.</p>
 <p>Кроме линий, SVG поддерживает множество элементов, среди них:</p>
 <ul>
 <li><code>&lt;text x="20" y="35"&gt;anything you want&lt;/text&gt;</code>: текст «anything you want», левый нижний угол которого в точке <em>(20,35);</em></li>
@@ -251,104 +249,104 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Для проверки работы программы можно направлять ее стандартный вывод в файл с расширением SVG и просматривать его в браузере.</p>
 <h3 id="вывод-заголовка-и-окончания-svg">Вывод заголовка и окончания SVG</h3>
 <p>Отработаем цикл модификации и проверки программы на примере пустого изображения. Вот готовые функции вывода заголовка и окончания SVG:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb9-1" title="1"><span class="dt">void</span></a>
-<a class="sourceLine" id="cb9-2" title="2">svg_begin(<span class="dt">double</span> width, <span class="dt">double</span> height) {</a>
-<a class="sourceLine" id="cb9-3" title="3">    cout &lt;&lt; <span class="st">&quot;&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39;?&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
-<a class="sourceLine" id="cb9-4" title="4">    cout &lt;&lt; <span class="st">&quot;&lt;svg width=&#39;&quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot;&#39; height=&#39;&quot;</span> &lt;&lt; height <span class="st">&quot;&#39; &quot;</span></a>
-<a class="sourceLine" id="cb9-5" title="5">         &lt;&lt; <span class="st">&quot;viewBox=&#39;0 0 &quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; height &lt;&lt; <span class="st">&quot;&#39; &quot;</span></a>
-<a class="sourceLine" id="cb9-6" title="6">         &lt;&lt; <span class="st">&quot;xmlns=&#39;http://www.w3.org/2000/svg&#39;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
-<a class="sourceLine" id="cb9-7" title="7">}</a>
-<a class="sourceLine" id="cb9-8" title="8"></a>
-<a class="sourceLine" id="cb9-9" title="9"><span class="dt">void</span></a>
-<a class="sourceLine" id="cb9-10" title="10">svg_end() {</a>
-<a class="sourceLine" id="cb9-11" title="11">    cout &lt;&lt; <span class="st">&quot;&lt;/svg&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
-<a class="sourceLine" id="cb9-12" title="12">}</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb10-1" title="1"><span class="dt">void</span></a>
+<a class="sourceLine" id="cb10-2" title="2">svg_begin(<span class="dt">double</span> width, <span class="dt">double</span> height) {</a>
+<a class="sourceLine" id="cb10-3" title="3">    cout &lt;&lt; <span class="st">&quot;&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39;?&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
+<a class="sourceLine" id="cb10-4" title="4">    cout &lt;&lt; <span class="st">&quot;&lt;svg width=&#39;&quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot;&#39; &lt;&lt; height=&#39;&quot;</span> &lt;&lt; height <span class="st">&quot;&#39; &quot;</span></a>
+<a class="sourceLine" id="cb10-5" title="5">         &lt;&lt; <span class="st">&quot;viewBox=&#39;0 0 &quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; height &lt;&lt; <span class="st">&quot;&#39; &quot;</span></a>
+<a class="sourceLine" id="cb10-6" title="6">         &lt;&lt; <span class="st">&quot;xmlns=&#39;http://www.w3.org/2000/svg&#39;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
+<a class="sourceLine" id="cb10-7" title="7">}</a>
+<a class="sourceLine" id="cb10-8" title="8"></a>
+<a class="sourceLine" id="cb10-9" title="9"><span class="dt">void</span></a>
+<a class="sourceLine" id="cb10-10" title="10">svg_end() {</a>
+<a class="sourceLine" id="cb10-11" title="11">    cout &lt;&lt; <span class="st">&quot;&lt;/svg&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
+<a class="sourceLine" id="cb10-12" title="12">}</a></code></pre></div>
 <p>Обратите внимание на пробелы в строках, например, перед закрывающей кавычкой во фрагменте <code>"viewBox='0 0 "</code>. Также обратите внимание на использование одинарных кавычек. Двойные кавычки ограничивают в C++ строковые литералы; одинарные кавычки внутри них выводятся «как есть» в результирующую строку. Путаница кавычек или отсутствие некоторых пробелов сделает SVG некорректным.</p>
 <p>Пусть начальная реализация графического вывода гистограммы всегда выводит пустое изображение фиксированного размера:</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb10-1" title="1"><span class="dt">void</span></a>
-<a class="sourceLine" id="cb10-2" title="2">show_histogram_svg(<span class="at">const</span> vector&lt;<span class="dt">size_t</span>&gt;&amp; bins) {</a>
-<a class="sourceLine" id="cb10-3" title="3">    svg_begin(<span class="dv">400</span>, <span class="dv">300</span>);</a>
-<a class="sourceLine" id="cb10-4" title="4">    svg_end();</a>
-<a class="sourceLine" id="cb10-5" title="5">}</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb11-1" title="1"><span class="dt">void</span></a>
+<a class="sourceLine" id="cb11-2" title="2">show_histogram_svg(<span class="at">const</span> vector&lt;<span class="dt">size_t</span>&gt;&amp; bins) {</a>
+<a class="sourceLine" id="cb11-3" title="3">    svg_begin(<span class="dv">400</span>, <span class="dv">300</span>);</a>
+<a class="sourceLine" id="cb11-4" title="4">    svg_end();</a>
+<a class="sourceLine" id="cb11-5" title="5">}</a></code></pre></div>
 <p>Заменим вызов <code>show_histogram_text(bins)</code> вызовом <code>show_histogram_svg(bins)</code>.</p>
 <p>Создать файл изображения можно так:</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb11-1" title="1"><span class="ex">C</span>:\lab03-histogram<span class="op">&gt;</span> bin/Debug/lab03-histogram.exe <span class="op">&lt;</span>marks.txt <span class="op">&gt;</span>marks.svg</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb12-1" title="1"><span class="ex">C</span>:\lab03-histogram<span class="op">&gt;</span> bin/Debug/lab03-histogram.exe <span class="op">&lt;</span>marks.txt <span class="op">&gt;</span>marks.svg</a></code></pre></div>
 <p>В браузере <code>marks.svg</code> открывается из меню <em>Файл → Открыть…</em> Отобразится пустая страница (пустой рисунок). Можно нажать <em>Ctrl+U</em> или пункт <em>«Исходный код страницы»</em> в контекстном меню любого места страницы, чтобы увидеть результирующий код SVG.</p>
 <h3 id="функции-вывода-элементов-svg">Функции вывода элементов SVG</h3>
-<ol start="6" class="example" type="1">
+<ol start="7" class="example" type="1">
 <li><p>Напишите функцию для вывода текста в SVG, которая принимает координату по горизонтали (<code>left</code>), координату нижнего края текста по вертикали (<code>baseline</code>) и сам текст:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb12-1" title="1"><span class="dt">void</span> svg_text(<span class="dt">double</span> left, <span class="dt">double</span> baseline, string text);</a></code></pre></div></li>
+<div class="sourceCode" id="cb13"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb13-1" title="1"><span class="dt">void</span> svg_text(<span class="dt">double</span> left, <span class="dt">double</span> baseline, string text);</a></code></pre></div></li>
 </ol>
 <p>Для проверки выведем высоту первого столбца гистограммы:</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb13-1" title="1"><span class="dt">void</span></a>
-<a class="sourceLine" id="cb13-2" title="2">show_histogram_svg(<span class="at">const</span> vector&lt;<span class="dt">size_t</span>&gt;&amp; bins) {</a>
-<a class="sourceLine" id="cb13-3" title="3">    svg_begin(<span class="dv">400</span>, <span class="dv">300</span>);</a>
-<a class="sourceLine" id="cb13-4" title="4">    svg_text(<span class="dv">20</span>, <span class="dv">20</span>, to_string(bins[<span class="dv">0</span>]));</a>
-<a class="sourceLine" id="cb13-5" title="5">    svg_end();</a>
-<a class="sourceLine" id="cb13-6" title="6">}</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb14-1" title="1"><span class="dt">void</span></a>
+<a class="sourceLine" id="cb14-2" title="2">show_histogram_svg(<span class="at">const</span> vector&lt;<span class="dt">size_t</span>&gt;&amp; bins) {</a>
+<a class="sourceLine" id="cb14-3" title="3">    svg_begin(<span class="dv">400</span>, <span class="dv">300</span>);</a>
+<a class="sourceLine" id="cb14-4" title="4">    svg_text(<span class="dv">20</span>, <span class="dv">20</span>, to_string(bins[<span class="dv">0</span>]));</a>
+<a class="sourceLine" id="cb14-5" title="5">    svg_end();</a>
+<a class="sourceLine" id="cb14-6" title="6">}</a></code></pre></div>
 <p>Функция <code>to_string()</code> преобразует значения разных типов в строки.</p>
 <p>Чтобы проверить модифицированную программу, её нужно запустить повторно:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb14-1" title="1"><span class="ex">C</span>:\lab03-histogram<span class="op">&gt;</span> bin/Debug/lab03-histogram.exe <span class="op">&lt;</span>marks.txt <span class="op">&gt;</span>marks.svg</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb15-1" title="1"><span class="ex">C</span>:\lab03-histogram<span class="op">&gt;</span> bin/Debug/lab03-histogram.exe <span class="op">&lt;</span>marks.txt <span class="op">&gt;</span>marks.svg</a></code></pre></div>
 <p>После повторного запуска программы открытый в браузере файл можно обновить клавишей <em>F5.</em> На странице должен быть виден текст «2». Если в файле ошибка, он не отобразится. В этом случае нужно просмотреть код страницы на предмет ошибок в SVG, исправить код программы, перезапустить ее и проверить результат.</p>
-<ol start="7" class="example" type="1">
+<ol start="8" class="example" type="1">
 <li><p>Напишите функцию для вывода прямоугольника в SVG:</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb15-1" title="1"><span class="dt">void</span> svg_rect(<span class="dt">double</span> x, <span class="dt">double</span> y, <span class="dt">double</span> width, <span class="dt">double</span> height);</a></code></pre></div></li>
+<div class="sourceCode" id="cb16"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb16-1" title="1"><span class="dt">void</span> svg_rect(<span class="dt">double</span> x, <span class="dt">double</span> y, <span class="dt">double</span> width, <span class="dt">double</span> height);</a></code></pre></div></li>
 </ol>
 <p>Для проверки выведем первый столбец гистограммы справа от подписи к нему:</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb16-1" title="1">    svg_rect(<span class="dv">50</span>, <span class="dv">0</span>, bins[<span class="dv">0</span>] * <span class="dv">10</span>, <span class="dv">30</span>);</a></code></pre></div>
-<ol start="8" class="example" type="1">
+<div class="sourceCode" id="cb17"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb17-1" title="1">    svg_rect(<span class="dv">50</span>, <span class="dv">0</span>, bins[<span class="dv">0</span>] * <span class="dv">10</span>, <span class="dv">30</span>);</a></code></pre></div>
+<ol start="9" class="example" type="1">
 <li>Убедитесь, что вывод первого столбца гистограммы работает.</li>
 </ol>
 <h3 id="исключение-магических-констант">Исключение «магических констант»</h3>
 <p>Текст выводится в координатах <em>(20, 20)</em>, смещение левого края столбца <em>50</em> (оно же — ширина подписей), а высота столбца <em>30.</em> Эти числа подобраны так, чтобы элементы гистограммы не накладывались друг на друга, но они разбросаны по коду и их смысл неясен.</p>
 <p>Прямо внутри функции <code>show_histogram_svg()</code> заведем константы:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb17-1" title="1"><span class="at">const</span> <span class="kw">auto</span> IMAGE_WIDTH = <span class="dv">400</span>;</a>
-<a class="sourceLine" id="cb17-2" title="2"><span class="at">const</span> <span class="kw">auto</span> IMAGE_HEIGHT = <span class="dv">300</span>;</a>
-<a class="sourceLine" id="cb17-3" title="3"><span class="at">const</span> <span class="kw">auto</span> TEXT_LEFT = <span class="dv">20</span>;</a>
-<a class="sourceLine" id="cb17-4" title="4"><span class="at">const</span> <span class="kw">auto</span> TEXT_BASELINE = <span class="dv">20</span>;</a>
-<a class="sourceLine" id="cb17-5" title="5"><span class="at">const</span> <span class="kw">auto</span> TEXT_WIDTH = <span class="dv">50</span>;</a>
-<a class="sourceLine" id="cb17-6" title="6"><span class="at">const</span> <span class="kw">auto</span> BIN_HEIGHT = <span class="dv">30</span>;</a></code></pre></div>
-<ol start="9" class="example" type="1">
+<div class="sourceCode" id="cb18"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb18-1" title="1"><span class="at">const</span> <span class="kw">auto</span> IMAGE_WIDTH = <span class="dv">400</span>;</a>
+<a class="sourceLine" id="cb18-2" title="2"><span class="at">const</span> <span class="kw">auto</span> IMAGE_HEIGHT = <span class="dv">300</span>;</a>
+<a class="sourceLine" id="cb18-3" title="3"><span class="at">const</span> <span class="kw">auto</span> TEXT_LEFT = <span class="dv">20</span>;</a>
+<a class="sourceLine" id="cb18-4" title="4"><span class="at">const</span> <span class="kw">auto</span> TEXT_BASELINE = <span class="dv">20</span>;</a>
+<a class="sourceLine" id="cb18-5" title="5"><span class="at">const</span> <span class="kw">auto</span> TEXT_WIDTH = <span class="dv">50</span>;</a>
+<a class="sourceLine" id="cb18-6" title="6"><span class="at">const</span> <span class="kw">auto</span> BIN_HEIGHT = <span class="dv">30</span>;</a></code></pre></div>
+<ol start="10" class="example" type="1">
 <li>Замените «магические числа» константами и проверьте работу программы.</li>
 </ol>
 <h3 id="вывод-гистограммы">Вывод гистограммы</h3>
 <p>Логика вывода гистограммы следующая: каждая корзина выводится так же, как первая, но к вертикальной координате добавляется смещение — высота столбца:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb18-1" title="1"><span class="dt">double</span> top = <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb18-2" title="2"><span class="cf">for</span> (<span class="dt">size_t</span> bin : bins) {</a>
-<a class="sourceLine" id="cb18-3" title="3">    <span class="at">const</span> <span class="dt">double</span> bin_width = <span class="dv">10</span> * bin;</a>
-<a class="sourceLine" id="cb18-4" title="4">top += BIN_HEIGHT; 
-svg_text(TEXT_LEFT, top + 
-TEXT_BASELINE, to_string(bin));</a>
-<a class="sourceLine" id="cb18-5" title="5">    svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT);</a>
-<a class="sourceLine" id="cb18-6" title="6">}</a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb19-1" title="1"><span class="dt">double</span> top = <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb19-2" title="2"><span class="cf">for</span> (<span class="dt">size_t</span> bin : bins) {</a>
+<a class="sourceLine" id="cb19-3" title="3">    <span class="at">const</span> <span class="dt">double</span> bin_width = <span class="dv">10</span> * bin;</a>
+<a class="sourceLine" id="cb19-4" title="4">    svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin));</a>
+<a class="sourceLine" id="cb19-5" title="5">    svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT);</a>
+<a class="sourceLine" id="cb19-6" title="6">}</a></code></pre></div>
 <p>«Магическая константа» 10 пока сохраняется, потому что логика расчета ширины прямоугольника еще будет модифицироваться.</p>
-<ol start="10" class="example" type="1">
+<ol start="11" class="example" type="1">
 <li>Реализуйте вывод гистограммы и проверьте работу программы.</li>
 </ol>
 <h3 id="оформление-гистограммы.-значения-параметров-по-умолчанию">Оформление гистограммы. Значения параметров по умолчанию</h3>
 <p>Черная гистограмма не слишком эстетична или экономична при печати. За цвет линий в SVG отвечает атрибут <code>stroke</code>, а за цвет заливки — <code>fill</code>. Можно задать один из <a href="https://www.december.com/html/spec/colorsvghex.html">стандартных цветов</a> или выбрать цвет в формате <code>#RRGGBB</code> из <a href="http://getcolor.ru">палитры</a>. Пример прямоугольника с красными границами и бледно-розовой заливкой:</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode xml"><code class="sourceCode xml"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">&lt;rect</span><span class="ot"> x=</span><span class="st">&#39;50&#39;</span><span class="ot"> y=</span><span class="st">&#39;0&#39;</span><span class="ot"> width=</span><span class="st">&#39;30&#39;</span><span class="ot"> height=</span><span class="st">&#39;30&#39;</span><span class="ot"> stroke=</span><span class="st">&#39;red&#39;</span><span class="ot"> fill=</span><span class="st">&#39;#ffeeee&#39;</span><span class="kw">/&gt;</span></a></code></pre></div>
-<ol start="11" class="example" type="1">
+<div class="sourceCode" id="cb20"><pre class="sourceCode xml"><code class="sourceCode xml"><a class="sourceLine" id="cb20-1" title="1"><span class="kw">&lt;rect</span><span class="ot"> x=</span><span class="st">&#39;50&#39;</span><span class="ot"> y=</span><span class="st">&#39;0&#39;</span><span class="ot"> width=</span><span class="st">&#39;30&#39;</span><span class="ot"> height=</span><span class="st">&#39;30&#39;</span><span class="ot"> stroke=</span><span class="st">&#39;red&#39;</span><span class="ot"> fill=</span><span class="st">&#39;#ffeeee&#39;</span><span class="kw">/&gt;</span></a></code></pre></div>
+<ol start="12" class="example" type="1">
 <li><p>Доработайте функцию <code>svg_rect()</code> для указания цвета линий и заливки:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb20-1" title="1"><span class="dt">void</span> svg_rect(<span class="dt">double</span> x, <span class="dt">double</span> y, <span class="dt">double</span> width, <span class="dt">double</span> height,</a>
-<a class="sourceLine" id="cb20-2" title="2">        string stroke, string fill);</a></code></pre></div></li>
+<div class="sourceCode" id="cb21"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb21-1" title="1"><span class="dt">void</span> svg_rect(<span class="dt">double</span> x, <span class="dt">double</span> y, <span class="dt">double</span> width, <span class="dt">double</span> height,</a>
+<a class="sourceLine" id="cb21-2" title="2">        string stroke, string fill);</a></code></pre></div></li>
 <li><p>Измените цвета вывода и проверьте работу программы.</p></li>
 </ol>
 <h4 id="значения-параметров-по-умолчанию">Значения параметров по умолчанию</h4>
 <p>Цвета элементов нужно задавать не всегда, а в текущей реализации у функции <code>svg_rect()</code> шесть параметров, два из которых отвечают за цвет. Можно было бы перегрузить функцию:</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb21-1" title="1"><span class="dt">void</span> svg_rect(<span class="dt">double</span> x, <span class="dt">double</span> y, <span class="dt">double</span> width, <span class="dt">double</span> height);</a>
-<a class="sourceLine" id="cb21-2" title="2"></a>
-<a class="sourceLine" id="cb21-3" title="3"><span class="dt">void</span> svg_rect(<span class="dt">double</span> x, <span class="dt">double</span> y, <span class="dt">double</span> width, <span class="dt">double</span> height,</a>
-<a class="sourceLine" id="cb21-4" title="4">        string stroke, string fill);</a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb22-1" title="1"><span class="dt">void</span> svg_rect(<span class="dt">double</span> x, <span class="dt">double</span> y, <span class="dt">double</span> width, <span class="dt">double</span> height);</a>
+<a class="sourceLine" id="cb22-2" title="2"></a>
+<a class="sourceLine" id="cb22-3" title="3"><span class="dt">void</span> svg_rect(<span class="dt">double</span> x, <span class="dt">double</span> y, <span class="dt">double</span> width, <span class="dt">double</span> height,</a>
+<a class="sourceLine" id="cb22-4" title="4">        string stroke, string fill);</a></code></pre></div>
 <p>Однако в этом случае пришлось бы в каждой функции писать похожий код. В данном случае выгоднее применить значения параметров по умолчанию:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb22-1" title="1"><span class="dt">void</span> svg_rect(<span class="dt">double</span> x, <span class="dt">double</span> y, <span class="dt">double</span> width, <span class="dt">double</span> height,</a>
-<a class="sourceLine" id="cb22-2" title="2">        string stroke = <span class="st">&quot;black&quot;</span>, string fill = <span class="st">&quot;black&quot;</span>);</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb23-1" title="1"><span class="dt">void</span> svg_rect(<span class="dt">double</span> x, <span class="dt">double</span> y, <span class="dt">double</span> width, <span class="dt">double</span> height,</a>
+<a class="sourceLine" id="cb23-2" title="2">        string stroke = <span class="st">&quot;black&quot;</span>, string fill = <span class="st">&quot;black&quot;</span>);</a></code></pre></div>
 <p>Значения по умолчанию указываются только один раз, обычно в определении функции (если объявление и определение отделены). Новая версия <code>svg_rect()</code> работает так:</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb23-1" title="1">svg_rect(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">200</span>);             <span class="co">// svg_rect(0, 0, 100, 200, &quot;black&quot;, &quot;black&quot;);</span></a>
-<a class="sourceLine" id="cb23-2" title="2">svg_rect(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="st">&quot;red&quot;</span>);      <span class="co">// svg_rect(0, 0, 100, 200, &quot;red&quot;,   &quot;black&quot;);</span></a>
-<a class="sourceLine" id="cb23-3" title="3">svg_rect(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="st">&quot;blue&quot;</span>, <span class="dv">4</span>);</a></code></pre></div>
-<ol start="13" class="example" type="1">
-<li>Добавьте значения параметров по умолчанию функции <code>svg_rect()</code>.</li>
+<div class="sourceCode" id="cb24"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb24-1" title="1">svg_rect(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">200</span>);             <span class="co">// svg_rect(0, 0, 100, 200, &quot;black&quot;, &quot;black&quot;);</span></a>
+<a class="sourceLine" id="cb24-2" title="2">svg_rect(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="st">&quot;red&quot;</span>);      <span class="co">// svg_rect(0, 0, 100, 200, &quot;red&quot;,   &quot;black&quot;);</span></a>
+<a class="sourceLine" id="cb24-3" title="3">svg_rect(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="st">&quot;blue&quot;</span>, <span class="dv">4</span>);</a></code></pre></div>
+<ol start="14" class="example" type="1">
+<li><p>Добавьте значения параметров по умолчанию функции <code>svg_rect()</code>.</p></li>
+<li><p>Сделайте коммит и отправите изменения на GitHub.</p></li>
+<li><p>*(Домашнее задание.) Реализуйте для гистограммы в SVG масштабирование, как было сделано для текста в ЛР № 1. Опубликуйте коммит.</p></li>
 </ol>
 <h1 id="часть-3.-модульное-тестирование">Часть 3. Модульное тестирование</h1>
 <p>Ранее для тестирования программы применялось перенаправление ввода и вывода. Такое тестирование называется функциональным. Однако функционального тестирования недостаточно для больших программ. Предположим, большая программа перестала выдавать правильный результат — как найти место ошибки? Необязательно это последнее изменение: возможно, другая часть и ранее работала неверно в некоторых случаях, и последняя правка лишь привела к такому случаю.</p>
@@ -360,45 +358,45 @@ TEXT_BASELINE, to_string(bin));</a>
 <h3 id="выделение-тестируемой-функции-в-модуль">Выделение тестируемой функции в модуль</h3>
 <p>Функция <code>find_minmax()</code> находится в основном (и единственном) модуле <code>main.cpp</code>. Для использования функции в других программах нужно вынести ее код в отдельный модуль. Модулем в практике C++ называется заголовочный файл (<code>*.h</code>) с объявлениями функций и файл реализации (<code>*.cpp</code>) с их определениями.</p>
 <h4 id="создание-заголовочного-файла">Создание заголовочного файла</h4>
-<ol start="14" class="example" type="1">
+<ol start="17" class="example" type="1">
 <li><p>При помощи меню <em>File → New → File…</em> добавьте к проекту заголовочный файл <em>(C/C++ header).</em> Он должен быть расположен в каталоге проекта:</p>
 <p><em>Filename with full path:</em> <code>C:\lab03-histogram\histogram.h</code></p></li>
 </ol>
 <p>Заготовка файла включает «стража включения» (см. лекции):</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb24-1" title="1"><span class="pp">#ifndef HISTOGRAM_H_INCLUDED</span></a>
-<a class="sourceLine" id="cb24-2" title="2"><span class="pp">#define H</span>ISTOGRAM_H_INCLUDED</a>
-<a class="sourceLine" id="cb24-3" title="3"></a>
-<a class="sourceLine" id="cb24-4" title="4"><span class="pp">#endif </span><span class="co">// HISTOGRAM_H_INCLUDED</span></a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb25-1" title="1"><span class="pp">#ifndef HISTOGRAM_H_INCLUDED</span></a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="pp">#define H</span>ISTOGRAM_H_INCLUDED</a>
+<a class="sourceLine" id="cb25-3" title="3"></a>
+<a class="sourceLine" id="cb25-4" title="4"><span class="pp">#endif </span><span class="co">// HISTOGRAM_H_INCLUDED</span></a></code></pre></div>
 <p>Можно заменить его на более простой вариант <code>#pragma once</code> или писать код в этом файле между <code>#define</code> и <code>#endif</code>.</p>
-<ol start="15" class="example" type="1">
+<ol start="18" class="example" type="1">
 <li>Перенесите функцию <code>find_minmax()</code> в <code>histogram.h</code>.</li>
 </ol>
 <p>Помимо самой функции в начало <code>histogram.h</code> (под <code>#pragma once</code>) нужно добавить подключение библиотеки векторов и стандартного пространства имен:</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb25-1" title="1"><span class="pp">#include </span><span class="im">&lt;vector&gt;</span></a>
-<a class="sourceLine" id="cb25-2" title="2"></a>
-<a class="sourceLine" id="cb25-3" title="3"><span class="kw">using</span> <span class="kw">namespace</span> std;</a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb26-1" title="1"><span class="pp">#include </span><span class="im">&lt;vector&gt;</span></a>
+<a class="sourceLine" id="cb26-2" title="2"></a>
+<a class="sourceLine" id="cb26-3" title="3"><span class="kw">using</span> <span class="kw">namespace</span> std;</a></code></pre></div>
 <p>Если теперь попытаться собрать программу, это не удастся: в файле <code>main.cpp</code> функция <code>find_minmax()</code> теперь отсутствует. Необходимо подключить файл <code>histogram.h</code> (в самом начале файла <code>main.cpp</code>):</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb26-1" title="1"><span class="pp">#include </span><span class="im">&quot;histogram.h&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb27-1" title="1"><span class="pp">#include </span><span class="im">&quot;histogram.h&quot;</span></a></code></pre></div>
 <p>Обратите внимание на использование кавычек вместо угловых скобок: кавычки означают, что путь к файлу <code>*.h</code> написан относительно файла с <code>#include</code>, а угловые скобки предписывают искать включаемый файл по определенным в настройках путям.</p>
-<ol start="16" class="example" type="1">
+<ol start="19" class="example" type="1">
 <li>Скомпилируйте программу и проверьте, что она работает.</li>
 </ol>
 <h4 id="создание-файла-реализации">Создание файла реализации</h4>
-<ol start="17" class="example" type="1">
+<ol start="20" class="example" type="1">
 <li><p>При помощи меню <em>File → New → File…</em> добавьте к проекту файл реализации <em>(C/C++ source).</em> Необходимые настройки:</p>
 <p><em>Filename with full path:</em> <code>C:\lab03-histogram\histogram.cpp</code><br />
 <em>Add file to active project in build target(s)</em> — нажать <em>All.</em></p></li>
 <li><p>В <code>histogram.cpp</code> подключите <code>histogram.h</code>.</p></li>
 <li><p>Перенесите определение функции <code>find_minmax()</code> в <code>histogram.cpp</code>.</p></li>
 <li><p>Оставьте в <code>histogram.h</code> от функции <code>find_minmax()</code> только объявление:</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb27-1" title="1"><span class="dt">void</span> find_minmax(<span class="at">const</span> vector&lt;<span class="dt">double</span>&gt; numbers, <span class="dt">double</span>&amp; min, <span class="dt">double</span>&amp; max);</a></code></pre></div></li>
+<div class="sourceCode" id="cb28"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb28-1" title="1"><span class="dt">void</span> find_minmax(<span class="at">const</span> vector&lt;<span class="dt">double</span>&gt; numbers, <span class="dt">double</span>&amp; min, <span class="dt">double</span>&amp; max);</a></code></pre></div></li>
 </ol>
 <p>Если при выделении функции <code>find_minmax()</code> были использованы указатели, а не ссылки, объявление нужно соответствующим образом скорректировать.</p>
-<ol start="21" class="example" type="1">
+<ol start="24" class="example" type="1">
 <li>Соберите программу и проверьте ее работу.</li>
 </ol>
 <h3 id="создание-проекта-для-модульных-тестов">Создание проекта для модульных тестов</h3>
-<ol start="22" class="example" type="1">
+<ol start="25" class="example" type="1">
 <li><p>При помощи меню <em>File → New → Project…</em> создайте новый проект типа <em>Empty project.</em> Необходимые настройки:</p>
 <p><em>Project title:</em> <code>lab03-test</code><br />
 <em>Folder to create project in:</em> <code>C:\lab03-histogram</code><br />
@@ -412,32 +410,32 @@ TEXT_BASELINE, to_string(bin));</a>
 </ol>
 <h3 id="написание-модульных-тестов">Написание модульных тестов</h3>
 <p>Файл <code>test.cpp</code> представляет собой полноценную тестирующую программу, в которой подключен тестируемый модуль, библиотека с <code>assert()</code> (см. лекцию) и присутствует функция <code>main()</code>:</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb28-1" title="1"><span class="pp">#include </span><span class="im">&quot;histogram.h&quot;</span></a>
-<a class="sourceLine" id="cb28-2" title="2"></a>
-<a class="sourceLine" id="cb28-3" title="3"><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></a>
-<a class="sourceLine" id="cb28-4" title="4"></a>
-<a class="sourceLine" id="cb28-5" title="5"><span class="dt">int</span></a>
-<a class="sourceLine" id="cb28-6" title="6">main() {</a>
-<a class="sourceLine" id="cb28-7" title="7">}</a></code></pre></div>
-<p>Первый тест будет проверять простой случай массива положительных чисел:</p>
 <div class="sourceCode" id="cb29"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb29-1" title="1"><span class="pp">#include </span><span class="im">&quot;histogram.h&quot;</span></a>
 <a class="sourceLine" id="cb29-2" title="2"></a>
 <a class="sourceLine" id="cb29-3" title="3"><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></a>
 <a class="sourceLine" id="cb29-4" title="4"></a>
-<a class="sourceLine" id="cb29-5" title="5"><span class="dt">void</span></a>
-<a class="sourceLine" id="cb29-6" title="6">test_positive() {</a>
-<a class="sourceLine" id="cb29-7" title="7">    <span class="dt">double</span> min = <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb29-8" title="8">    <span class="dt">double</span> max = <span class="dv">0</span>;</a>
-<a class="sourceLine" id="cb29-9" title="9">    find_minmax({<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>}, min, max);</a>
-<a class="sourceLine" id="cb29-10" title="10">    <span class="ot">assert</span>(min == <span class="dv">1</span>);</a>
-<a class="sourceLine" id="cb29-11" title="11">    <span class="ot">assert</span>(max == <span class="dv">3</span>);</a>
-<a class="sourceLine" id="cb29-12" title="12">}</a>
-<a class="sourceLine" id="cb29-13" title="13"></a>
-<a class="sourceLine" id="cb29-14" title="14"><span class="dt">int</span></a>
-<a class="sourceLine" id="cb29-15" title="15">main() {</a>
-<a class="sourceLine" id="cb29-16" title="16">    test_positive();</a>
-<a class="sourceLine" id="cb29-17" title="17">}</a></code></pre></div>
-<ol start="26" class="example" type="1">
+<a class="sourceLine" id="cb29-5" title="5"><span class="dt">int</span></a>
+<a class="sourceLine" id="cb29-6" title="6">main() {</a>
+<a class="sourceLine" id="cb29-7" title="7">}</a></code></pre></div>
+<p>Первый тест будет проверять простой случай массива положительных чисел:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb30-1" title="1"><span class="pp">#include </span><span class="im">&quot;histogram.h&quot;</span></a>
+<a class="sourceLine" id="cb30-2" title="2"></a>
+<a class="sourceLine" id="cb30-3" title="3"><span class="pp">#include </span><span class="im">&lt;cassert&gt;</span></a>
+<a class="sourceLine" id="cb30-4" title="4"></a>
+<a class="sourceLine" id="cb30-5" title="5"><span class="dt">void</span></a>
+<a class="sourceLine" id="cb30-6" title="6">test_positive() {</a>
+<a class="sourceLine" id="cb30-7" title="7">    <span class="dt">double</span> min = <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb30-8" title="8">    <span class="dt">double</span> max = <span class="dv">0</span>;</a>
+<a class="sourceLine" id="cb30-9" title="9">    find_minmax({<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>}, min, max);</a>
+<a class="sourceLine" id="cb30-10" title="10">    <span class="ot">assert</span>(min == <span class="dv">1</span>);</a>
+<a class="sourceLine" id="cb30-11" title="11">    <span class="ot">assert</span>(max == <span class="dv">3</span>);</a>
+<a class="sourceLine" id="cb30-12" title="12">}</a>
+<a class="sourceLine" id="cb30-13" title="13"></a>
+<a class="sourceLine" id="cb30-14" title="14"><span class="dt">int</span></a>
+<a class="sourceLine" id="cb30-15" title="15">main() {</a>
+<a class="sourceLine" id="cb30-16" title="16">    test_positive();</a>
+<a class="sourceLine" id="cb30-17" title="17">}</a></code></pre></div>
+<ol start="29" class="example" type="1">
 <li><p>Соберите программу-тест, запустите ее и убедитесь, что она завершается без ошибок, то есть тест проходит.</p></li>
 <li><p>Замените проверку <code>max == 3</code> на <code>max == 4</code>. Соберите и запустите программу, чтобы наблюдать образец вывода при провале теста. Верните правильную проверку.</p></li>
 <li><p>Добавьте новые тесты (имена придумайте) на такие случаи:</p>
@@ -451,171 +449,119 @@ TEXT_BASELINE, to_string(bin));</a>
 </ol>
 <p>Если <code>find_minmax()</code> в своем начале обращается к <code>numbers[0]</code>, программа будет завершаться аварийно, так как для пустого массива <code>numbers[0]</code> нет.</p>
 <p>Обратите внимание: тщательное написание модульных тестов позволило выявить случай, при котором код не работает. Выходом может быть такое поведение: в начале <code>find_minmax()</code> проверять длину массива (<code>numbers.size()</code>), и если она нулевая, возвращаться из функции без изменения <code>min</code> и <code>max</code>. Тест тогда может проверять, что в результате вызова <code>min</code> и <code>max</code> не меняются. Возможно, стоит также учесть случай пустого массива в основной программе.</p>
-<ol start="30" class="example" type="1">
-<li>Внесите исправления в <code>histogram.cpp</code> (как минимум), пересоберите основную программу и тест, убедитесь, что они работают.</li>
+<ol start="33" class="example" type="1">
+<li><p>Внесите исправления в <code>histogram.cpp</code> (как минимум), пересоберите основную программу и тест, убедитесь, что они работают.</p></li>
+<li><p>Сделайте коммит со всеми новыми файлами и отправите изменения на GitHub.</p></li>
 </ol>
-<h1 id="часть-4.-использование-структур-перечислений-и-операторов">Часть 4. Использование структур, перечислений и операторов</h1>
+<p><strong>Важно:</strong> перед коммитом не забудьте сохранить каждый проект <em>(File → Save project).</em></p>
+<h1 id="часть-4.-использование-структур-и-операторов">Часть 4. Использование структур и операторов</h1>
 <h2 id="задача-2">Задача</h2>
 <p>Необходимо отображать конструкцию, изображенную на рисунке, при любых значениях углов поворота каждого из звеньев:</p>
-<p><img src="example.svg" /></p>
+<p><img src="mech.svg" /></p>
 <p>Все звенья имеют одинаковую длину 100, при нулевом угле поворота расположены горизонтально. Программа должна быть расширяемой, то есть ее должно быть легко доработать под появление новых звеньев. На ввод подаются углы поворота в градусах, выводиться должен рисунок в SVG.</p>
 <h2 id="указания-3">Указания</h2>
-<h3 id="план-решения">План решения</h3>
 <p><strong>Ввод</strong> трех действительных углов не представляет трудностей.</p>
 <p><strong>Обработка данных —</strong> преобразования координат методами линейной алгебры. Следовательно, в программе потребуется оперировать двумерными точками и двумерными векторами. На вход обработки подаются звенья-отрезки в своем начальном положении, на выходе — отрезки с рассчитанными координатами после поворотов.</p>
 <p><strong>Вывод данных</strong> потребует написания новой функции <code>svg_line()</code> для вывода линии; эта функция аналогична <code>svg_rect()</code>.</p>
 <p>Имеется вопрос стыковки части обработки данных и вывода: система координат SVG отличается от системы координат, принятой в линейной алгебре. Различие можно убрать средствами SVG (далее будет показано, как).</p>
-<h3 id="section">…</h3>
-<div class="sourceCode" id="cb30"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb30-1" title="1"><span class="kw">struct</span> Point {</a>
-<a class="sourceLine" id="cb30-2" title="2">    <span class="dt">double</span> x;</a>
-<a class="sourceLine" id="cb30-3" title="3">    <span class="dt">double</span> y;</a>
-<a class="sourceLine" id="cb30-4" title="4">};</a>
-<a class="sourceLine" id="cb30-5" title="5"></a>
-<a class="sourceLine" id="cb30-6" title="6"><span class="kw">struct</span> Line {</a>
-<a class="sourceLine" id="cb30-7" title="7">    Point begin;</a>
-<a class="sourceLine" id="cb30-8" title="8">    Point end;</a>
-<a class="sourceLine" id="cb30-9" title="9">};</a>
-<a class="sourceLine" id="cb30-10" title="10"></a>
-<a class="sourceLine" id="cb30-11" title="11">Vec2 AB{<span class="dv">100</span>, <span class="dv">0</span>};</a>
-<a class="sourceLine" id="cb30-12" title="12">Vec2 BC{<span class="dv">100</span>, <span class="dv">0</span>};</a>
-<a class="sourceLine" id="cb30-13" title="13">Vec2 CD{<span class="dv">100</span>, <span class="dv">0</span>};</a>
-<a class="sourceLine" id="cb30-14" title="14">Vec2 DE = rotate({<span class="dv">20</span>, <span class="dv">20</span>},  <span class="dv">40</span>);</a>
-<a class="sourceLine" id="cb30-15" title="15">Vec2 EF = rotate({<span class="dv">20</span>, <span class="dv">20</span>}, -<span class="dv">40</span>);</a>
-<a class="sourceLine" id="cb30-16" title="16">Vec2 DG = EF;</a>
-<a class="sourceLine" id="cb30-17" title="17">Vec2 GH = DE;</a>
-<a class="sourceLine" id="cb30-18" title="18"></a>
-<a class="sourceLine" id="cb30-19" title="19">Point A{<span class="dv">0</span>, <span class="dv">0</span>};</a>
-<a class="sourceLine" id="cb30-20" title="20">Point B = A + rotate(AB, alpha);</a>
-<a class="sourceLine" id="cb30-21" title="21">Point C = B + rotate(BC, beta);</a>
-<a class="sourceLine" id="cb30-22" title="22">Point D = C + rotate(CD, gamma);</a>
-<a class="sourceLine" id="cb30-23" title="23">Point E = rotate(CD + DE, gamma);</a>
-<a class="sourceLine" id="cb30-24" title="24">Point F = rotate(CD + DE + EF, gamma);</a>
-<a class="sourceLine" id="cb30-25" title="25">Point G = rotate(CD + DG, gamma);</a>
-<a class="sourceLine" id="cb30-26" title="26">Point H = rotate(CD + DG + GH, gamma);</a>
-<a class="sourceLine" id="cb30-27" title="27"></a>
-<a class="sourceLine" id="cb30-28" title="28">Line link1{A, B};</a>
-<a class="sourceLine" id="cb30-29" title="29">Line link2{B, C};</a>
-<a class="sourceLine" id="cb30-30" title="30">Line link3{C, D};</a>
-<a class="sourceLine" id="cb30-31" title="31"><span class="co">// </span><span class="al">TODO</span><span class="co">: hand</span></a></code></pre></div>
-<hr />
-<h1 id="введение">Введение</h1>
-<h1 id="постановка-задачи">Постановка задачи</h1>
-<p>Имеется манипулятор (механическая «рука») из трех звеньев и захвата:</p>
-<p>TODO: рисунок</p>
-<p>Размеры манипулятора и его начальное положение известны. Задаются углы поворота каждого звена <code>alpha</code>, <code>beta</code>, <code>gamma</code> и угол <code>theta</code>, на который раскрыт захват.</p>
-<p>Необходимо:</p>
-<ol type="1">
-<li>Рассчитать положение всех частей манипулятора.</li>
-<li>Изобразить чертеж манипулятора в заданном положении.</li>
-</ol>
-<p>Программу нужно написать качественно: в дальнейшем предполагается добавить новые виды манипуляторов и их движений.</p>
-<h1 id="план-решения-1">План решения</h1>
-<p><strong>Ввод данных:</strong></p>
+<p>Определим структуру <code>Vec2</code>, описывающую двумерный вектор (точку в двухмерном пространстве):</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb31-1" title="1"><span class="kw">struct</span> Vec2 {</a>
+<a class="sourceLine" id="cb31-2" title="2">    <span class="dt">double</span> x;</a>
+<a class="sourceLine" id="cb31-3" title="3">    <span class="dt">double</span> y;</a>
+<a class="sourceLine" id="cb31-4" title="4">};</a></code></pre></div>
+<p>Каждое из звеньев AB, BC и CD в начальном положении является горизонтальным вектором длиной 100, то есть их координата X равна 100, координата Y равна 0:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb32-1" title="1"><span class="dt">int</span></a>
+<a class="sourceLine" id="cb32-2" title="2">main() {</a>
+<a class="sourceLine" id="cb32-3" title="3">    Vec2 AB{<span class="dv">100</span>, <span class="dv">0</span>};</a>
+<a class="sourceLine" id="cb32-4" title="4">    Vec2 BC{<span class="dv">100</span>, <span class="dv">0</span>};</a>
+<a class="sourceLine" id="cb32-5" title="5">    Vec2 CD{<span class="dv">100</span>, <span class="dv">0</span>};</a></code></pre></div>
+<p>Захват манипулятора состоит из одинаковых звеньев («фаланг»), но под разным углом поворота; определим сначала одно такое звено:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb33-1" title="1">Vec2 falange{<span class="dv">20</span>, <span class="dv">0</span>};</a></code></pre></div>
+<p>На основе <code>falange</code> необходимо создать четыре других звена:</p>
 <ul>
-<li>размеры манипулятора и начальное положение звеньев можно задать константами;</li>
-<li>углы вводятся как действительные числа.</li>
+<li>DE: поворотом <code>falange</code> на 45 градусов против часовой стрелки;</li>
+<li>EF: такое же, как <code>falange</code>;</li>
+<li>DG: поворотом <code>fanalge</code> на 45 градусов по часовой стрелке;</li>
+<li>GH: такое же, как <code>falange</code>.</li>
 </ul>
-<p><strong>Обработка данных</strong> состоит в вычислении координат всех отрезков методами, известными из линейной алгебры и теоретической механики.</p>
-<p><strong>Вывод данных</strong> предлагается делать в формате SVG, поскольку он позволяет изобразить отрезки путем вывода их координат как текста в определенном формате.</p>
-<p>Поскольку имеется начальное положение всех отрезков, предлагается сначала реализовать вывод данных, а только после — обработку.</p>
-<h1 id="ввод-данных">Ввод данных</h1>
-<pre><code>A
-B = A + M1 * L1
-C = B + M2 * L2
-D = C + M3 * L3
-E1 = C + M4 * H11
-F1 = E1 + M4 * H12
-E2 = C + M5 * H21
-F2 = E2 + M5 * H22</code></pre>
-<div class="sourceCode" id="cb32"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb32-1" title="1"><span class="kw">struct</span> Vec2 {</a>
-<a class="sourceLine" id="cb32-2" title="2">    <span class="dt">double</span> x;</a>
-<a class="sourceLine" id="cb32-3" title="3">    <span class="dt">double</span> y;</a>
-<a class="sourceLine" id="cb32-4" title="4">};</a>
-<a class="sourceLine" id="cb32-5" title="5"></a>
-<a class="sourceLine" id="cb32-6" title="6"><span class="kw">struct</span> Mat22 {</a>
-<a class="sourceLine" id="cb32-7" title="7">    <span class="dt">double</span> a[<span class="dv">2</span>][<span class="dv">2</span>];</a>
-<a class="sourceLine" id="cb32-8" title="8">};</a>
-<a class="sourceLine" id="cb32-9" title="9"></a>
-<a class="sourceLine" id="cb32-10" title="10">Vec2 add(Vec2 a, Vec2 b) {</a>
-<a class="sourceLine" id="cb32-11" title="11">    <span class="cf">return</span> {a.x + b.y, a.y + b.y};</a>
-<a class="sourceLine" id="cb32-12" title="12">}</a>
-<a class="sourceLine" id="cb32-13" title="13"></a>
-<a class="sourceLine" id="cb32-14" title="14">Vec2 multiply(Mat22 m, Vec2 v) {</a>
-<a class="sourceLine" id="cb32-15" title="15">    <span class="cf">return</span> {</a>
-<a class="sourceLine" id="cb32-16" title="16">            v.x * m.a[<span class="dv">0</span>][<span class="dv">0</span>] + v.y * m.a[<span class="dv">0</span>][<span class="dv">1</span>],</a>
-<a class="sourceLine" id="cb32-17" title="17">            v.x * m.a[<span class="dv">1</span>][<span class="dv">0</span>] + v.y * m.a[<span class="dv">1</span>][<span class="dv">1</span>]</a>
-<a class="sourceLine" id="cb32-18" title="18">    };</a>
-<a class="sourceLine" id="cb32-19" title="19">}</a>
-<a class="sourceLine" id="cb32-20" title="20"></a>
-<a class="sourceLine" id="cb32-21" title="21">Mat22 rotation(<span class="dt">double</span> angle_degrees) {</a>
-<a class="sourceLine" id="cb32-22" title="22">    <span class="at">const</span> <span class="dt">double</span> alpha = M_PI * angle_degrees / <span class="dv">180</span>;</a>
-<a class="sourceLine" id="cb32-23" title="23">    <span class="at">const</span> <span class="dt">double</span> sin_a = sin(alpha);</a>
-<a class="sourceLine" id="cb32-24" title="24">    <span class="at">const</span> <span class="dt">double</span> cos_a = cos(alpha);</a>
-<a class="sourceLine" id="cb32-25" title="25">    <span class="cf">return</span> {</a>
-<a class="sourceLine" id="cb32-26" title="26">            { cos_a, sin_a},</a>
-<a class="sourceLine" id="cb32-27" title="27">            {-sin_a, cos_a}</a>
-<a class="sourceLine" id="cb32-28" title="28">    };</a>
-<a class="sourceLine" id="cb32-29" title="29">}</a>
-<a class="sourceLine" id="cb32-30" title="30"></a>
-<a class="sourceLine" id="cb32-31" title="31">Vec2 s1 = Vec2(<span class="dv">0</span>, <span class="dv">100</span>);</a>
-<a class="sourceLine" id="cb32-32" title="32">Vec2 s2 = rotation(<span class="dv">45</span>) * Vec2(<span class="dv">100</span>, <span class="dv">0</span>);</a>
-<a class="sourceLine" id="cb32-33" title="33">Vec2 s3 = Vec2(<span class="dv">100</span>, <span class="dv">0</span>);</a>
-<a class="sourceLine" id="cb32-34" title="34">Vec2 h11 = rotation(<span class="dv">45</span>) * Vec2(<span class="dv">0</span>, <span class="dv">50</span>);</a>
-<a class="sourceLine" id="cb32-35" title="35">Vec2 h12 = rotation(-<span class="dv">45</span>) * Vec2(<span class="dv">0</span>, <span class="dv">50</span>);</a>
-<a class="sourceLine" id="cb32-36" title="36">Vec2 h21 = h12;</a>
-<a class="sourceLine" id="cb32-37" title="37">Vec2 h22 = h11;</a>
-<a class="sourceLine" id="cb32-38" title="38"></a>
-<a class="sourceLine" id="cb32-39" title="39"><span class="co">// later</span></a>
-<a class="sourceLine" id="cb32-40" title="40">s1 = rotation(alpha) * s1;</a>
-<a class="sourceLine" id="cb32-41" title="41">s2 = rotation(beta) * s2;</a>
-<a class="sourceLine" id="cb32-42" title="42">s2 = rotation(gamma) * s2;</a>
-<a class="sourceLine" id="cb32-43" title="43">Mat22 m4 = rotation(theta / <span class="dv">2</span>);</a>
-<a class="sourceLine" id="cb32-44" title="44">Mat22 m5 = rotation(-theta / <span class="dv">2</span>);</a>
-<a class="sourceLine" id="cb32-45" title="45">h11 = m4 * h11;</a>
-<a class="sourceLine" id="cb32-46" title="46">h12 = m4 * h12;</a>
-<a class="sourceLine" id="cb32-47" title="47">h21 = m4 * h21;</a>
-<a class="sourceLine" id="cb32-48" title="48">h22 = m4 * h22;</a>
-<a class="sourceLine" id="cb32-49" title="49"></a>
-<a class="sourceLine" id="cb32-50" title="50">Vec2 a{<span class="dv">0</span>, <span class="dv">0</span>};</a>
-<a class="sourceLine" id="cb32-51" title="51">Vec2 b = add(a, s1);</a>
-<a class="sourceLine" id="cb32-52" title="52">Vec2 c = add(b, s2);</a>
-<a class="sourceLine" id="cb32-53" title="53">Vec2 d = add(c, s3);</a>
-<a class="sourceLine" id="cb32-54" title="54">Vec2 e1 = add(d, h11);</a>
-<a class="sourceLine" id="cb32-55" title="55">Vec2 f1 = add(e1, h12);</a>
-<a class="sourceLine" id="cb32-56" title="56">Vec2 e2 = add(d, h21);</a>
-<a class="sourceLine" id="cb32-57" title="57">Vec2 f2 = add(e2, h22);</a>
-<a class="sourceLine" id="cb32-58" title="58"></a>
-<a class="sourceLine" id="cb32-59" title="59">svg_begin(<span class="dv">400</span>, <span class="dv">400</span>);</a>
-<a class="sourceLine" id="cb32-60" title="60">svg_line(a, b, <span class="st">&quot;red&quot;</span>);</a>
-<a class="sourceLine" id="cb32-61" title="61">svg_line(b, c, <span class="st">&quot;green&quot;</span>);</a>
-<a class="sourceLine" id="cb32-62" title="62">svg_line(c, d, <span class="st">&quot;blue&quot;</span>);</a>
-<a class="sourceLine" id="cb32-63" title="63">svg_line(d, e1, <span class="st">&quot;orange&quot;</span>);</a>
-<a class="sourceLine" id="cb32-64" title="64">svg_line(e1, f1, <span class="st">&quot;lime&quot;</span>);</a>
-<a class="sourceLine" id="cb32-65" title="65">svg_line(d, e2, <span class="st">&quot;cyan&quot;</span>);</a>
-<a class="sourceLine" id="cb32-66" title="66">svg_line(e2, f2, <span class="st">&quot;magenta&quot;</span>);</a>
-<a class="sourceLine" id="cb32-67" title="67">svg_end();</a>
-<a class="sourceLine" id="cb32-68" title="68"></a>
-<a class="sourceLine" id="cb32-69" title="69">Vec2 u{<span class="dv">50</span>, <span class="dv">70</span>};</a>
-<a class="sourceLine" id="cb32-70" title="70">Vec2 v{<span class="dv">250</span>, <span class="dv">230</span>};</a>
-<a class="sourceLine" id="cb32-71" title="71"></a>
-<a class="sourceLine" id="cb32-72" title="72"><span class="dt">void</span> svg_line(Vec2 a, Vec2 b, string color) {</a>
-<a class="sourceLine" id="cb32-73" title="73">    cout &lt;&lt; <span class="st">&quot;&lt;line x1=&#39;&quot;</span> &lt;&lt; a.x &lt;&lt; <span class="st">&quot;&#39; y1=&#39;&quot;</span> &lt;&lt; a.y &lt;&lt; <span class="st">&quot;&#39; &quot;</span></a>
-<a class="sourceLine" id="cb32-74" title="74">         &lt;&lt; <span class="st">&quot;x2=&#39;&quot;</span> &lt;&lt; b.x &lt;&lt; <span class="st">&quot;&#39; y2=&#39;&quot;</span> &lt;&lt; b.y <span class="st">&quot;&#39; &quot;</span></a>
-<a class="sourceLine" id="cb32-75" title="75">         &lt;&lt; <span class="st">&quot;stroke=&#39;&quot;</span> &lt;&lt; color &lt;&lt; <span class="st">&quot;&#39; stroke-width=&#39;4&#39; /&gt;&quot;</span></a>
-<a class="sourceLine" id="cb32-76" title="76">         &lt;&lt; endl;</a>
-<a class="sourceLine" id="cb32-77" title="77">}</a>
-<a class="sourceLine" id="cb32-78" title="78"></a>
-<a class="sourceLine" id="cb32-79" title="79"><span class="dt">void</span> svg_begin(<span class="dt">size_t</span> width, <span class="dt">size_t</span> height) {</a>
-<a class="sourceLine" id="cb32-80" title="80">    cout &lt;&lt; <span class="st">&quot;&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; ?&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
-<a class="sourceLine" id="cb32-81" title="81">         &lt;&lt; <span class="st">&quot;&lt;svg width=&#39;&quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot;&#39; height=&#39;&quot;</span> &lt;&lt; height &lt;&lt; <span class="st">&quot;&#39; &quot;</span></a>
-<a class="sourceLine" id="cb32-82" title="82">         &lt;&lt; <span class="st">&quot;viewBox=&#39;0 0 &quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; height <span class="st">&quot;&#39; xmlns=&#39;http://www.w3.org/2000/svg&#39;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
-<a class="sourceLine" id="cb32-83" title="83">         &lt;&lt; <span class="st">&quot;&lt;g transform=&#39;translate(0,&quot;</span> &lt;&lt; height &lt;&lt; <span class="st">&quot;)&#39;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
-<a class="sourceLine" id="cb32-84" title="84">         &lt;&lt; <span class="st">&quot;&lt;g transform=&#39;scale(1,-1)&#39;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
-<a class="sourceLine" id="cb32-85" title="85">}</a>
-<a class="sourceLine" id="cb32-86" title="86"></a>
-<a class="sourceLine" id="cb32-87" title="87"><span class="dt">void</span> svg_end() {</a>
-<a class="sourceLine" id="cb32-88" title="88">    cout &lt;&lt; <span class="st">&quot;&lt;/g&gt;</span><span class="sc">\n</span><span class="st">&quot;</span> &lt;&lt; <span class="st">&quot;&lt;/g&gt;</span><span class="sc">\n</span><span class="st">&quot;</span> &lt;&lt; <span class="st">&quot;&lt;/svg&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
-<a class="sourceLine" id="cb32-89" title="89">}</a></code></pre></div>
+<p>Необходимо иметь возможность по вектору и углу поворота в градусах получать повернутый вектор. Формула для расчета:</p>
+<pre><code>X&#39; = X × cos α - Y × sin α
+Y&#39; = X × sin α + Y × cos α</code></pre>
+<p>Рационально создать функцию <code>rotate()</code> для такого преобразования. В этой функции понадобится число π для преобразования из градусов в радианы, синус и косинус. Для этого в начале программы нужно подключить математическую библиотеку:</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb35-1" title="1"><span class="pp">#define _</span>USE_MATH_DEFINES</a>
+<a class="sourceLine" id="cb35-2" title="2"><span class="pp">#include </span><span class="im">&lt;cmath&gt;</span></a></code></pre></div>
+<p>После этого π будет доступно как <code>M_PI</code>, синус и косинус как <code>sin</code> и <code>cos</code>:</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb36-1" title="1">Vec<span class="dv">2</span></a>
+<a class="sourceLine" id="cb36-2" title="2">rotate(Vec2 v, <span class="dt">double</span> degree) {</a>
+<a class="sourceLine" id="cb36-3" title="3">    <span class="at">const</span> <span class="dt">double</span> radian = M_PI / <span class="dv">180</span> * degree;</a>
+<a class="sourceLine" id="cb36-4" title="4">    <span class="at">const</span> <span class="dt">double</span> sin_a = sin(radians);</a>
+<a class="sourceLine" id="cb36-5" title="5">    <span class="at">const</span> <span class="dt">double</span> cos_a = sqrt(<span class="dv">1</span> - sin_a * sin_a);</a>
+<a class="sourceLine" id="cb36-6" title="6">    Vec2 r;</a>
+<a class="sourceLine" id="cb36-7" title="7">    r.x = v.x * cos_a - v.y * sin_a;</a>
+<a class="sourceLine" id="cb36-8" title="8">    r.y = v.x * sin_a + v.y * cos_a;</a>
+<a class="sourceLine" id="cb36-9" title="9">    <span class="cf">return</span> r;</a></code></pre></div>
+<p>С помощью <code>rotate()</code> в функции <code>main()</code> можно определить векторы захвата:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb37-1" title="1">    Vec2 DE = rotate(falange, <span class="dv">45</span>);</a>
+<a class="sourceLine" id="cb37-2" title="2">    Vec2 EF = falange;</a>
+<a class="sourceLine" id="cb37-3" title="3">    Vec2 DG = rotate(falange, -<span class="dv">45</span>);</a>
+<a class="sourceLine" id="cb37-4" title="4">    Vec2 GH = falange;</a></code></pre></div>
+<p>Зададим углы поворота прямо в программе произвольными:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb38-1" title="1"><span class="dt">double</span> alpha = <span class="dv">60</span>;</a>
+<a class="sourceLine" id="cb38-2" title="2"><span class="dt">double</span> beta = -<span class="dv">30</span>;</a>
+<a class="sourceLine" id="cb38-3" title="3"><span class="dt">double</span> gamma = <span class="dv">30</span>;</a></code></pre></div>
+<p>Начнем вычисление точек манипулятора; для пробы вычислим положение первого звена:</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb39-1" title="1">Vec2 A = {<span class="dv">0</span>, <span class="dv">0</span>};</a>
+<a class="sourceLine" id="cb39-2" title="2">Vec2 B = A + rotate(AB, alpha);</a></code></pre></div>
+<p>Если попытаться скомпилировать программу, это не удастся: операция сложения для векторов не определена. C++ позволяет <em>перегрузку операторов:</em> можно определить функцию под специальным именем <code>operator+</code>, которая будет принимать два вектора и возвращать вектор-сумму:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb40-1" title="1">Vec<span class="dv">2</span></a>
+<a class="sourceLine" id="cb40-2" title="2"><span class="kw">operator</span>+(Vec2 lhs, Vec2 rhs) {</a>
+<a class="sourceLine" id="cb40-3" title="3">    ...</a>
+<a class="sourceLine" id="cb40-4" title="4">}</a></code></pre></div>
+<ol start="35" class="example" type="1">
+<li>Реализуйте оператор сложения векторов.</li>
+</ol>
+<p>Продолжим вычисление точек:</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb41-1" title="1">Vec2 C = B + rotate(BC, alpha + beta);</a>
+<a class="sourceLine" id="cb41-2" title="2">Vec2 D = C + rotate(CD, alpha + beta + gamma);</a></code></pre></div>
+<ol start="36" class="example" type="1">
+<li><p>Запишите вычисление всех оставшихся точек. (Все они повернуты на угол <em>α + β + γ</em>.)</p></li>
+<li><p>Напишите функцию для отображения линии в SVG:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb42-1" title="1"><span class="dt">void</span> svg_line(<span class="dt">double</span> x1, <span class="dt">double</span> y1, <span class="dt">double</span> x2, <span class="dt">double</span> y2, string color);</a></code></pre></div></li>
+</ol>
+<p>Функция <code>svg_line()</code> универсальная, но в данной программе было бы удобнее, чтобы она принимала не отдельные координаты, а целые точки. Для этого можно перегрузить <code>svg_line()</code>: создать функцию с таким же именем, но другими типами параметров. Новая функция может для выполнения своей задачи вызывать старую.</p>
+<ol start="38" class="example" type="1">
+<li><p>Реализуйте перегрузку функции <code>svg_line()</code>:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb43-1" title="1"><span class="dt">void</span> svg_line(Vec2 begin, Vec2 end, string color);</a></code></pre></div></li>
+</ol>
+<p>Как говорилось выше, на уровне SVG можно решить проблему несоответствия системы координат линейной алгебры и SVG. Для этого функции вывода заголовка и окончания SVG должны быть немного другими, чем ранее:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb44-1" title="1"><span class="dt">void</span></a>
+<a class="sourceLine" id="cb44-2" title="2">svg_begin(<span class="dt">double</span> width, <span class="dt">double</span> height) {</a>
+<a class="sourceLine" id="cb44-3" title="3">    cout &lt;&lt; <span class="st">&quot;&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; ?&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
+<a class="sourceLine" id="cb44-4" title="4">         &lt;&lt; <span class="st">&quot;&lt;svg width=&#39;&quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot;&#39; height=&#39;&quot;</span> &lt;&lt; height &lt;&lt; <span class="st">&quot;&#39; &quot;</span></a>
+<a class="sourceLine" id="cb44-5" title="5">         &lt;&lt; <span class="st">&quot;viewBox=&#39;0 0 &quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; height &lt;&lt; <span class="st">&quot;&#39; &quot;</span></a>
+<a class="sourceLine" id="cb44-6" title="6">         &lt;&lt; <span class="st">&quot;xmlns=&#39;http://www.w3.org/2000/svg&#39;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
+<a class="sourceLine" id="cb44-7" title="7">         &lt;&lt; <span class="st">&quot;&lt;g transform=&#39;translate(0,&quot;</span> &lt;&lt; height &lt;&lt; <span class="st">&quot;)&#39;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
+<a class="sourceLine" id="cb44-8" title="8">         &lt;&lt; <span class="st">&quot;&lt;g transform=&#39;scale(1,-1)&#39;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
+<a class="sourceLine" id="cb44-9" title="9">}</a>
+<a class="sourceLine" id="cb44-10" title="10"></a>
+<a class="sourceLine" id="cb44-11" title="11"><span class="dt">void</span></a>
+<a class="sourceLine" id="cb44-12" title="12">svg_end() {</a>
+<a class="sourceLine" id="cb44-13" title="13">    cout &lt;&lt; <span class="st">&quot;&lt;/g&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
+<a class="sourceLine" id="cb44-14" title="14">         &lt;&lt; <span class="st">&quot;&lt;/g&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
+<a class="sourceLine" id="cb44-15" title="15">         &lt;&lt; <span class="st">&quot;&lt;/svg&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
+<a class="sourceLine" id="cb44-16" title="16">}</a></code></pre></div>
+<p>Итого можно выполнить отображение манипулятора:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb45-1" title="1">svg_begin(<span class="dv">400</span>, <span class="dv">400</span>);</a>
+<a class="sourceLine" id="cb45-2" title="2">svg_line(A, B, <span class="st">&quot;red&quot;</span>);</a>
+<a class="sourceLine" id="cb45-3" title="3">svg_line(B, C, <span class="st">&quot;blue&quot;</span>);</a>
+<a class="sourceLine" id="cb45-4" title="4"><span class="co">// ...</span></a>
+<a class="sourceLine" id="cb45-5" title="5">svg_end();</a></code></pre></div>
+<ol start="39" class="example" type="1">
+<li><p>Закончите реализацию вывода SVG. Соберите и запустите программу. Убедитесь, что манипулятор находится в ожидаемом положении.</p></li>
+<li><p>Добавьте в программу ввод углов поворота.</p></li>
+<li><p>Создайте на GitHub новый репозитарий и отправьте туда код программы.</p></li>
+<li><p><strong>(Домашнее задание.)</strong> Добавьте в программу ввод угла раскрытия захвата манипулятора <code>theta</code> и его учет в расчете точек E, F, G и H. Опубликуйте коммит.</p></li>
+</ol>
     <hr/>
     <p>
 		Козлюк&nbsp;Д.&nbsp;А., Мохов&nbsp;А.&nbsp;С., Василькова&nbsp;П.&nbsp;Д. для&nbsp;кафедры Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2019&nbsp;г.
