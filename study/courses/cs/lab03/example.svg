@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg width='200' height='300' viewBox='0 0 200 300' xmlns='http://www.w3.org/2000/svg'>
+<line x1='0' y1='0' x2='100' y2='100' stroke='blue' stroke-width='4'/>
+</svg>
