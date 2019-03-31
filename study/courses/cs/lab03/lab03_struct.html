@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
 <head>
   <meta charset="utf-8" />
@@ -316,7 +316,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb18"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb18-1" title="1"><span class="dt">double</span> top = <span class="dv">0</span>;</a>
 <a class="sourceLine" id="cb18-2" title="2"><span class="cf">for</span> (<span class="dt">size_t</span> bin : bins) {</a>
 <a class="sourceLine" id="cb18-3" title="3">    <span class="at">const</span> <span class="dt">double</span> bin_width = <span class="dv">10</span> * bin;</a>
-<a class="sourceLine" id="cb18-4" title="4">    svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin));</a>
+<a class="sourceLine" id="cb18-4" title="4">    
+top += BIN_HEIGHT; 
+svg_text(TEXT_LEFT, top + 
+TEXT_BASELINE, to_string(bin));</a>
 <a class="sourceLine" id="cb18-5" title="5">    svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT);</a>
 <a class="sourceLine" id="cb18-6" title="6">}</a></code></pre></div>
 <p>«Магическая константа» 10 пока сохраняется, потому что логика расчета ширины прямоугольника еще будет модифицироваться.</p>
