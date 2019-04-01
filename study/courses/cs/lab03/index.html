@@ -234,8 +234,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Фрагменты вида <code>&lt;svg&gt;</code> или <code>&lt;line&gt;</code> называются <em>элементами,</em> или <em>тэгами.</em> Параметры вида <code>height='300'</code> называются <em>атрибутами</em> элементов. Подробнее об SVG можно прочитать <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element">здесь</a>.</p>
 <p>Кроме линий, SVG поддерживает множество элементов, среди них:</p>
 <ul>
-<li><code>&lt;text x="20" y="35"&gt;anything you want&lt;/text&gt;</code>: текст «anything you want», левый нижний угол которого в точке <em>(20,35);</em></li>
-<li><code>&lt;rect x="0" y="0" width="100" height="200" /&gt;</code>: прямоугольник 100×200 с верхним левым углом в точке <em>(0,0)</em>.</li>
+<li><code>&lt;text x='20' y='35'&gt;anything you want&lt;/text&gt;</code>: текст «anything you want», левый нижний угол которого в точке <em>(20,35);</em></li>
+<li><code>&lt;rect x='0' y='0' width='100' height='200' /&gt;</code>: прямоугольник 100×200 с верхним левым углом в точке <em>(0,0)</em>.</li>
 </ul>
 <h2 id="задача">Задача</h2>
 <p>Требуется переделать вывод гистограммы на формат SVG.</p>
@@ -248,7 +248,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb10-1" title="1"><span class="dt">void</span></a>
 <a class="sourceLine" id="cb10-2" title="2">svg_begin(<span class="dt">double</span> width, <span class="dt">double</span> height) {</a>
 <a class="sourceLine" id="cb10-3" title="3">    cout &lt;&lt; <span class="st">&quot;&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39;?&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
-<a class="sourceLine" id="cb10-4" title="4">    cout &lt;&lt; <span class="st">&quot;&lt;svg width=&#39;&quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot;&#39; height=&#39;&quot;</span> &lt;&lt; height <span class="st"> &lt;&lt; &quot;&#39; &quot;</span></a>
+<a class="sourceLine" id="cb10-4" title="4">    cout &lt;&lt; <span class="st">&quot;&lt;svg width=&#39;&quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot;&#39; height=&#39;&quot;</span> &lt;&lt; height &lt;&lt; <span class="st">&quot;&#39; &quot;</span></a>
 <a class="sourceLine" id="cb10-5" title="5">         &lt;&lt; <span class="st">&quot;viewBox=&#39;0 0 &quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; height &lt;&lt; <span class="st">&quot;&#39; &quot;</span></a>
 <a class="sourceLine" id="cb10-6" title="6">         &lt;&lt; <span class="st">&quot;xmlns=&#39;http://www.w3.org/2000/svg&#39;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
 <a class="sourceLine" id="cb10-7" title="7">}</a>
@@ -394,16 +394,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <h3 id="создание-проекта-для-модульных-тестов">Создание проекта для модульных тестов</h3>
 <ol start="25" class="example" type="1">
-<li><p>При помощи меню <em>File → New → Project…</em> создайте новый проект типа <em>Empty project.</em> Необходимые настройки:</p>
+<li><p>При помощи меню <em>File → New → Project…</em> создайте новый проект типа <em>Console application</em> под названием <code>lab03-test</code>. Каталог нового проекта должен находиться рядом с каталогом старого.</p>
 <p><em>Project title:</em> <code>lab03-test</code><br />
-<em>Folder to create project in:</em> <code>C:\lab03-histogram</code><br />
+<em>Folder to create project in:</em> <code>C:\lab03-test</code><br />
 <em>Project filename:</em> <code>lab03-test.cbp</code><br />
-<em>Resulting filename:</em> <code>C:\lab03-histogram\lab03-test.cbp</code></p></li>
+<em>Resulting filename:</em> <code>C:\lab03-test\lab03-test.cbp</code></p></li>
 <li><p>Дважды щелкните по проекту <code>lab03-test</code>, чтобы сделать его активным.</p></li>
-<li><p>Из контекстного меню проекта <code>lab03-test</code> выберите пункт <em>Add files…</em> и добавьте к проекту <code>histogram.h</code> и <code>histogram.cpp</code>. В открывшемся диалоге <em>Select the targets this file should belong to:</em> проставьте все флажки.</p></li>
-<li><p>При помощи меню <em>File → New → File…</em> добавьте к проекту <code>lab03-test</code> файл реализации <em>(C/C++ source).</em> Необходимые настройки:</p>
-<p><em>Filename with full path:</em> <code>C:\lab03-histogram\test.cpp</code><br />
-<em>Add file to active project in build target(s)</em> — нажать <em>All.</em></p></li>
+<li><p>Из контекстного меню проекта <code>lab03-test</code> выберите пункт <em>Add files…</em> и добавьте к проекту <code>histogram.h</code> и <code>histogram.cpp</code> из каталога <code>lab03-histogram</code>. В открывшемся диалоге <em>Select the targets this file should belong to:</em> проставьте все флажки.</p></li>
 </ol>
 <h3 id="написание-модульных-тестов">Написание модульных тестов</h3>
 <p>Файл <code>test.cpp</code> представляет собой полноценную тестирующую программу, в которой подключен тестируемый модуль, библиотека с <code>assert()</code> (см. лекцию) и присутствует функция <code>main()</code>:</p>
@@ -432,7 +429,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb30-15" title="15">main() {</a>
 <a class="sourceLine" id="cb30-16" title="16">    test_positive();</a>
 <a class="sourceLine" id="cb30-17" title="17">}</a></code></pre></div>
-<ol start="29" class="example" type="1">
+<ol start="28" class="example" type="1">
 <li><p>Соберите программу-тест, запустите ее и убедитесь, что она завершается без ошибок, то есть тест проходит.</p></li>
 <li><p>Замените проверку <code>max == 3</code> на <code>max == 4</code>. Соберите и запустите программу, чтобы наблюдать образец вывода при провале теста. Верните правильную проверку.</p></li>
 <li><p>Добавьте новые тесты (имена придумайте) на такие случаи:</p>
@@ -446,12 +443,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <p>Если <code>find_minmax()</code> в своем начале обращается к <code>numbers[0]</code>, программа будет завершаться аварийно, так как для пустого массива <code>numbers[0]</code> нет.</p>
 <p>Обратите внимание: тщательное написание модульных тестов позволило выявить случай, при котором код не работает. Выходом может быть такое поведение: в начале <code>find_minmax()</code> проверять длину массива (<code>numbers.size()</code>), и если она нулевая, возвращаться из функции без изменения <code>min</code> и <code>max</code>. Тест тогда может проверять, что в результате вызова <code>min</code> и <code>max</code> не меняются. Возможно, стоит также учесть случай пустого массива в основной программе.</p>
-<ol start="33" class="example" type="1">
+<ol start="32" class="example" type="1">
 <li><p>Внесите исправления в <code>histogram.cpp</code> (как минимум), пересоберите основную программу и тест, убедитесь, что они работают.</p></li>
 <li><p>Сделайте коммит со всеми новыми файлами и отправите изменения на GitHub.</p></li>
 </ol>
 <p><strong>Важно:</strong> перед коммитом не забудьте сохранить каждый проект <em>(File → Save project).</em></p>
-<ol start="35" class="example" type="1">
+<ol start="34" class="example" type="1">
 <li><strong>(Домашнее задание.)</strong> Выделите в модуль все функци для работы с SVG, опубликуйте коммит.</li>
 </ol>
     <hr/>

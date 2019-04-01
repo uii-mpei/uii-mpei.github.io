@@ -237,9 +237,9 @@ git remote set-url origin https://github.com/<username>/<repo>.git
 
 Кроме линий, SVG поддерживает множество элементов, среди них:
 
-* `<text x="20" y="35">anything you want</text>`:
+* `<text x='20' y='35'>anything you want</text>`:
     текст «anything you want», левый нижний угол которого в точке *(20,35);*
-* `<rect x="0" y="0" width="100" height="200" />`:
+* `<rect x='0' y='0' width='100' height='200' />`:
     прямоугольник 100×200 с верхним левым углом в точке *(0,0)*.
 
 [svg/example]: example.svg
