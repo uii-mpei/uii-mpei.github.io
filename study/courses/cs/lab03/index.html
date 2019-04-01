@@ -118,10 +118,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="#написание-модульных-тестов">Написание модульных тестов</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#часть-4.-использование-структур-и-операторов">Часть 4. Использование структур и операторов</a><ul>
-<li><a href="#задача-2">Задача</a></li>
-<li><a href="#указания-3">Указания</a></li>
-</ul></li>
 </ul>
 </nav>
 <hr />
@@ -316,7 +312,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb19-3" title="3">    <span class="at">const</span> <span class="dt">double</span> bin_width = <span class="dv">10</span> * bin;</a>
 <a class="sourceLine" id="cb19-4" title="4">    svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin));</a>
 <a class="sourceLine" id="cb19-5" title="5">    svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT);</a>
-<a class="sourceLine" id="cb19-6" title="6">}</a></code></pre></div>
+<a class="sourceLine" id="cb19-6" title="6">    top += BIN_HEIGHT;</a>
+<a class="sourceLine" id="cb19-7" title="7">}</a></code></pre></div>
 <p>«Магическая константа» 10 пока сохраняется, потому что логика расчета ширины прямоугольника еще будет модифицироваться.</p>
 <ol start="11" class="example" type="1">
 <li>Реализуйте вывод гистограммы и проверьте работу программы.</li>
@@ -346,7 +343,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ol start="14" class="example" type="1">
 <li><p>Добавьте значения параметров по умолчанию функции <code>svg_rect()</code>.</p></li>
 <li><p>Сделайте коммит и отправите изменения на GitHub.</p></li>
-<li><p>*(Домашнее задание.) Реализуйте для гистограммы в SVG масштабирование, как было сделано для текста в ЛР № 1. Опубликуйте коммит.</p></li>
+<li><p><strong>(Домашнее задание.)</strong> Реализуйте для гистограммы в SVG масштабирование, как было сделано для текста в ЛР № 1. Опубликуйте коммит.</p></li>
 </ol>
 <h1 id="часть-3.-модульное-тестирование">Часть 3. Модульное тестирование</h1>
 <p>Ранее для тестирования программы применялось перенаправление ввода и вывода. Такое тестирование называется функциональным. Однако функционального тестирования недостаточно для больших программ. Предположим, большая программа перестала выдавать правильный результат — как найти место ошибки? Необязательно это последнее изменение: возможно, другая часть и ранее работала неверно в некоторых случаях, и последняя правка лишь привела к такому случаю.</p>
@@ -454,113 +451,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><p>Сделайте коммит со всеми новыми файлами и отправите изменения на GitHub.</p></li>
 </ol>
 <p><strong>Важно:</strong> перед коммитом не забудьте сохранить каждый проект <em>(File → Save project).</em></p>
-<h1 id="часть-4.-использование-структур-и-операторов">Часть 4. Использование структур и операторов</h1>
-<h2 id="задача-2">Задача</h2>
-<p>Необходимо отображать конструкцию, изображенную на рисунке, при любых значениях углов поворота каждого из звеньев:</p>
-<p><img src="mech.svg" /></p>
-<p>Все звенья имеют одинаковую длину 100, при нулевом угле поворота расположены горизонтально. Программа должна быть расширяемой, то есть ее должно быть легко доработать под появление новых звеньев. На ввод подаются углы поворота в градусах, выводиться должен рисунок в SVG.</p>
-<h2 id="указания-3">Указания</h2>
-<p><strong>Ввод</strong> трех действительных углов не представляет трудностей.</p>
-<p><strong>Обработка данных —</strong> преобразования координат методами линейной алгебры. Следовательно, в программе потребуется оперировать двумерными точками и двумерными векторами. На вход обработки подаются звенья-отрезки в своем начальном положении, на выходе — отрезки с рассчитанными координатами после поворотов.</p>
-<p><strong>Вывод данных</strong> потребует написания новой функции <code>svg_line()</code> для вывода линии; эта функция аналогична <code>svg_rect()</code>.</p>
-<p>Имеется вопрос стыковки части обработки данных и вывода: система координат SVG отличается от системы координат, принятой в линейной алгебре. Различие можно убрать средствами SVG (далее будет показано, как).</p>
-<p>Определим структуру <code>Vec2</code>, описывающую двумерный вектор (точку в двухмерном пространстве):</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb31-1" title="1"><span class="kw">struct</span> Vec2 {</a>
-<a class="sourceLine" id="cb31-2" title="2">    <span class="dt">double</span> x;</a>
-<a class="sourceLine" id="cb31-3" title="3">    <span class="dt">double</span> y;</a>
-<a class="sourceLine" id="cb31-4" title="4">};</a></code></pre></div>
-<p>Каждое из звеньев AB, BC и CD в начальном положении является горизонтальным вектором длиной 100, то есть их координата X равна 100, координата Y равна 0:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb32-1" title="1"><span class="dt">int</span></a>
-<a class="sourceLine" id="cb32-2" title="2">main() {</a>
-<a class="sourceLine" id="cb32-3" title="3">    Vec2 AB{<span class="dv">100</span>, <span class="dv">0</span>};</a>
-<a class="sourceLine" id="cb32-4" title="4">    Vec2 BC{<span class="dv">100</span>, <span class="dv">0</span>};</a>
-<a class="sourceLine" id="cb32-5" title="5">    Vec2 CD{<span class="dv">100</span>, <span class="dv">0</span>};</a></code></pre></div>
-<p>Захват манипулятора состоит из одинаковых звеньев («фаланг»), но под разным углом поворота; определим сначала одно такое звено:</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb33-1" title="1">Vec2 falange{<span class="dv">20</span>, <span class="dv">0</span>};</a></code></pre></div>
-<p>На основе <code>falange</code> необходимо создать четыре других звена:</p>
-<ul>
-<li>DE: поворотом <code>falange</code> на 45 градусов против часовой стрелки;</li>
-<li>EF: такое же, как <code>falange</code>;</li>
-<li>DG: поворотом <code>fanalge</code> на 45 градусов по часовой стрелке;</li>
-<li>GH: такое же, как <code>falange</code>.</li>
-</ul>
-<p>Необходимо иметь возможность по вектору и углу поворота в градусах получать повернутый вектор. Формула для расчета:</p>
-<pre><code>X&#39; = X × cos α - Y × sin α
-Y&#39; = X × sin α + Y × cos α</code></pre>
-<p>Рационально создать функцию <code>rotate()</code> для такого преобразования. В этой функции понадобится число π для преобразования из градусов в радианы, синус и косинус. Для этого в начале программы нужно подключить математическую библиотеку:</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb35-1" title="1"><span class="pp">#define _</span>USE_MATH_DEFINES</a>
-<a class="sourceLine" id="cb35-2" title="2"><span class="pp">#include </span><span class="im">&lt;cmath&gt;</span></a></code></pre></div>
-<p>После этого π будет доступно как <code>M_PI</code>, синус и косинус как <code>sin</code> и <code>cos</code>:</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb36-1" title="1">Vec<span class="dv">2</span></a>
-<a class="sourceLine" id="cb36-2" title="2">rotate(Vec2 v, <span class="dt">double</span> degree) {</a>
-<a class="sourceLine" id="cb36-3" title="3">    <span class="at">const</span> <span class="dt">double</span> radian = M_PI / <span class="dv">180</span> * degree;</a>
-<a class="sourceLine" id="cb36-4" title="4">    <span class="at">const</span> <span class="dt">double</span> sin_a = sin(radians);</a>
-<a class="sourceLine" id="cb36-5" title="5">    <span class="at">const</span> <span class="dt">double</span> cos_a = sqrt(<span class="dv">1</span> - sin_a * sin_a);</a>
-<a class="sourceLine" id="cb36-6" title="6">    Vec2 r;</a>
-<a class="sourceLine" id="cb36-7" title="7">    r.x = v.x * cos_a - v.y * sin_a;</a>
-<a class="sourceLine" id="cb36-8" title="8">    r.y = v.x * sin_a + v.y * cos_a;</a>
-<a class="sourceLine" id="cb36-9" title="9">    <span class="cf">return</span> r;</a></code></pre></div>
-<p>С помощью <code>rotate()</code> в функции <code>main()</code> можно определить векторы захвата:</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb37-1" title="1">    Vec2 DE = rotate(falange, <span class="dv">45</span>);</a>
-<a class="sourceLine" id="cb37-2" title="2">    Vec2 EF = falange;</a>
-<a class="sourceLine" id="cb37-3" title="3">    Vec2 DG = rotate(falange, -<span class="dv">45</span>);</a>
-<a class="sourceLine" id="cb37-4" title="4">    Vec2 GH = falange;</a></code></pre></div>
-<p>Зададим углы поворота прямо в программе произвольными:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb38-1" title="1"><span class="dt">double</span> alpha = <span class="dv">60</span>;</a>
-<a class="sourceLine" id="cb38-2" title="2"><span class="dt">double</span> beta = -<span class="dv">30</span>;</a>
-<a class="sourceLine" id="cb38-3" title="3"><span class="dt">double</span> gamma = <span class="dv">30</span>;</a></code></pre></div>
-<p>Начнем вычисление точек манипулятора; для пробы вычислим положение первого звена:</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb39-1" title="1">Vec2 A = {<span class="dv">0</span>, <span class="dv">0</span>};</a>
-<a class="sourceLine" id="cb39-2" title="2">Vec2 B = A + rotate(AB, alpha);</a></code></pre></div>
-<p>Если попытаться скомпилировать программу, это не удастся: операция сложения для векторов не определена. C++ позволяет <em>перегрузку операторов:</em> можно определить функцию под специальным именем <code>operator+</code>, которая будет принимать два вектора и возвращать вектор-сумму:</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb40-1" title="1">Vec<span class="dv">2</span></a>
-<a class="sourceLine" id="cb40-2" title="2"><span class="kw">operator</span>+(Vec2 lhs, Vec2 rhs) {</a>
-<a class="sourceLine" id="cb40-3" title="3">    ...</a>
-<a class="sourceLine" id="cb40-4" title="4">}</a></code></pre></div>
 <ol start="35" class="example" type="1">
-<li>Реализуйте оператор сложения векторов.</li>
-</ol>
-<p>Продолжим вычисление точек:</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb41-1" title="1">Vec2 C = B + rotate(BC, alpha + beta);</a>
-<a class="sourceLine" id="cb41-2" title="2">Vec2 D = C + rotate(CD, alpha + beta + gamma);</a></code></pre></div>
-<ol start="36" class="example" type="1">
-<li><p>Запишите вычисление всех оставшихся точек. (Все они повернуты на угол <em>α + β + γ</em>.)</p></li>
-<li><p>Напишите функцию для отображения линии в SVG:</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb42-1" title="1"><span class="dt">void</span> svg_line(<span class="dt">double</span> x1, <span class="dt">double</span> y1, <span class="dt">double</span> x2, <span class="dt">double</span> y2, string color);</a></code></pre></div></li>
-</ol>
-<p>Функция <code>svg_line()</code> универсальная, но в данной программе было бы удобнее, чтобы она принимала не отдельные координаты, а целые точки. Для этого можно перегрузить <code>svg_line()</code>: создать функцию с таким же именем, но другими типами параметров. Новая функция может для выполнения своей задачи вызывать старую.</p>
-<ol start="38" class="example" type="1">
-<li><p>Реализуйте перегрузку функции <code>svg_line()</code>:</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb43-1" title="1"><span class="dt">void</span> svg_line(Vec2 begin, Vec2 end, string color);</a></code></pre></div></li>
-</ol>
-<p>Как говорилось выше, на уровне SVG можно решить проблему несоответствия системы координат линейной алгебры и SVG. Для этого функции вывода заголовка и окончания SVG должны быть немного другими, чем ранее:</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb44-1" title="1"><span class="dt">void</span></a>
-<a class="sourceLine" id="cb44-2" title="2">svg_begin(<span class="dt">double</span> width, <span class="dt">double</span> height) {</a>
-<a class="sourceLine" id="cb44-3" title="3">    cout &lt;&lt; <span class="st">&quot;&lt;?xml version=&#39;1.0&#39; encoding=&#39;UTF-8&#39; ?&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
-<a class="sourceLine" id="cb44-4" title="4">         &lt;&lt; <span class="st">&quot;&lt;svg width=&#39;&quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot;&#39; height=&#39;&quot;</span> &lt;&lt; height &lt;&lt; <span class="st">&quot;&#39; &quot;</span></a>
-<a class="sourceLine" id="cb44-5" title="5">         &lt;&lt; <span class="st">&quot;viewBox=&#39;0 0 &quot;</span> &lt;&lt; width &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; height &lt;&lt; <span class="st">&quot;&#39; &quot;</span></a>
-<a class="sourceLine" id="cb44-6" title="6">         &lt;&lt; <span class="st">&quot;xmlns=&#39;http://www.w3.org/2000/svg&#39;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
-<a class="sourceLine" id="cb44-7" title="7">         &lt;&lt; <span class="st">&quot;&lt;g transform=&#39;translate(0,&quot;</span> &lt;&lt; height &lt;&lt; <span class="st">&quot;)&#39;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
-<a class="sourceLine" id="cb44-8" title="8">         &lt;&lt; <span class="st">&quot;&lt;g transform=&#39;scale(1,-1)&#39;&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
-<a class="sourceLine" id="cb44-9" title="9">}</a>
-<a class="sourceLine" id="cb44-10" title="10"></a>
-<a class="sourceLine" id="cb44-11" title="11"><span class="dt">void</span></a>
-<a class="sourceLine" id="cb44-12" title="12">svg_end() {</a>
-<a class="sourceLine" id="cb44-13" title="13">    cout &lt;&lt; <span class="st">&quot;&lt;/g&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
-<a class="sourceLine" id="cb44-14" title="14">         &lt;&lt; <span class="st">&quot;&lt;/g&gt;</span><span class="sc">\n</span><span class="st">&quot;</span></a>
-<a class="sourceLine" id="cb44-15" title="15">         &lt;&lt; <span class="st">&quot;&lt;/svg&gt;</span><span class="sc">\n</span><span class="st">&quot;</span>;</a>
-<a class="sourceLine" id="cb44-16" title="16">}</a></code></pre></div>
-<p>Итого можно выполнить отображение манипулятора:</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb45-1" title="1">svg_begin(<span class="dv">400</span>, <span class="dv">400</span>);</a>
-<a class="sourceLine" id="cb45-2" title="2">svg_line(A, B, <span class="st">&quot;red&quot;</span>);</a>
-<a class="sourceLine" id="cb45-3" title="3">svg_line(B, C, <span class="st">&quot;blue&quot;</span>);</a>
-<a class="sourceLine" id="cb45-4" title="4"><span class="co">// ...</span></a>
-<a class="sourceLine" id="cb45-5" title="5">svg_end();</a></code></pre></div>
-<ol start="39" class="example" type="1">
-<li><p>Закончите реализацию вывода SVG. Соберите и запустите программу. Убедитесь, что манипулятор находится в ожидаемом положении.</p></li>
-<li><p>Добавьте в программу ввод углов поворота.</p></li>
-<li><p>Создайте на GitHub новый репозитарий и отправьте туда код программы.</p></li>
-<li><p><strong>(Домашнее задание.)</strong> Добавьте в программу ввод угла раскрытия захвата манипулятора <code>theta</code> и его учет в расчете точек E, F, G и H. Опубликуйте коммит.</p></li>
+<li><strong>(Домашнее задание.)</strong> Выделите в модуль все функци для работы с SVG, опубликуйте коммит.</li>
 </ol>
     <hr/>
     <p>
