@@ -308,7 +308,7 @@ show_histogram_svg(const vector<size_t>& bins) {
 
 Заменим вызов `show_histogram_text(bins)` вызовом `show_histogram_svg(bins)`.
 
-Создать файл изображения можно так:
+Создать файл изображения можно так (можно скачать [`marks.txt`](marks.txt)):
 
 ``` sh
 C:\lab03-histogram> bin/Debug/lab03-histogram.exe <marks.txt >marks.svg
@@ -322,13 +322,42 @@ C:\lab03-histogram> bin/Debug/lab03-histogram.exe <marks.txt >marks.svg
 
 ### Функции вывода элементов SVG
 
-(@) Напишите функцию для вывода текста в SVG, которая принимает координату
-    по горизонтали (`left`), координату нижнего края текста по вертикали
-    (`baseline`) и сам текст:
+Для вывода подписей к столбцам напишем функцию вывода текста в SVG, которая
+принимает координату по горизонтали (`left`), координату нижнего края текста
+по вертикали (`baseline`) и сам текст:
 
-    ``` cpp
-    void svg_text(double left, double baseline, string text);
-    ```
+``` cpp
+void svg_text(double left, double baseline, string text);
+```
+
+Из введения в SVG выше известно, что она должна выводить строку такого
+формата:
+
+``` xml
+<text x='20' y='35'>anything you want</text>
+```
+
+На C++ точно такую строку можно вывести следующим образом (`svg_text()`)
+должна размещаться выше `show_histogram_svg()`:
+
+``` cpp
+void
+svg_text(double left, double baseline, string text) {
+    cout << "<text x='20' y='35'>anything you want</text>";
+}
+```
+
+Чтобы вместо координаты `x` (числа 20) выводить значение `left`:
+
+``` cpp
+    cout << "<text x='" << left << "' y='35'>anything you want</text>";
+```
+
+Обратите внимание на то, что сохранены одинарные кавычки внутри строк C++
+(в двойных кавычках) — они необходимы по правилам SVG.
+
+(@) Закончите реализацию `svg_text()`, чтобы подставлять значение координаты
+    `baseline` и текст надписи `text`.
 
 Для проверки выведем высоту первого столбца гистограммы:
 
@@ -604,7 +633,7 @@ using namespace std;
     все флажки.
 
 (@) При помощи меню *File → New → File...* добавьте к проекту `lab03-test`
-    файл реализации *(C/C++ source).*  Необходимые настройки:
+    файл реализации *(C/C++ source)* `test.cpp`.  Необходимые настройки:
 
     *Filename with full path:* `C:\lab03-histogram\test.cpp` \
     *Add file to active project in build target(s)* — нажать *All.*
