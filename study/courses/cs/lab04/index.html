@@ -269,10 +269,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb11"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb11-1" title="1"><span class="dt">void</span></a>
 <a class="sourceLine" id="cb11-2" title="2">print_in_binary(<span class="dt">uint8_t</span> byte) {</a>
 <a class="sourceLine" id="cb11-3" title="3">    <span class="cf">for</span> (<span class="dt">uint8_t</span> bit = <span class="dv">7</span>; bit &gt; <span class="dv">0</span>; bit--) {</a>
-<a class="sourceLine" id="cb11-4" title="4">        cout &lt;&lt; bit_digit(byte, shift);</a>
+<a class="sourceLine" id="cb11-4" title="4">        cout &lt;&lt; bit_digit(byte, bit);</a>
 <a class="sourceLine" id="cb11-5" title="5">    }</a>
 <a class="sourceLine" id="cb11-6" title="6">}</a></code></pre></div>
-<p><strong>Самопроверка:</strong> перевести в двоичное представление и напечатать числа из лекционного слайда про двоичные операции (исходные два числа и результаты всех действий).</p>
+<p><strong>Внимание:</strong> в данном цикле имеется ошибка - не выводится бит младшего разряда. Предлается устранить ошибку самостоятельно. <strong>Самопроверка:</strong> напечатать число 15 - ожидаемый вывод: <code>00001111</code>. Перевести в двоичное представление и напечатать числа из лекционного слайда про двоичные операции (исходные два числа и результаты всех действий).</p>
 <h3 id="напечатать-блок-данных-в-двоичном-виде">1.8. Напечатать блок данных в двоичном виде</h3>
 <p>Очевидно, что приведение типов не отличается от случая для шестнадцатеричной системы. Напишем и проверим по аналогии с <code>print_in_hex()</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode cpp"><code class="sourceCode cpp"><a class="sourceLine" id="cb12-1" title="1"><span class="dt">void</span></a>
@@ -290,7 +290,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb12-13" title="13">        }</a>
 <a class="sourceLine" id="cb12-14" title="14">    }</a>
 <a class="sourceLine" id="cb12-15" title="15">}</a></code></pre></div>
-<p>В двоичной системе <code>0x42</code> будет <code>0b00101010</code>. Этот байт должен стоять первым при печати целого числа любой длины, а за ним — байты с нулями.</p>
+<p>В двоичной системе <code>42</code> будет <code>0b00101010</code>. Этот байт должен стоять первым при печати целого числа любой длины, а за ним — байты с нулями.</p>
 <h2 id="битовый-калькулятор">2. Битовый калькулятор</h2>
 <p>В отчет нужно занести код и результаты в отчет в виде текста.</p>
 <p><strong>Вопрос:</strong> почему 1025 (<code>0b00000100'00000001</code>, <code>0x0401</code>) представлено байтами <code>01 04</code>, а не наоборот?</p>
