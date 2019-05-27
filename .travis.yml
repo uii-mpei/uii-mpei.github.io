@@ -1,0 +1,6 @@
+deploy:
+  provider: script
+  script: bash deploy.bash
+  on:
+    tags: true
+    all_branches: true
