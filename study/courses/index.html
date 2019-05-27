@@ -12,74 +12,94 @@
     <title>Информационные технологии | Кафедра Управления и информатики</title>
     <link rel="stylesheet" type="text/css" href="assets/styles/style.css">
 </head>
-<body>
-    <h1>Информационные технологии (ИТ)</h1>
-    <em>Глаза боятся&nbsp;&mdash; руки делают!</em>
+<body> 
+    <div id="header" style=" height: 149px;">
+        <div class="fork-me" style="float: right;">
+            <a href="https://github.com/uii-nru-mpei">
+                <img width="149" height="149"
+                    src="https://github.blog/wp-content/uploads/2008/12/forkme_right_orange_ff7600.png?resize=149%2C149"
+                    class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1">
+            </a>
+        </div>
+        <div>
+            <h1>Информационные технологии (ИТ)</h1>
+            <em>Глаза боятся&nbsp;&mdash; руки делают!</em>
+        </div>
+    </div>
+
+    <hr />
+
+    <div id="main">
+        <h2>Дисциплины</h2>
+        <ul>
+            <li>
+                <a href="cs">Разработка ПО систем управления</a>
+                (<a href="sdt/17">2017</a>,
+                <a href="sdt/18">2018</a>)
+            </li>
+            <li>
+                <span>Технология программирования</span>
+                (<a href="sdt-legacy">2013</a>,
+                <a href="https://vk.com/mpei_uii_sdt" target="_blank">2014</a>,
+                <a href="sdt/15">2015</a>,
+                <a href="sdt/16">2016</a>)
+                <ul>
+                    <li>&laquo;Разработка ПО СУ&raquo; является преемницей ТП.</li>
+                </ul>
+            </li>
+            <li>
+                Системное программное обеспечение:
+                <a href="http://edu.cbias.ru" target="_blank">Linux</a>,
+                <a href="oss">Windows</a>
+                (<a href="oss/15">2015</a>)
+            </li>
+            <li>
+                <a href="int">Информационные сети и&nbsp;телекоммуникации</a>
+                (<a href="int/15">2015</a>,
+                <a href="int/16">2016</a>)
+                <ul>
+                    <li><a href="int/wireshark">Руководство по Wireshark.</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="iis">Интеллектуальные информационные системы</a>
+            </li>
+        </ul>
+        
+        <h2>Программное обеспечение</h2>
+        <ul>
+            <li><a href="common/ide.html">Среда на основе Code::Blocks</a> (актуально для&nbsp;СПО и&nbsp;для&nbsp;версий прежде
+                2017&nbsp;г.)</li>
+            <li><a href="common/clion.html">Среда на основе CLion</a> (для&nbsp;&laquo;Разработки ПО СУ&raquo;
+                с&nbsp;2017&nbsp;г.)</li>
+            <li><a href="common/git.html">Git</a></li>
+            <li><a href="https://cmake.org/download/" target="_blank">CMake</a> (нужна ссылка из <i>Binary Distributions</i>).
+            </li>
+        </ul>
+    </div>
+
     <hr/>
 
-    <h2>Дисциплины</h2>
-    <ul>
-        <li>
-            <a href="cs">Разработка ПО систем управления</a>
-            (<a href="sdt/17">2017</a>,
-             <a href="sdt/18">2018</a>)
-        </li>
-        <li>
-            <span>Технология программирования</span>
-            (<a href="sdt-legacy">2013</a>,
-             <a href="https://vk.com/mpei_uii_sdt" target="_blank">2014</a>,
-             <a href="sdt/15">2015</a>,
-             <a href="sdt/16">2016</a>)
-            <ul>
-                <li>&laquo;Разработка ПО СУ&raquo; является преемницей ТП.</li>
-            </ul>
-        </li>
-        <li>
-            Системное программное обеспечение:
-            <a href="http://edu.cbias.ru" target="_blank">Linux</a>,
-            <a href="oss">Windows</a>
-            (<a href="oss/15">2015</a>)
-        </li>
-        <li>
-            <a href="int">Информационные сети и&nbsp;телекоммуникации</a>
-            (<a href="int/15">2015</a>,
-             <a href="int/16">2016</a>)
-            <ul>
-                <li><a href="int/wireshark">Руководство по Wireshark.</a></li>
-            </ul>
-        </li>
-		<li>
-            <a href="iis">Интеллектуальные информационные системы</a>
-        </li>
-    </ul>
-
-    <h2>Программное обеспечение</h2>
-    <ul>
-        <li><a href="common/ide.html">Среда на основе Code::Blocks</a> (актуально для&nbsp;СПО и&nbsp;для&nbsp;версий прежде 2017&nbsp;г.)</li>
-        <li><a href="common/clion.html">Среда на основе CLion</a> (для&nbsp;&laquo;Разработки ПО СУ&raquo; с&nbsp;2017&nbsp;г.)</li>
-        <li><a href="common/git.html">Git</a></li>
-        <li><a href="https://cmake.org/download/" target="_blank">CMake</a> (нужна ссылка из <i>Binary Distributions</i>).</li>
-    </ul>
-
-    <hr/>
-    <p>
-        &copy; кафедра Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2015&mdash;2017&nbsp;гг.
-    </p>
-    <p>
-        Ответственный за&nbsp;страницу: Козлюк&nbsp;Д.&nbsp;А.
-
-        <!--LiveInternet counter--><script type="text/javascript"><!--
-        document.write('<a href="http://www.liveinternet.ru/click" '+
-        'target=_blank><img src="http://counter.yadro.ru/hit?t52.1;r'+
-        escape(document.referrer)+((typeof(screen)=='undefined')?'':
-        ';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
-        screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
-        ';i'+escape('Жж'+document.title.substring(0,80))+';'+Math.random()+
-        '" alt="" title="LiveInternet: показано число просмотров и посетителей за 24 часа" '+
-        'border=0 width=88 height=31 id="counter"><\/a>')//--></script><!--/LiveInternet-->
-
-        <script type="text/javascript" src="assets/scripts/orphus.js"></script>
-        <a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="assets/images/orphus.gif" border="0" width="88" height="31" /></a>
-    </p>
+    <div id="footer">     
+        <p>
+            &copy; кафедра Управления и&nbsp;информатики НИУ &laquo;МЭИ&raquo;, 2015&mdash;2017&nbsp;гг.
+        </p>
+        <p>
+            Ответственный за&nbsp;страницу: Козлюк&nbsp;Д.&nbsp;А.
+    
+            <!--LiveInternet counter--><script type="text/javascript"><!--
+            document.write('<a href="http://www.liveinternet.ru/click" '+
+            'target=_blank><img src="http://counter.yadro.ru/hit?t52.1;r'+
+            escape(document.referrer)+((typeof(screen)=='undefined')?'':
+            ';s'+screen.width+'*'+screen.height+'*'+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+';u'+escape(document.URL)+
+            ';i'+escape('Жж'+document.title.substring(0,80))+';'+Math.random()+
+            '" alt="" title="LiveInternet: показано число просмотров и посетителей за 24 часа" '+
+            'border=0 width=88 height=31 id="counter"><\/a>')//--></script><!--/LiveInternet-->
+    
+            <script type="text/javascript" src="assets/scripts/orphus.js"></script>
+            <a href="http://orphus.ru" id="orphus" target="_blank"><img alt="Система Orphus" src="assets/images/orphus.gif" border="0" width="88" height="31" /></a>
+        </p>
+    </div>
 </body>
 </html>
