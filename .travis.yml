@@ -1,6 +1,22 @@
-deploy:
-  provider: script
-  script: bash deploy.bash
-  on:
-    tags: true
-    all_branches: true
+branches:
+  only:
+  - master
+
+language: shell
+
+addons:
+  ssh_known_hosts:
+  - uii.mpei.ru
+
+install:
+- sudo apt-get -y install openssh-client
+
+before_script:
+- openssl aes-256-cbc -d -K $encrypted_dcd021a3c124_key -iv $encrypted_dcd021a3c124_iv -in .travis/deploy.key -out /tmp/deploy.key
+- chmod 600 /tmp/deploy.key
+- eval "$(ssh-agent -s)"
+- ssh-add /tmp/deploy.key
+
+script:
+- cd study
+- rsync --archive --update --delete --verbose . uiu@uii.mpei.ru:htdocs/study
