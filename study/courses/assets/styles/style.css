@@ -74,11 +74,12 @@ ul.semantic, ul.standalone {
 }
 
 /* Счетчик и кнопка системы "Орфус" (legacy), */
-#orphus, #counter,
+#orphus, #counter, #github,
 /* любые кнопки внизу страницы. */
 #buttons {
 	float: right;
 	vertical-align: middle;
+    margin: 0.2em;
 }
 
 /* Ссылки на якоря в документе. */
